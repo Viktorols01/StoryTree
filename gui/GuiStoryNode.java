@@ -14,7 +14,7 @@ public class GuiStoryNode extends GuiTextBox {
         this.inPointers = new ArrayList<GuiStoryOptionPointer>();
         this.outPointers = new ArrayList<GuiStoryOptionPointer>();
 
-        determineColor();
+        updateColor();
     }
 
     public void renderOutPointerLines(Graphics2D g2d) {
@@ -57,8 +57,8 @@ public class GuiStoryNode extends GuiTextBox {
         newPointer.addOptionText(g2d, optionText);
         this.outPointers.add(newPointer);
         node.inPointers.add(newPointer);
-        determineColor();
-        node.determineColor();
+        updateColor();
+        node.updateColor();
         for (GuiStoryOptionPointer pointer : outPointers) {
             pointer.updateColor(outPointers.size() < 2);
         }
@@ -68,7 +68,7 @@ public class GuiStoryNode extends GuiTextBox {
     public void removePointer(GuiStoryOptionPointer pointer) {
         this.inPointers.remove(pointer);
         this.outPointers.remove(pointer);
-        determineColor();
+        updateColor();
     }
 
     public List<GuiStoryOptionPointer> getInPointers() {
@@ -100,15 +100,17 @@ public class GuiStoryNode extends GuiTextBox {
         pointer.setPosition(x, y);
     }
 
-    private void determineColor() {
+    private void updateColor() {
         int inCount = this.inPointers.size();
         int outCount = this.outPointers.size();
         Color color;
         if (inCount == 0) {
             if (outCount == 0) {
                 color = new Color(25, 25, 25);
+            } else if (outCount == 1) {
+                color = new Color(155, 155, 155);
             } else {
-                color = new Color(0, 155, 0);
+                color = new Color(155, 155, 0);
             }
         } else {
             if (outCount == 0) {

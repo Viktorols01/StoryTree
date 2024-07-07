@@ -23,7 +23,7 @@ public class FileHandler {
         switch (save ? chooser.showSaveDialog(null) : chooser.showOpenDialog(null)) {
             case JFileChooser.APPROVE_OPTION:
                 File file = new File(
-                        folderName + "/" + chooser.getSelectedFile().getName() + (save ? ("." + extension) : ""));
+                        folderName + "/" + chooser.getSelectedFile().getName());
                 return file;
             default:
                 return null;
