@@ -222,7 +222,6 @@ public class GuiStoryEditor extends Gui {
             }
             for (GuiStoryOptionPointer pointer : node.getOutPointers()) {
                 if (pointer.isInside(absPos.getX(), absPos.getY())) {
-                    System.out.println("AAAAA");
                     pointer.remove();
                     return;
                 }

@@ -43,6 +43,10 @@ public class GuiStoryNode extends GuiTextBox {
     }
 
     public void addPointer(Graphics2D g2d, String optionText, GuiStoryNode node) {
+        if (node == null) {
+            return;
+        }
+
         for (GuiStoryOptionPointer pointer : getOutPointers()) {
             if (pointer.getChild() == node) {
                 pointer.addOptionText(g2d, optionText);
