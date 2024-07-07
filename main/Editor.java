@@ -1,0 +1,53 @@
+package main;
+
+import java.awt.Button;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import gui.GuiStoryEditor;
+import gui.GuiStoryNode;
+import storyclasses.StoryNode;
+
+public class Editor {
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("StoryTree editor");
+        JPanel panel = new JPanel();
+
+        GuiStoryEditor gui = new GuiStoryEditor(1000, 800);
+        panel.add(gui);
+
+        Button savePlayableButton = new Button("Save playable story");
+        savePlayableButton.addActionListener((a) -> {
+            StoryNode root = gui.getStoryTree();
+            if (root != null) {
+                FileHandler.saveObject(root, "files/stories", "Story files", "story");
+            }
+        });
+        panel.add(savePlayableButton);
+        
+        Button saveButton = new Button("Save story");
+        saveButton.addActionListener((a) -> {
+            GuiStoryNode root = gui.getGuiRoot();
+            if (root != null) {
+                FileHandler.saveObject(root, "files/guistories", "GUI story files", "gstory");
+            }
+        });
+        panel.add(saveButton);
+
+        Button loadButton = new Button("Load story");
+        loadButton.addActionListener((a) -> {
+            GuiStoryNode root = FileHandler.loadObject("files/guistories", "GUI story files", "gstory");
+            if (root != null) {
+                gui.loadGuiRoot(root);
+            }
+        });
+        panel.add(loadButton);
+
+        frame.add(panel);
+        frame.pack();
+        frame.setDefaultCloseOperation(3);
+        frame.setVisible(true);
+    }
+}
