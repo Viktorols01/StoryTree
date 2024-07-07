@@ -47,7 +47,7 @@ public class GuiStoryOptionPointer extends GuiTextBox {
 
     public void updateColor(boolean single) {
         if (single && optionTexts.size() < 2) {
-            setColor(new Color(25, 25, 25));
+            setColor(new Color(155, 155, 155));
         } else {
             setColor(new Color(155, 155, 0));
         }

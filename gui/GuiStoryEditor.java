@@ -187,38 +187,28 @@ public class GuiStoryEditor extends Gui {
                 if (input != null) {
                     bindMovable.setText((Graphics2D) getGraphics(), input);
                     bindMovable.updatePositions();
+                    bindMovable = null;
                 }
                 return;
             }
 
             String optionText = getTextFromPromt("Add option", "");
             if (optionText != null) {
+                GuiStoryNode addNode = null;
+
                 for (GuiStoryNode node : nodes) {
                     if (node.isInside(absPos.getX(), absPos.getY())) {
-                        for (GuiStoryOptionPointer pointer : bindMovable.getOutPointers()) {
-                            if (pointer.getChild() == node) {
-                                pointer.addOptionText((Graphics2D) getGraphics(), optionText);
-                                bindMovable.updatePositions();
-                                bindMovable = null;
-                                return;
-                            }
-                        }
-                        GuiStoryOptionPointer pointer = bindMovable.addPointer(node);
-                        pointer.addOptionText((Graphics2D) getGraphics(), optionText);
-                        bindMovable.updatePositions();
-                        bindMovable = null;
-                        return;
+                        addNode = node;
                     }
                 }
 
-                GuiStoryNode node = addStoryNode();
-                if (node != null) {
-                    GuiStoryOptionPointer pointer = bindMovable.addPointer(node);
-                    pointer.addOptionText((Graphics2D) getGraphics(), optionText);
-                    bindMovable.updatePositions();
-                    bindMovable = null;
-                    return;
+                if (addNode == null) {
+                    addNode = addStoryNode();
                 }
+
+                bindMovable.addPointer((Graphics2D) getGraphics(), optionText, addNode);
+                bindMovable.updatePositions();
+                bindMovable = null;
             }
         }
     }

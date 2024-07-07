@@ -42,14 +42,23 @@ public class GuiStoryNode extends GuiTextBox {
         g2d.drawString("Root", (int) getX(), (int) getY() - 2);
     }
 
-    public GuiStoryOptionPointer addPointer(GuiStoryNode node) {
-        GuiStoryOptionPointer pointer = new GuiStoryOptionPointer(this, node);
-        this.outPointers.add(pointer);
-        node.inPointers.add(pointer);
+    public void addPointer(Graphics2D g2d, String optionText, GuiStoryNode node) {
+        for (GuiStoryOptionPointer pointer : getOutPointers()) {
+            if (pointer.getChild() == node) {
+                pointer.addOptionText(g2d, optionText);
+                return;
+            }
+        }
+        GuiStoryOptionPointer newPointer = new GuiStoryOptionPointer(this, node);
+        newPointer.addOptionText(g2d, optionText);
+        this.outPointers.add(newPointer);
+        node.inPointers.add(newPointer);
         determineColor();
         node.determineColor();
-        pointer.updateColor(outPointers.size() < 2);
-        return pointer;
+        for (GuiStoryOptionPointer pointer : outPointers) {
+            pointer.updateColor(outPointers.size() < 2);
+        }
+        return;
     }
 
     public void removePointer(GuiStoryOptionPointer pointer) {
