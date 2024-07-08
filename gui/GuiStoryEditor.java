@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import storyclasses.StoryNode;
+import storyclasses.serializable.StoryNode;
 import tools.Camera;
 import tools.Gui;
 

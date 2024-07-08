@@ -1,15 +1,15 @@
 package main;
 
-import storyclasses.StoryNode;
-import storyclasses.StoryNodeReader;
+import storyclasses.StoryNodeReaderLegacy;
+import storyclasses.serializable.StoryNode;
 import tools.FileHandler;
 
-class Reader {
+class ReaderProgram {
     public static void main(String[] args) {
         StoryNode root;
         root = FileHandler.loadObject("files/stories", "Story files", "story");
         if (root != null) {
-            StoryNodeReader reader = new StoryNodeReader();
+            StoryNodeReaderLegacy reader = new StoryNodeReaderLegacy();
             reader.read(root);
         }
     }

@@ -2,10 +2,12 @@ package storyclasses;
 
 import java.util.Scanner;
 
-public class StoryNodeReader {
+import storyclasses.serializable.StoryNode;
+
+public class StoryNodeReaderLegacy {
     private Scanner scanner;
 
-    public StoryNodeReader() {
+    public StoryNodeReaderLegacy() {
         this.scanner = new Scanner(System.in);
     }
 

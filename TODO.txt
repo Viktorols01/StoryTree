@@ -1,3 +1,6 @@
 - Make it possible to enter dialog that is several lines long
 - Make all serializable classes as lightweight as possible, so changes can be made (after finishing Gangkok, or rewriting it).
 - CLEAN THE CODE 
+- Folders
+- Keys
+- Customizable reader (maybe not system?)

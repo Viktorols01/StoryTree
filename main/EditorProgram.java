@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 
 import gui.GuiStoryEditor;
 import gui.GuiStoryNode;
-import storyclasses.StoryNode;
+import storyclasses.serializable.StoryNode;
 import tools.FileHandler;
 
-public class Editor {
+public class EditorProgram {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("StoryTree editor");
