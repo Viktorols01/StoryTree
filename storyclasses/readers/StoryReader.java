@@ -1,4 +1,4 @@
-package storyclasses;
+package storyclasses.readers;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,7 +10,7 @@ import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryState;
 
 public abstract class StoryReader {
-    
+
     private StoryState storyState;
 
     public StoryReader(StoryNode root) {
@@ -22,29 +22,37 @@ public abstract class StoryReader {
     }
 
     public void read() {
+        acquireKeys();
+        displayTextToUser(this.storyState.getCurrentNode().getText());
+        interact();
+    }
+
+    public void interact() {
         List<StoryOption> availableOptions = getAvailableStoryOptions();
         String[] stringAvailableOptions = toOptionStrings(availableOptions);
-        displayInformationToUser(this.storyState.getCurrentNode().getText(), stringAvailableOptions);
+        if (stringAvailableOptions.length == 0) {
+            return;
+        } else {
+            displayOptionsToUser(stringAvailableOptions);
 
-        String selectedOption = getOptionFromUser();
+            String selectedOption = getOptionFromUser();
 
-        for (StoryOption option : availableOptions) {
-            if (option.getText().equals(selectedOption)) {
-                travelTo(option.getStoryNode());
+            for (StoryOption option : availableOptions) {
+                if (option.getText().equals(selectedOption)) {
+                    this.storyState.setCurrentStoryNode(option.getStoryNode());
+                    read();
+                    return;
+                }
             }
+            interact();
         }
     }
 
-    public StoryState getStoryState() {
-        return this.storyState;
-    }
-
-    private void travelTo(StoryNode node) {
-        this.storyState.setCurrentStoryNode(node);
-        for (StoryKey addedKey : node.getAddedKeys()) {
+    private void acquireKeys() {
+        for (StoryKey addedKey : storyState.getCurrentNode().getAddedKeys()) {
             addKey(addedKey);
         }
-        for (StoryKey removedKey : node.getRemovedKeys()) {
+        for (StoryKey removedKey : storyState.getCurrentNode().getRemovedKeys()) {
             removeKey(removedKey);
         }
     }
@@ -72,15 +80,16 @@ public abstract class StoryReader {
 
     private List<StoryOption> getAvailableStoryOptions() {
         List<StoryOption> storyOptionList = new LinkedList<StoryOption>();
+        outer:
         for (StoryOption storyOption : getAllStoryOptions()) {
             for (StoryKey unlockingKey : storyOption.getUnlockingKeys()) {
                 if (this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
-                    continue;
+                    continue outer;
                 }
             }
             for (StoryKey lockingKey : storyOption.getLockingKeys()) {
                 if (this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
-                    continue;
+                    continue outer;
                 }
             }
             storyOptionList.add(storyOption);
@@ -99,7 +108,13 @@ public abstract class StoryReader {
         return stringOptions;
     }
 
-    protected abstract void displayInformationToUser(String text, String[] optionStrings);
+    protected abstract void displayTextToUser(String text);
+
+    protected abstract void displayOptionsToUser(String[] optionStrings);
 
     protected abstract String getOptionFromUser();
+
+    public StoryState getStoryState() {
+        return this.storyState;
+    }
 }
