@@ -5,7 +5,7 @@ import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StorySerializer;
 
-class ReaderProgram {
+class SerializerTest {
     public static void main(String[] args) {
         StoryNode root;
         StoryNode death = new StoryNode("You died!", new StoryOption[0]);
