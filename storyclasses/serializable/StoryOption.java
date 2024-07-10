@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public final class StoryOption implements Serializable {
     private final String text;
-    private final StoryNode storyNode;
     private final StoryKey[] unlockingKeys;
     private final StoryKey[] lockingKeys;
     private final boolean forced;
+    private final StoryNode storyNode;
 
     public StoryOption(String text, StoryNode storyNode, StoryKey[] unlockingKeys, StoryKey[] lockingKeys,
             boolean forced) {

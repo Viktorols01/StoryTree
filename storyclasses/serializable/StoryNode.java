@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public final class StoryNode implements Serializable {
     private final String text;
-    private final StoryOption[] storyOptions;
     private final StoryKey[] addedKeys;
     private final StoryKey[] removedKeys;
+    private final StoryOption[] storyOptions;
 
     public StoryNode(String text, StoryOption[] storyOptions, StoryKey[] addedKeys, StoryKey[] removedKeys) {
         this.text = text;
