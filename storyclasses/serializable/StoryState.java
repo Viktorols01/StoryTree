@@ -7,14 +7,14 @@ import java.util.Map;
 public class StoryState implements Serializable {
 
     private StoryNode currentStoryNode;
-    private Map<String, Integer> keys;
+    private final Map<String, Integer> keys;
 
-    public StoryState(StoryNode storyNode, Map<String, Integer> unlockedKeys) {
+    public StoryState(final StoryNode storyNode, final Map<String, Integer> unlockedKeys) {
         this.currentStoryNode = storyNode;
         this.keys = unlockedKeys;
     }
 
-    public StoryState(StoryNode storyNode) {
+    public StoryState(final StoryNode storyNode) {
         this.currentStoryNode = storyNode;
         this.keys = new HashMap<String, Integer>();
     }
@@ -23,7 +23,7 @@ public class StoryState implements Serializable {
         return this.currentStoryNode;
     }
 
-    public void setCurrentStoryNode(StoryNode currentStoryNode) {
+    public void setCurrentStoryNode(final StoryNode currentStoryNode) {
         this.currentStoryNode = currentStoryNode;
     }
 

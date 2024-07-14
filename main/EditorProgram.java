@@ -24,7 +24,7 @@ public class EditorProgram {
         JPanel buttonPanel = new JPanel();
         Button savePlayableButton = new Button("Save playable story");
         savePlayableButton.addActionListener((a) -> {
-            StoryNode root = gui.getStoryTree();
+            StoryNode root = gui.toStoryTree();
             if (root != null) {
                 FileHandler.saveObject(root, "files/stories", "Story files", "story");
             }

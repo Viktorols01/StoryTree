@@ -4,22 +4,22 @@ import java.io.Serializable;
 
 public final class StoryNode implements Serializable {
     private final String text;
-    private final StoryKey[] addedKeys;
-    private final StoryKey[] removedKeys;
+    private final StoryKeys[] addedKeys;
+    private final StoryKeys[] removedKeys;
     private final StoryOption[] storyOptions;
 
-    public StoryNode(String text, StoryOption[] storyOptions, StoryKey[] addedKeys, StoryKey[] removedKeys) {
+    public StoryNode(final String text, final StoryOption[] storyOptions, final StoryKeys[] addedKeys, final StoryKeys[] removedKeys) {
         this.text = text;
         this.storyOptions = storyOptions;
         this.addedKeys = addedKeys;
         this.removedKeys = removedKeys;
     }
 
-    public StoryNode(String text, StoryOption[] storyOptions) {
+    public StoryNode(final String text, final StoryOption[] storyOptions) {
         this.text = text;
         this.storyOptions = storyOptions;
-        this.addedKeys = new StoryKey[0];
-        this.removedKeys = new StoryKey[0];
+        this.addedKeys = new StoryKeys[0];
+        this.removedKeys = new StoryKeys[0];
     }
 
     public String getText() {
@@ -30,11 +30,11 @@ public final class StoryNode implements Serializable {
         return storyOptions;
     }
 
-    public StoryKey[] getAddedKeys() {
+    public StoryKeys[] getAddedKeys() {
         return addedKeys;
     }
 
-    public StoryKey[] getRemovedKeys() {
+    public StoryKeys[] getRemovedKeys() {
         return removedKeys;
     }
 

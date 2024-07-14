@@ -38,9 +38,28 @@ public class ConsoleStoryReader extends StoryReader {
     }
 
     @Override
-    protected String getOptionFromUser() {
-        // ATT GÖRA: BEGRÄNSA OCH SLÄNG FEL TILLS DET ÄR VETTIGT!
-        return scanner.nextLine();
+    protected String getOptionFromUser(String[] optionStrings) {
+        int optionIndex = -1;
+        if (optionStrings.length == 1) {
+            System.out.print("\u001b[33m");
+            System.out.print("Press enter to continue:");
+            System.out.print("\u001b[m");
+            scanner.nextLine();
+            optionIndex = 0; 
+        } else {
+            do {
+                System.out.print("\u001b[33m");
+                    System.out.print("Input: ");
+                    String input = scanner.nextLine();
+                    System.out.print("\u001b[m");
+                try {
+                    optionIndex = Integer.parseInt(input);
+                } catch (NumberFormatException e) {
+                    optionIndex = -1;
+                }
+            } while (optionIndex < 0 || optionIndex >= optionStrings.length);
+        }
+        return optionStrings[optionIndex];
     }
 
 }

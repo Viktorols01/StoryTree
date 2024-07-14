@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import storyclasses.serializable.StoryKey;
+import storyclasses.serializable.StoryKeys;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryState;
@@ -35,7 +35,7 @@ public abstract class StoryReader {
         } else {
             displayOptionsToUser(stringAvailableOptions);
 
-            String selectedOption = getOptionFromUser();
+            String selectedOption = getOptionFromUser(stringAvailableOptions);
 
             for (StoryOption option : availableOptions) {
                 if (option.getText().equals(selectedOption)) {
@@ -49,15 +49,15 @@ public abstract class StoryReader {
     }
 
     private void acquireKeys() {
-        for (StoryKey addedKey : storyState.getCurrentNode().getAddedKeys()) {
+        for (StoryKeys addedKey : storyState.getCurrentNode().getAddedKeys()) {
             addKey(addedKey);
         }
-        for (StoryKey removedKey : storyState.getCurrentNode().getRemovedKeys()) {
+        for (StoryKeys removedKey : storyState.getCurrentNode().getRemovedKeys()) {
             removeKey(removedKey);
         }
     }
 
-    private void addKey(StoryKey addedKey) {
+    private void addKey(StoryKeys addedKey) {
         if (storyState.getKeys().containsKey(addedKey.getKey())) {
             int currentValue = storyState.getKeys().get(addedKey.getKey());
             storyState.getKeys().put(addedKey.getKey(), currentValue + addedKey.getValue());
@@ -66,7 +66,7 @@ public abstract class StoryReader {
         }
     }
 
-    private void removeKey(StoryKey removedKey) {
+    private void removeKey(StoryKeys removedKey) {
         if (storyState.getKeys().containsKey(removedKey.getKey())) {
             int currentValue = storyState.getKeys().get(removedKey.getKey());
             storyState.getKeys().put(removedKey.getKey(),
@@ -82,12 +82,12 @@ public abstract class StoryReader {
         List<StoryOption> storyOptionList = new LinkedList<StoryOption>();
         outer:
         for (StoryOption storyOption : getAllStoryOptions()) {
-            for (StoryKey unlockingKey : storyOption.getUnlockingKeys()) {
+            for (StoryKeys unlockingKey : storyOption.getUnlockingKeys()) {
                 if (this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
                     continue outer;
                 }
             }
-            for (StoryKey lockingKey : storyOption.getLockingKeys()) {
+            for (StoryKeys lockingKey : storyOption.getLockingKeys()) {
                 if (this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
                     continue outer;
                 }
@@ -112,7 +112,7 @@ public abstract class StoryReader {
 
     protected abstract void displayOptionsToUser(String[] optionStrings);
 
-    protected abstract String getOptionFromUser();
+    protected abstract String getOptionFromUser(String[] optionStrings);
 
     public StoryState getStoryState() {
         return this.storyState;

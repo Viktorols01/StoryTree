@@ -1,7 +1,11 @@
-package storyclasses.serializable;
+package trashbin;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import storyclasses.serializable.StoryKeys;
+import storyclasses.serializable.StoryNode;
+import storyclasses.serializable.StoryOption;
 
 // abandon, smarter people have done this
 // problem with delimiters etc
@@ -32,13 +36,13 @@ public class StorySerializer {
             sb.append("Text: ");
             sb.append(node.getText()).append("\n");
             sb.append("Added keys: ");
-            for (StoryKey key : node.getAddedKeys()) {
+            for (StoryKeys key : node.getAddedKeys()) {
                 sb.append(key.getKey() + ":" + key.getValue());
                 sb.append(",");
             }
             sb.append("\n");
             sb.append("Removed keys: ");
-            for (StoryKey key : node.getRemovedKeys()) {
+            for (StoryKeys key : node.getRemovedKeys()) {
                 sb.append(key.getKey() + ":" + key.getValue());
                 sb.append(",");
             }
@@ -52,12 +56,12 @@ public class StorySerializer {
                 sb.append(", Node: ");
                 sb.append(nodeList.indexOf(option.getStoryNode()));
                 sb.append(", Unlocking keys: ");
-                for (StoryKey key : option.getUnlockingKeys()) {
+                for (StoryKeys key : option.getUnlockingKeys()) {
                     sb.append(key.getKey() + ":" + key.getValue());
                     sb.append(",");
                 }
                 sb.append("Locking keys: ");
-                for (StoryKey key : option.getLockingKeys()) {
+                for (StoryKeys key : option.getLockingKeys()) {
                     sb.append(key.getKey() + ":" + key.getValue());
                     sb.append(",");
                 }

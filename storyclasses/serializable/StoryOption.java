@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 public final class StoryOption implements Serializable {
     private final String text;
-    private final StoryKey[] unlockingKeys;
-    private final StoryKey[] lockingKeys;
+    private final StoryKeys[] unlockingKeys;
+    private final StoryKeys[] lockingKeys;
     private final boolean forced;
     private final StoryNode storyNode;
 
-    public StoryOption(String text, StoryNode storyNode, StoryKey[] unlockingKeys, StoryKey[] lockingKeys,
-            boolean forced) {
+    public StoryOption(final String text, final StoryNode storyNode, final StoryKeys[] unlockingKeys, final StoryKeys[] lockingKeys,
+            final boolean forced) {
         this.text = text;
         this.storyNode = storyNode;
         this.unlockingKeys = unlockingKeys;
@@ -18,11 +18,11 @@ public final class StoryOption implements Serializable {
         this.forced = forced;
     }
 
-    public StoryOption(String text, StoryNode storyNode) {
+    public StoryOption(final String text, final StoryNode storyNode) {
         this.text = text;
         this.storyNode = storyNode;
-        this.unlockingKeys = new StoryKey[0];
-        this.lockingKeys = new StoryKey[0];
+        this.unlockingKeys = new StoryKeys[0];
+        this.lockingKeys = new StoryKeys[0];
         this.forced = false;
     }
 
@@ -34,11 +34,11 @@ public final class StoryOption implements Serializable {
         return storyNode;
     }
 
-    public StoryKey[] getUnlockingKeys() {
+    public StoryKeys[] getUnlockingKeys() {
         return unlockingKeys;
     }
 
-    public StoryKey[] getLockingKeys() {
+    public StoryKeys[] getLockingKeys() {
         return lockingKeys;
     }
 
