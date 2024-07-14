@@ -15,7 +15,7 @@ public class GuiStoryOption extends GuiTextBox {
     private GuiStoryNode child;
 
     public GuiStoryOption(String text, GuiStoryNode parent, GuiStoryNode child) {
-        super(null, 0, 0, 10);
+        super(text, 0, 0, 10);
         this.parent = parent;
         this.optionText = text;
         this.unlockingKeys = new ArrayList<StoryKeys>();
@@ -63,4 +63,5 @@ public class GuiStoryOption extends GuiTextBox {
     public GuiStoryNode getParent() {
         return this.parent;
     }
+
 }

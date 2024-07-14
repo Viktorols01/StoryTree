@@ -41,15 +41,15 @@ public class GuiStoryEditor extends Gui {
 
     public void setGuiRoot(GuiStoryNode root) {
         this.guiContainer = new GuiStoryContainer(getWidth(), getHeight());
-        this.guiContainer.setGuiRoot(root);
+        this.guiContainer.setRoot(root);
     }
 
     @Override
     protected void render(Graphics g) {
         g.setColor(new Color(55, 55, 55));
-        g.fillRect(0, 0, guiContainer.getCam().getRelativeWidth(), guiContainer.getCam().getRelativeHeight());
+        g.fillRect(0, 0, guiContainer.getCamera().getRelativeWidth(), guiContainer.getCamera().getRelativeHeight());
         Graphics2D g2d = (Graphics2D) g;
-        guiContainer.getCam().transform(g2d);
+        guiContainer.getCamera().transform(g2d);
 
         if (binding) {
             Point2D absPos = getAbsoluteMousePosition();
@@ -60,23 +60,23 @@ public class GuiStoryEditor extends Gui {
                     (int) absPos.getY());
         }
 
-        if (guiContainer.getGuiNodes().isEmpty()) {
+        if (guiContainer.getNodes().isEmpty()) {
             return;
         }
 
-        for (GuiStoryNode node : guiContainer.getGuiNodes()) {
+        for (GuiStoryNode node : guiContainer.getNodes()) {
             GuiStoryContainer.renderOutPointerLines(g2d, node);
         }
-        for (GuiStoryNode node : guiContainer.getGuiNodes()) {
+        for (GuiStoryNode node : guiContainer.getNodes()) {
             GuiStoryContainer.renderOutPointers(g2d, node);
         }
-        for (GuiStoryNode node : guiContainer.getGuiNodes()) {
-            if (node == guiContainer.getGuiRoot()) {
+        for (GuiStoryNode node : guiContainer.getNodes()) {
+            if (node == guiContainer.getRoot()) {
                 continue;
             }
-            GuiStoryContainer.renderGuiTextBox(g2d, node);
+            GuiStoryContainer.renderGuiStoryNode(g2d, node, false);
         }
-        GuiStoryContainer.renderGuiTextBoxAsRoot(g2d, guiContainer.getGuiRoot());
+        GuiStoryContainer.renderGuiStoryNode(g2d, guiContainer.getRoot(), true);
     }
 
     @Override
@@ -89,7 +89,10 @@ public class GuiStoryEditor extends Gui {
     protected void onMouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case 3:
-                addStoryNode();
+                String nodeInput = getTextFromPromt("Adding node...", "");
+                if (nodeInput != null) {
+                    addStoryNode(nodeInput);
+                }
                 break;
         }
         this.repaint();
@@ -138,14 +141,14 @@ public class GuiStoryEditor extends Gui {
     @Override
     protected void onMouseWheelMoved(MouseWheelEvent e) {
         int rotations = e.getWheelRotation();
-        this.guiContainer.getCam().setZoom(this.guiContainer.getCam().getZoom() * Math.pow(1.15, -rotations));
+        this.guiContainer.getCamera().setZoom(this.guiContainer.getCamera().getZoom() * Math.pow(1.15, -rotations));
     }
 
     @Override
     protected void onKeyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-                deleteObject();
+                deleteTextBox();
                 break;
         }
     }
@@ -169,33 +172,17 @@ public class GuiStoryEditor extends Gui {
 
     private Point2D getAbsoluteMousePosition() {
         Point2D relPos = getRelativeMousePosition();
-        Point2D absPos = guiContainer.getCam().inverseTransform(relPos);
+        Point2D absPos = guiContainer.getCamera().inverseTransform(relPos);
         return absPos;
-    }
-
-    private GuiStoryNode addStoryNode() {
-        Point2D absPos = getAbsoluteMousePosition();
-        String input = getTextFromPromt("Add node", "");
-        if (input != null) {
-            GuiStoryNode node = new GuiStoryNode(absPos.getX(), absPos.getY());
-            node.setText((Graphics2D) getGraphics(), input);
-
-            if (guiContainer.getGuiNodes().isEmpty()) {
-                guiContainer.setGuiRoot(node);
-            }
-            guiContainer.getGuiNodes().add(node);
-            return node;
-        }
-        return null;
     }
 
     private void startDragging() {
         Point2D relPos = getRelativeMousePosition();
         Point2D absPos = getAbsoluteMousePosition();
         if (!dragging) {
-            for (GuiStoryNode node : guiContainer.getGuiNodes()) {
+            for (GuiStoryNode node : guiContainer.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
-                    if (node == guiContainer.getGuiRoot()) {
+                    if (node == guiContainer.getRoot()) {
                         return;
                     }
                     dragging = true;
@@ -206,8 +193,8 @@ public class GuiStoryEditor extends Gui {
             }
             dragging = true;
             draggedDelta = new Point2D.Double(
-                    -relPos.getX() / guiContainer.getCam().getZoom() - guiContainer.getCam().getX(),
-                    -relPos.getY() / guiContainer.getCam().getZoom() - guiContainer.getCam().getY());
+                    -relPos.getX() / guiContainer.getCamera().getZoom() - guiContainer.getCamera().getX(),
+                    -relPos.getY() / guiContainer.getCamera().getZoom() - guiContainer.getCamera().getY());
             draggedMovable = null;
         }
     }
@@ -217,10 +204,13 @@ public class GuiStoryEditor extends Gui {
         Point2D absPos = getAbsoluteMousePosition();
         if (dragging) {
             if (draggedMovable == null) {
-                guiContainer.getCam().setX(-relPos.getX() / guiContainer.getCam().getZoom() - draggedDelta.getX());
-                guiContainer.getCam().setY(-relPos.getY() / guiContainer.getCam().getZoom() - draggedDelta.getY());
+                guiContainer.getCamera()
+                        .setX(-relPos.getX() / guiContainer.getCamera().getZoom() - draggedDelta.getX());
+                guiContainer.getCamera()
+                        .setY(-relPos.getY() / guiContainer.getCamera().getZoom() - draggedDelta.getY());
             } else {
                 draggedMovable.setPosition(absPos.getX() - draggedDelta.getX(), absPos.getY() - draggedDelta.getY());
+                GuiStoryContainer.updatePositions(draggedMovable);
             }
         }
     }
@@ -235,7 +225,7 @@ public class GuiStoryEditor extends Gui {
     private void startBinding() {
         Point2D absPos = getAbsoluteMousePosition();
         if (!binding) {
-            for (GuiStoryNode node : guiContainer.getGuiNodes()) {
+            for (GuiStoryNode node : guiContainer.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     binding = true;
                     bindMovable = node;
@@ -257,60 +247,95 @@ public class GuiStoryEditor extends Gui {
             if (bindMovable.isInside(absPos.getX(), absPos.getY())) {
                 String input = getTextFromPromt("Edit text", bindMovable.getText());
                 if (input != null) {
-                    bindMovable.setText((Graphics2D) getGraphics(), input);
+                    bindMovable.setText(input);
+                    GuiStoryContainer.updateSize((Graphics2D) getGraphics(), bindMovable);
                     bindMovable = null;
                 }
                 return;
-            }
-
-            String optionText = getTextFromPromt("Add option", "");
-            if (optionText != null) {
-                GuiStoryNode addNode = null;
-
-                for (GuiStoryNode node : guiContainer.getGuiNodes()) {
+            } else {
+                for (GuiStoryNode node : guiContainer.getNodes()) {
                     if (node.isInside(absPos.getX(), absPos.getY())) {
-                        addNode = node;
+                        String input = getTextFromPromt("Add option", bindMovable.getText());
+                        if (input != null) {
+                            addStoryOption(input, bindMovable, node);
+                            bindMovable = null;
+                            return;
+                        } else {
+                            bindMovable = null;
+                            return;
+                        }
                     }
                 }
-
-                if (addNode == null) {
-                    addNode = addStoryNode();
-                }
-
-                bindMovable.addPointer((Graphics2D) getGraphics(), optionText, addNode);
-                bindMovable = null;
-            }
-        }
-    }
-
-    private void deleteObject() {
-        Point2D absPos = getAbsoluteMousePosition();
-        for (GuiStoryNode node : guiContainer.getGuiNodes()) {
-            if (node.isInside(absPos.getX(), absPos.getY())) {
-                deleteStoryNode(node);
-                return;
-            }
-            for (GuiStoryOption pointer : node.getOutPointers()) {
-                if (pointer.isInside(absPos.getX(), absPos.getY())) {
-                    pointer.getParent().removePointer(pointer);
+                String optionInput = getTextFromPromt("Adding option...", bindMovable.getText());
+                String nodeInput = getTextFromPromt("Adding node...", "");
+                if (optionInput != null && nodeInput != null) {
+                    addStoryOption(optionInput, bindMovable, addStoryNode(nodeInput));
+                    bindMovable = null;
+                    return;
+                } else {
+                    bindMovable = null;
                     return;
                 }
             }
         }
     }
 
-    private void deleteStoryNode(GuiStoryNode node) {
-        if (node == guiContainer.getGuiRoot()) {
-            return;
+    private GuiStoryOption addStoryOption(String optionText, GuiStoryNode parent, GuiStoryNode child) {
+        GuiStoryOption option = new GuiStoryOption(optionText, parent, child);
+        GuiStoryContainer.updateSize((Graphics2D) getGraphics(), option);
+        parent.getOutOptions().add(option);
+        child.getInOptions().add(option);
+        return option;
+    }
+
+    private GuiStoryNode addStoryNode(String text) {
+        Point2D absPos = getAbsoluteMousePosition();
+        GuiStoryNode node = new GuiStoryNode(text, absPos.getX(), absPos.getY());
+        GuiStoryContainer.updateSize((Graphics2D) getGraphics(), node);
+
+        if (guiContainer.getNodes().isEmpty()) {
+            guiContainer.setRoot(node);
         }
-        for (int i = node.getInPointers().size() - 1; i >= 0; i--) {
-            GuiStoryOption pointer = node.getInPointers().get(i);
-            pointer.getParent().removePointer(pointer);
+        guiContainer.getNodes().add(node);
+        return node;
+    }
+
+    private GuiTextBox deleteTextBox() {
+        Point2D absPos = getAbsoluteMousePosition();
+        for (GuiStoryNode node : guiContainer.getNodes()) {
+            if (node.isInside(absPos.getX(), absPos.getY())) {
+                deleteStoryNode(node);
+                return node;
+            }
+            for (GuiStoryOption option : node.getOutOptions()) {
+                if (option.isInside(absPos.getX(), absPos.getY())) {
+                    deleteStoryOption(option);
+                    return option;
+                }
+            }
         }
-        for (int i = node.getOutPointers().size() - 1; i >= 0; i--) {
-            GuiStoryOption pointer = node.getOutPointers().get(i);
-            pointer.getParent().removePointer(pointer);
+        return null;
+    }
+
+    private GuiStoryNode deleteStoryNode(GuiStoryNode node) {
+        if (node == guiContainer.getRoot()) {
+            return null;
         }
-        guiContainer.getGuiNodes().remove(node);
+        for (int i = node.getInOptions().size() - 1; i >= 0; i--) {
+            GuiStoryOption option = node.getInOptions().get(i);
+            deleteStoryOption(option);
+        }
+        for (int i = node.getOutOptions().size() - 1; i >= 0; i--) {
+            GuiStoryOption option = node.getInOptions().get(i);
+            deleteStoryOption(option);
+        }
+        guiContainer.getNodes().remove(node);
+        return node;
+    }
+
+    private GuiStoryOption deleteStoryOption(GuiStoryOption option) {
+        option.getParent().getOutOptions().remove(option);
+        option.getChild().getInOptions().remove(option);
+        return option;
     }
 }

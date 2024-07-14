@@ -1,36 +1,18 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class GuiTextBox extends GuiBox {
     private String text;
-
-    private Color color;
     private double lineHeight;
     private double padding;
 
-    public GuiTextBox(final Color color, final double x, final double y, final double padding) {
+    public GuiTextBox(final String text, final double x, final double y, final double padding) {
         super(x, y, 0, 0);
-
-        this.color = color;
+        this.text = text;
         this.padding = padding;
     }
 
     public String getText() {
         return text;
-    }
-
-    public void setText(final Graphics2D g2d, final String text) {
-        this.text = text;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(final Color color) {
-        this.color = color;
     }
 
     public double getPadding() {
