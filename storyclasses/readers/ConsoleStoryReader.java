@@ -8,14 +8,21 @@ import storyclasses.serializable.StoryState;
 public class ConsoleStoryReader extends StoryReader {
 
     private Scanner scanner;
+    private boolean showKeys;
 
     public ConsoleStoryReader(StoryNode root) {
         super(root);
         this.scanner = new Scanner(System.in);
+        this.showKeys = false;
     }
 
     public ConsoleStoryReader(StoryState storyState) {
         super(storyState);
+        this.showKeys = false;
+    }
+
+    public void setShowKeys(boolean showKeys) {
+        this.showKeys = showKeys;
     }
 
     @Override
@@ -24,7 +31,9 @@ public class ConsoleStoryReader extends StoryReader {
         System.out.println(text);
         System.out.print("\u001b[0m");
 
-        System.out.println("Keys: " + getStoryState().getKeys().toString());
+        if (showKeys) {
+            System.out.println("Keys: " + getStoryState().getKeys().toString());
+        }
     }
 
     @Override
@@ -45,13 +54,13 @@ public class ConsoleStoryReader extends StoryReader {
             System.out.print("Press enter to continue:");
             System.out.print("\u001b[m");
             scanner.nextLine();
-            optionIndex = 0; 
+            optionIndex = 0;
         } else {
             do {
                 System.out.print("\u001b[33m");
-                    System.out.print("Input: ");
-                    String input = scanner.nextLine();
-                    System.out.print("\u001b[m");
+                System.out.print("Input: ");
+                String input = scanner.nextLine();
+                System.out.print("\u001b[m");
                 try {
                     optionIndex = Integer.parseInt(input);
                 } catch (NumberFormatException e) {

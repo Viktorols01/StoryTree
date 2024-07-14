@@ -52,9 +52,9 @@ public class GuiStoryEditor extends Gui {
         loadGuiStoryNode(root);
     }
 
-    public StoryNode toStoryTree(GuiStoryEditor guiRoot) {
-        List<StoryNode> serializedNodes = new ArrayList<StoryNode>();
+    public StoryNode toStoryTree() {
         StoryNode serializedRoot = null;
+        List<StoryNode> serializedNodes = new ArrayList<StoryNode>();
         for (GuiStoryNode guiNode : guiNodes) {
             StoryNode serializedNode = new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutPointers().size()]);
             if (guiNode == guiRoot) {
@@ -68,9 +68,11 @@ public class GuiStoryEditor extends Gui {
             StoryNode serializedNode = serializedNodes.get(i);
 
             for (GuiStoryOptionPointer pointer : guiNode.getOutPointers()) {
-                int index = guiNodes.indexOf(pointer.getChild());
-                for (String optionText : pointer.getOptionTexts()) {
-                    serializedNode.AddNode(optionText, serializedNodes.get(index));
+                for (int optionIndex = 0; optionIndex < pointer.getOptionTexts().size(); optionIndex++) {
+                    String optionText = pointer.getOptionTexts().get(optionIndex);
+                    GuiStoryNode optionNode = pointer.getChild();
+                    int nodeIndex = guiNodes.indexOf(optionNode);
+                    serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText, serializedNodes.get(nodeIndex));
                 }
             }
         }
