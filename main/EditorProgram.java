@@ -6,8 +6,8 @@ import java.awt.Button;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import gui.GuiStoryContainer;
 import gui.GuiStoryEditor;
+import gui.GuiStoryNode;
 import storyclasses.serializable.StoryNode;
 import tools.FileHandler;
 
@@ -24,7 +24,7 @@ public class EditorProgram {
         JPanel buttonPanel = new JPanel();
         Button savePlayableButton = new Button("Save playable story");
         savePlayableButton.addActionListener((a) -> {
-            StoryNode root = gui.getGuiContainer().toStoryTree();
+            StoryNode root = gui.getGuiContainer().toStoryRoot();
             if (root != null) {
                 FileHandler.saveObject(root, "files/stories", "Story files", "story");
             }
@@ -33,18 +33,18 @@ public class EditorProgram {
 
         Button saveButton = new Button("Save story");
         saveButton.addActionListener((a) -> {
-            GuiStoryContainer container = gui.getGuiContainer();
-            if (container != null) {
-                FileHandler.saveObject(container, "files/guistories", "GUI story containers", "gcontainer");
+            GuiStoryNode root = gui.getGuiContainer().getRoot();
+            if (root != null) {
+                FileHandler.saveObject(root, "files/guistories", "GUI story files", "gstory");
             }
         });
         buttonPanel.add(saveButton);
 
         Button loadButton = new Button("Load story");
         loadButton.addActionListener((a) -> {
-            GuiStoryContainer container = FileHandler.loadObject("files/guistories", "GUI story containers", "gcontainer");
-            if (container != null) {
-                gui.setGuiContainer(container);
+            GuiStoryNode root = FileHandler.loadObject("files/guistories", "GUI story files", "gstory");
+            if (root != null) {
+                gui.getGuiContainer().loadRoot(root);;
             }
         });
         buttonPanel.add(loadButton);

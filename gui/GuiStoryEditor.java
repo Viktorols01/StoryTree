@@ -41,7 +41,7 @@ public class GuiStoryEditor extends Gui {
 
     public void setGuiRoot(GuiStoryNode root) {
         this.guiContainer = new GuiStoryContainer(getWidth(), getHeight());
-        this.guiContainer.setRoot(root);
+        this.guiContainer.loadRoot(root);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class GuiStoryEditor extends Gui {
 
         if (binding) {
             Point2D absPos = getAbsoluteMousePosition();
-            GuiStoryContainer.renderLine(g2d,
+            GuiStyle.renderLine(g2d,
                     (int) (bindMovable.getX() + bindMovable.getW() / 2),
                     (int) (bindMovable.getY() + bindMovable.getH() / 2),
                     (int) absPos.getX(),
@@ -65,18 +65,18 @@ public class GuiStoryEditor extends Gui {
         }
 
         for (GuiStoryNode node : guiContainer.getNodes()) {
-            GuiStoryContainer.renderOutPointerLines(g2d, node);
+            GuiStyle.renderOutOptionLines(g2d, node);
         }
         for (GuiStoryNode node : guiContainer.getNodes()) {
-            GuiStoryContainer.renderOutPointers(g2d, node);
+            GuiStyle.renderOutoptions(g2d, node);
         }
         for (GuiStoryNode node : guiContainer.getNodes()) {
             if (node == guiContainer.getRoot()) {
                 continue;
             }
-            GuiStoryContainer.renderGuiStoryNode(g2d, node, false);
+            GuiStyle.renderStoryNode(g2d, node, false);
         }
-        GuiStoryContainer.renderGuiStoryNode(g2d, guiContainer.getRoot(), true);
+        GuiStyle.renderStoryNode(g2d, guiContainer.getRoot(), true);
     }
 
     @Override
@@ -255,6 +255,11 @@ public class GuiStoryEditor extends Gui {
             } else {
                 for (GuiStoryNode node : guiContainer.getNodes()) {
                     if (node.isInside(absPos.getX(), absPos.getY())) {
+                        if (node == guiContainer.getRoot()) {
+                            bindMovable = null;
+                            return;
+                        }
+
                         String input = getTextFromPromt("Add option", bindMovable.getText());
                         if (input != null) {
                             addStoryOption(input, bindMovable, node);
@@ -294,7 +299,7 @@ public class GuiStoryEditor extends Gui {
         GuiStoryContainer.updateSize((Graphics2D) getGraphics(), node);
 
         if (guiContainer.getNodes().isEmpty()) {
-            guiContainer.setRoot(node);
+            guiContainer.loadRoot(node);
         }
         guiContainer.getNodes().add(node);
         return node;
