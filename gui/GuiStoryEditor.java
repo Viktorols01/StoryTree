@@ -4,7 +4,6 @@ import javax.swing.JOptionPane;
 
 import tools.Gui;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -46,7 +45,7 @@ public class GuiStoryEditor extends Gui {
 
     @Override
     protected void render(Graphics g) {
-        g.setColor(new Color(55, 55, 55));
+        g.setColor(GuiStyle.COLOR_BACKGROUND);
         g.fillRect(0, 0, guiContainer.getCamera().getRelativeWidth(), guiContainer.getCamera().getRelativeHeight());
         Graphics2D g2d = (Graphics2D) g;
         guiContainer.getCamera().transform(g2d);
@@ -248,7 +247,7 @@ public class GuiStoryEditor extends Gui {
                 String input = getTextFromPromt("Edit text", bindMovable.getText());
                 if (input != null) {
                     bindMovable.setText(input);
-                    GuiStoryContainer.updateSize((Graphics2D) getGraphics(), bindMovable);
+                    GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), bindMovable);
                     bindMovable = null;
                 }
                 return;
@@ -287,7 +286,7 @@ public class GuiStoryEditor extends Gui {
 
     private GuiStoryOption addStoryOption(String optionText, GuiStoryNode parent, GuiStoryNode child) {
         GuiStoryOption option = new GuiStoryOption(optionText, parent, child);
-        GuiStoryContainer.updateSize((Graphics2D) getGraphics(), option);
+        GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), option);
         parent.getOutOptions().add(option);
         child.getInOptions().add(option);
         return option;
@@ -296,7 +295,7 @@ public class GuiStoryEditor extends Gui {
     private GuiStoryNode addStoryNode(String text) {
         Point2D absPos = getAbsoluteMousePosition();
         GuiStoryNode node = new GuiStoryNode(text, absPos.getX(), absPos.getY());
-        GuiStoryContainer.updateSize((Graphics2D) getGraphics(), node);
+        GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), node);
 
         if (guiContainer.getNodes().isEmpty()) {
             guiContainer.loadRoot(node);

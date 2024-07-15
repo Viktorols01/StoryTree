@@ -1,6 +1,6 @@
 package gui;
 
-import java.awt.Graphics2D;
+import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,14 +10,14 @@ import storyclasses.serializable.StoryOption;
 import tools.Camera;
 
 public class GuiStoryContainer {
-    public static void updateSize(Graphics2D g2d, GuiTextBox box) {
-        box.setLineHeight(g2d.getFontMetrics().getHeight());
+    public static void updateSize(FontMetrics fontMetrics, GuiTextBox box) {
+        box.setLineHeight(fontMetrics.getHeight());
 
         Iterator<String> iterable = box.getText().lines().iterator();
         int width = 0;
         while (iterable.hasNext()) {
             String line = iterable.next();
-            int lineWidth = g2d.getFontMetrics().stringWidth(line);
+            int lineWidth = fontMetrics.stringWidth(line);
             if (lineWidth > width) {
                 width = lineWidth;
             }
