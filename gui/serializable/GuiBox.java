@@ -1,24 +1,24 @@
-package gui;
+package gui.serializable;
 
 import java.io.Serializable;
 
 public class GuiBox implements Serializable {
-    private double x;
-    private double y;
-    private double w;
-    private double h;
+    private int x;
+    private int y;
+    private int w;
+    private int h;
 
-    public GuiBox(final double x, final double y, final double w, final double h) {
+    public GuiBox(final int x, final int y, final int w, final int h) {
         setPosition(x, y);
         setSize(w, h);
     }
 
-    public void setPosition(final double x, final double y) {
+    public void setPosition(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
 
-    public void setSize(final double w, final double h) {
+    public void setSize(final int w, final int h) {
         this.w = w;
         this.h = h;
     }
@@ -27,19 +27,19 @@ public class GuiBox implements Serializable {
         return x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
-    public double getW() {
+    public int getW() {
         return w;
     }
 
-    public double getH() {
+    public int getH() {
         return h;
     }
 }

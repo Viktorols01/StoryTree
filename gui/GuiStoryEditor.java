@@ -2,6 +2,9 @@ package gui;
 
 import javax.swing.JOptionPane;
 
+import gui.serializable.GuiStoryNode;
+import gui.serializable.GuiStoryOption;
+import gui.serializable.GuiTextBox;
 import tools.Gui;
 
 import java.awt.Font;
@@ -208,8 +211,9 @@ public class GuiStoryEditor extends Gui {
                 guiContainer.getCamera()
                         .setY(-relPos.getY() / guiContainer.getCamera().getZoom() - draggedDelta.getY());
             } else {
-                draggedMovable.setPosition(absPos.getX() - draggedDelta.getX(), absPos.getY() - draggedDelta.getY());
-                GuiStoryContainer.updatePositions(draggedMovable);
+                draggedMovable.setPosition((int) (absPos.getX() - draggedDelta.getX()),
+                        (int) (absPos.getY() - draggedDelta.getY()));
+                GuiStoryContainer.updateOptionPositions(getGraphics().getFontMetrics(), draggedMovable);
             }
         }
     }
@@ -289,12 +293,13 @@ public class GuiStoryEditor extends Gui {
         GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), option);
         parent.getOutOptions().add(option);
         child.getInOptions().add(option);
+        GuiStoryContainer.updateOptionPositions(getGraphics().getFontMetrics(), parent);
         return option;
     }
 
     private GuiStoryNode addStoryNode(String text) {
         Point2D absPos = getAbsoluteMousePosition();
-        GuiStoryNode node = new GuiStoryNode(text, absPos.getX(), absPos.getY());
+        GuiStoryNode node = new GuiStoryNode(text, (int) absPos.getX(), (int) absPos.getY());
         GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), node);
 
         if (guiContainer.getNodes().isEmpty()) {

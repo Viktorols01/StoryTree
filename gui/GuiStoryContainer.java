@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import gui.serializable.GuiStoryNode;
+import gui.serializable.GuiStoryOption;
+import gui.serializable.GuiTextBox;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
@@ -23,32 +26,27 @@ public class GuiStoryContainer {
                 width = lineWidth;
             }
         }
+        box.setTextWidth(width);
         int height = (int) (box.getLineHeight() * box.getText().lines().count());
         box.setSize(width + 2 * box.getPadding(), height + 2 * box.getPadding());
     }
 
-    public static void updatePositions(GuiStoryNode node) {
-        for (GuiStoryOption pointer : node.getInOptions()) {
-            updatePosition(pointer);
-        }
-        for (GuiStoryOption pointer : node.getOutOptions()) {
-            updatePosition(pointer);
-        }
-    }
+    public static void updateOptionPositions(FontMetrics fontMetrics, GuiStoryNode node) {
+        final int margin = 2;
+        int totalWidth = 0;
 
-    private static double interpolate(double x1, double x2, double t) {
-        return x1 * (1 - t) + x2 * t;
-    }
+        for (GuiStoryOption option : node.getOutOptions()) {
+            totalWidth += option.getTextWidth() + option.getPadding() * 2 + margin;
+        }
+        totalWidth -= margin;
 
-    private static void updatePosition(GuiStoryOption pointer) {
-        double interpolateFraction = 1.0 / 4;
-        GuiStoryNode parent = pointer.getParent();
-        GuiStoryNode child = pointer.getChild();
-        double x = interpolate(parent.getX() + parent.getW() / 2, child.getX() + child.getW() / 2,
-                interpolateFraction) - pointer.getW() / 2;
-        double y = interpolate(parent.getY() + parent.getH() / 2, child.getY() + child.getH() / 2,
-                interpolateFraction) - pointer.getH() / 2;
-        pointer.setPosition(x, y);
+        int x = node.getX() + node.getW() / 2 - totalWidth / 2;
+        int y = node.getY() + node.getH() + margin;
+        for (GuiStoryOption option : node.getOutOptions()) {
+            int width = option.getTextWidth();
+            option.setPosition(x, y);
+            x += width + option.getPadding() * 2 + margin;
+        }
     }
 
     private Camera camera;

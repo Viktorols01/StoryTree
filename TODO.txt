@@ -2,4 +2,6 @@
 - CLEAN THE CODE 
 - Folders
 - Regex för att byta ut text mot nycklar
-- GUI classes should also not use root, instead just a list.
+
+- Byt till int 
+- Rendera outOptions annorlunda (behöver textWidth...)

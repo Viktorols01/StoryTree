@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import gui.GuiStoryEditor;
-import gui.GuiStoryNode;
+import gui.serializable.GuiStoryNode;
 import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 

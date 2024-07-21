@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
+import gui.serializable.GuiStoryNode;
+import gui.serializable.GuiStoryOption;
+import gui.serializable.GuiTextBox;
+
 public class GuiStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
     
@@ -80,8 +84,8 @@ public class GuiStyle {
         for (GuiStoryOption pointer : node.getOutOptions()) {
             GuiStoryNode child = pointer.getChild();
             GuiStyle.renderLine(g2d,
-                    (int) (node.getX() + node.getW() / 2),
-                    (int) (node.getY() + node.getH() / 2),
+                    (int) (pointer.getX() + pointer.getW() / 2),
+                    (int) (pointer.getY() + pointer.getH() / 2),
                     (int) (child.getX() + child.getW() / 2),
                     (int) (child.getY() + child.getH() / 2));
         }
