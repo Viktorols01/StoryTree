@@ -16,7 +16,7 @@ class SerializerTest {
 
         StoryOption left = new StoryOption("Go to the left", 1);
         StoryOption right = new StoryOption("Go to the right", 2);
-        StoryOption porsche = new StoryOption("Buy a porsche", 3, new StoryKeys[]{new StoryKeys("pengar", 50)}, new StoryKeys[0], false);
+        StoryOption porsche = new StoryOption("Buy a porsche", 3, new StoryKeys[]{new StoryKeys("pengar", 50)}, new StoryKeys[0], true);
 
         root = new StoryNode("Welcome to the dungeon!", new StoryOption[]{left, right, porsche}, new StoryKeys[]{new StoryKeys("pengar", 50)}, new StoryKeys[]{});
 
@@ -29,7 +29,7 @@ class SerializerTest {
     }
 
     private static StoryTree roundTrip(StoryTree node) {
-        FileHandler.saveObject(node, "files/stories", "StoryTree files", "storytree");
-        return FileHandler.loadObject("files/stories", "StoryTree files", "storytree");
+        FileHandler.saveObject(node, "files/stories", "StoryTree files", "st");
+        return FileHandler.loadObject("files/stories", "StoryTree files", "st");
     }
 }

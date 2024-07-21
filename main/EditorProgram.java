@@ -26,7 +26,7 @@ public class EditorProgram {
         savePlayableButton.addActionListener((a) -> {
             StoryTree tree = gui.getGuiContainer().toStoryTree();
             if (tree != null) {
-                FileHandler.saveObject(tree, "files/stories", "Story files", "story");
+                FileHandler.saveObject(tree, "files/stories", "Story files", "st");
             }
         });
         buttonPanel.add(savePlayableButton);
@@ -35,14 +35,14 @@ public class EditorProgram {
         saveButton.addActionListener((a) -> {
             GuiStoryNode root = gui.getGuiContainer().getRoot();
             if (root != null) {
-                FileHandler.saveObject(root, "files/guistories", "GUI story files", "gstory");
+                FileHandler.saveObject(root, "files/guistories", "GUI story files", "gst");
             }
         });
         buttonPanel.add(saveButton);
 
         Button loadButton = new Button("Load story");
         loadButton.addActionListener((a) -> {
-            GuiStoryNode root = FileHandler.loadObject("files/guistories", "GUI story files", "gstory");
+            GuiStoryNode root = FileHandler.loadObject("files/guistories", "GUI story files", "gst");
             if (root != null) {
                 gui.getGuiContainer().loadRoot(root);;
             }

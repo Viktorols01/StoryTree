@@ -11,13 +11,14 @@ import gui.serializable.GuiTextBox;
 public class GuiStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
     
-    public static final Color COLOR_ROOT = new Color(0, 155, 0);
-    public static final Color COLOR_EXTENSION = new Color(105, 105, 105);
-    public static final Color COLOR_BRANCH = new Color(155, 155, 0);
-    public static final Color COLOR_END = new Color(155, 0, 0);
-    public static final Color COLOR_UNUSED = new Color(25, 25, 25);
+    public static final Color COLOR_ROOT_NODE = new Color(0, 155, 0);
+    public static final Color COLOR_EXTENSION_NODE = new Color(105, 105, 105);
+    public static final Color COLOR_BRANCH_NODE = new Color(155, 155, 0);
+    public static final Color COLOR_END_NODE = new Color(155, 0, 0);
+    public static final Color COLOR_UNUSED_NODE = new Color(25, 25, 25);
 
     public static final Color COLOR_OPTION = new Color(205, 205, 205);
+    public static final Color COLOR_OPTION_FORCED = new Color(205, 105, 105);
 
     public static final Color COLOR_BLACK = new Color(0, 0, 0);
     public static final Color COLOR_WHITE = new Color(255, 255, 255);
@@ -28,18 +29,18 @@ public class GuiStyle {
         Color color;
         if (inCount == 0) {
             if (outCount == 0) {
-                color = COLOR_UNUSED;
+                color = COLOR_UNUSED_NODE;
             } 
             else {
-                color = COLOR_ROOT;
+                color = COLOR_ROOT_NODE;
             }
         } else {
             if (outCount == 0) {
-                color = COLOR_END;
+                color = COLOR_END_NODE;
             } else if (outCount == 1) {
-                color = COLOR_EXTENSION;
+                color = COLOR_EXTENSION_NODE;
             } else {
-                color = COLOR_BRANCH;
+                color = COLOR_BRANCH_NODE;
             }
         }
         return color;
@@ -80,6 +81,12 @@ public class GuiStyle {
         }
     }
 
+    public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
+        g2d.setColor(COLOR_BACKGROUND);
+        renderTextBox(g2d, option, COLOR_OPTION);
+        renderTextBoxOutline(g2d, option, option.isForced() ? COLOR_OPTION_FORCED: COLOR_OPTION);
+    }
+
     public static void renderOutOptionLines(Graphics2D g2d, GuiStoryNode node) {
         for (GuiStoryOption pointer : node.getOutOptions()) {
             GuiStoryNode child = pointer.getChild();
@@ -93,9 +100,7 @@ public class GuiStyle {
 
     public static void renderOutoptions(Graphics2D g2d, GuiStoryNode node) {
         for (GuiStoryOption option : node.getOutOptions()) {
-            g2d.setColor(COLOR_BACKGROUND);
-            renderTextBox(g2d, option, COLOR_WHITE);
-            renderTextBoxOutline(g2d, option, COLOR_WHITE);
+            renderOption(g2d, option);
         }
     }
 }

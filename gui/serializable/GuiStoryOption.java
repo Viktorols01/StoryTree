@@ -36,16 +36,8 @@ public class GuiStoryOption extends GuiTextBox {
         return unlockingKeys;
     }
 
-    public void setUnlockingKeys(List<StoryKeys> unlockingKeys) {
-        this.unlockingKeys = unlockingKeys;
-    }
-
     public List<StoryKeys> getLockingKeys() {
         return lockingKeys;
-    }
-
-    public void setLockingKeys(List<StoryKeys> lockingKeys) {
-        this.lockingKeys = lockingKeys;
     }
 
     public boolean isForced() {

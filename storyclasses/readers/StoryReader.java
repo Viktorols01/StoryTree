@@ -94,6 +94,15 @@ public abstract class StoryReader {
             }
             storyOptionList.add(storyOption);
         }
+
+        for (StoryOption option : storyOptionList) {
+            if (option.isForced()) {
+                List<StoryOption> forcedList = new LinkedList<StoryOption>();
+                forcedList.add(option);
+                return forcedList; 
+            }
+        }
+
         return storyOptionList;
     }
 

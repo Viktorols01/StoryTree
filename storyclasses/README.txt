@@ -1,3 +1,6 @@
+StoryTree
+- nodes: all nodes within the tree
+
 StoryNode
 - text: text within the storynode
 - storyOptions: contains pointers to all reachable nodes
@@ -6,7 +9,7 @@ StoryNode
 
 StoryOption
 - text: text to describe the option; an empty field means the story will simply proceed without choosing
-- storyNode: which node the option leads to
+- storyNodeIndex: which node the option leads to
 - unlockingKeys: required keys to unlock the option
 - lockingKeys: required keys that lock the option
 - forced: if the option is unlocked, it is automatically chosen
