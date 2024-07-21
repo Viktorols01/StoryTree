@@ -123,6 +123,7 @@ public class GuiStoryEditor extends Gui {
                 endBinding();
                 break;
         }
+        this.repaint();
     }
 
     @Override
@@ -153,6 +154,7 @@ public class GuiStoryEditor extends Gui {
                 deleteTextBox();
                 break;
         }
+        this.repaint();
     }
 
     @Override
