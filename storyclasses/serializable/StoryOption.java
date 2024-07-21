@@ -7,20 +7,20 @@ public final class StoryOption implements Serializable {
     private final StoryKeys[] unlockingKeys;
     private final StoryKeys[] lockingKeys;
     private final boolean forced;
-    private final StoryNode storyNode;
+    private final int storyNodeIndex;
 
-    public StoryOption(final String text, final StoryNode storyNode, final StoryKeys[] unlockingKeys, final StoryKeys[] lockingKeys,
+    public StoryOption(final String text, final int storyNodeIndex, final StoryKeys[] unlockingKeys, final StoryKeys[] lockingKeys,
             final boolean forced) {
         this.text = text;
-        this.storyNode = storyNode;
+        this.storyNodeIndex = storyNodeIndex;
         this.unlockingKeys = unlockingKeys;
         this.lockingKeys = lockingKeys;
         this.forced = forced;
     }
 
-    public StoryOption(final String text, final StoryNode storyNode) {
+    public StoryOption(final String text, final int storyNodeIndex) {
         this.text = text;
-        this.storyNode = storyNode;
+        this.storyNodeIndex = storyNodeIndex;
         this.unlockingKeys = new StoryKeys[0];
         this.lockingKeys = new StoryKeys[0];
         this.forced = false;
@@ -30,8 +30,8 @@ public final class StoryOption implements Serializable {
         return text;
     }
 
-    public StoryNode getStoryNode() {
-        return storyNode;
+    public int getStoryNodeIndex() {
+        return storyNodeIndex;
     }
 
     public StoryKeys[] getUnlockingKeys() {

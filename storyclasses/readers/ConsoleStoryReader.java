@@ -2,16 +2,16 @@ package storyclasses.readers;
 
 import java.util.Scanner;
 
-import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryState;
+import storyclasses.serializable.StoryTree;
 
 public class ConsoleStoryReader extends StoryReader {
 
     private Scanner scanner;
     private boolean showKeys;
 
-    public ConsoleStoryReader(StoryNode root) {
-        super(root);
+    public ConsoleStoryReader(StoryTree tree) {
+        super(tree);
         this.scanner = new Scanner(System.in);
         this.showKeys = false;
     }

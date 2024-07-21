@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 import gui.GuiStoryEditor;
 import gui.GuiStoryNode;
-import storyclasses.serializable.StoryNode;
+import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
 public class EditorProgram {
@@ -24,9 +24,9 @@ public class EditorProgram {
         JPanel buttonPanel = new JPanel();
         Button savePlayableButton = new Button("Save playable story");
         savePlayableButton.addActionListener((a) -> {
-            StoryNode root = gui.getGuiContainer().toStoryRoot();
-            if (root != null) {
-                FileHandler.saveObject(root, "files/stories", "Story files", "story");
+            StoryTree tree = gui.getGuiContainer().toStoryTree();
+            if (tree != null) {
+                FileHandler.saveObject(tree, "files/stories", "Story files", "story");
             }
         });
         buttonPanel.add(savePlayableButton);

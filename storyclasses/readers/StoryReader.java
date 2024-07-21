@@ -5,16 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import storyclasses.serializable.StoryKeys;
-import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryState;
+import storyclasses.serializable.StoryTree;
 
 public abstract class StoryReader {
 
     private StoryState storyState;
 
-    public StoryReader(StoryNode root) {
-        this.storyState = new StoryState(root);
+    public StoryReader(StoryTree tree) {
+        this.storyState = new StoryState(tree);
     }
 
     public StoryReader(StoryState state) {
@@ -39,7 +39,7 @@ public abstract class StoryReader {
 
             for (StoryOption option : availableOptions) {
                 if (option.getText().equals(selectedOption)) {
-                    this.storyState.setCurrentStoryNode(option.getStoryNode());
+                    this.storyState.setStoryNodeIndex(option.getStoryNodeIndex());
                     read();
                     return;
                 }

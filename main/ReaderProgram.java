@@ -1,15 +1,15 @@
 package main;
 
 import storyclasses.readers.ConsoleStoryReader;
-import storyclasses.serializable.StoryNode;
+import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
 class ReaderProgram {
     public static void main(String[] args) {
-        StoryNode root = FileHandler.loadObject("files/stories", "Story files", "story");
+        StoryTree tree = FileHandler.loadObject("files/stories", "StoryTree files", "storytree");
 
-        if (root != null) {
-            ConsoleStoryReader reader = new ConsoleStoryReader(root);
+        if (tree != null) {
+            ConsoleStoryReader reader = new ConsoleStoryReader(tree);
             reader.read();
         }
     }

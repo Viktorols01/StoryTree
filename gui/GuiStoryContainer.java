@@ -7,6 +7,7 @@ import java.util.List;
 
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
+import storyclasses.serializable.StoryTree;
 import tools.Camera;
 
 public class GuiStoryContainer {
@@ -34,6 +35,7 @@ public class GuiStoryContainer {
             updatePosition(pointer);
         }
     }
+
     private static double interpolate(double x1, double x2, double t) {
         return x1 * (1 - t) + x2 * t;
     }
@@ -51,8 +53,6 @@ public class GuiStoryContainer {
 
     private Camera camera;
 
-    private GuiStoryNode root;
-
     private List<GuiStoryNode> nodes;
 
     public GuiStoryContainer(int width, int height) {
@@ -60,15 +60,16 @@ public class GuiStoryContainer {
         this.nodes = new ArrayList<GuiStoryNode>();
     }
 
-    public StoryNode toStoryRoot() {
-        StoryNode serializedRoot = null;
+    public StoryTree toStoryTree() {
         List<StoryNode> serializedNodes = new ArrayList<StoryNode>();
+        StoryNode serializedRoot = serializeNode(getRoot());
+        serializedNodes.add(serializedRoot);
+
         for (GuiStoryNode guiNode : nodes) {
-            StoryNode serializedNode = new StoryNode(guiNode.getText(),
-                    new StoryOption[guiNode.getOutOptions().size()]);
-            if (guiNode == root) {
-                serializedRoot = serializedNode;
+            if (guiNode == getRoot()) {
+                continue;
             }
+            StoryNode serializedNode = serializeNode(guiNode);
             serializedNodes.add(serializedNode);
         }
 
@@ -81,18 +82,23 @@ public class GuiStoryContainer {
                 String optionText = pointer.getOptionText();
                 GuiStoryNode optionNode = pointer.getChild();
                 int nodeIndex = nodes.indexOf(optionNode);
-                serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText,
-                        serializedNodes.get(nodeIndex));
+                serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText, nodeIndex);
                 optionIndex++;
             }
         }
-        return serializedRoot;
+
+        StoryNode[] storyArray = new StoryNode[serializedNodes.size()];
+        serializedNodes.toArray(storyArray);
+        return new StoryTree(storyArray);
+    }
+
+    private StoryNode serializeNode(GuiStoryNode guiNode) {
+        return new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutOptions().size()]);
     }
 
     public void loadRoot(GuiStoryNode root) {
         camera.setX(root.getX());
         camera.setX(root.getY());
-        this.root = root;
         this.nodes = new ArrayList<GuiStoryNode>();
         this.nodes.add(root);
         loadNode(root);
@@ -108,13 +114,12 @@ public class GuiStoryContainer {
         }
     }
 
-
     public Camera getCamera() {
         return camera;
     }
 
     public GuiStoryNode getRoot() {
-        return root;
+        return nodes.get(0);
     }
 
     public List<GuiStoryNode> getNodes() {

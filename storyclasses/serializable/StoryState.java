@@ -6,25 +6,28 @@ import java.util.Map;
 
 public class StoryState implements Serializable {
 
-    private StoryNode currentStoryNode;
+    private StoryTree tree;
+    private int storyNodeIndex;
     private final Map<String, Integer> keys;
 
-    public StoryState(final StoryNode storyNode, final Map<String, Integer> unlockedKeys) {
-        this.currentStoryNode = storyNode;
+    public StoryState(final StoryTree tree, final int storyNodeIndex, final Map<String, Integer> unlockedKeys) {
+        this.tree = tree;
+        this.storyNodeIndex = storyNodeIndex;
         this.keys = unlockedKeys;
     }
 
-    public StoryState(final StoryNode storyNode) {
-        this.currentStoryNode = storyNode;
+    public StoryState(final StoryTree tree) {
+        this.tree = tree;
+        this.storyNodeIndex = 0;
         this.keys = new HashMap<String, Integer>();
     }
 
     public StoryNode getCurrentNode() {
-        return this.currentStoryNode;
+        return this.tree.getNode(storyNodeIndex);
     }
 
-    public void setCurrentStoryNode(final StoryNode currentStoryNode) {
-        this.currentStoryNode = currentStoryNode;
+    public void setStoryNodeIndex(final int storyNodeIndex) {
+        this.storyNodeIndex = storyNodeIndex;
     }
 
     public Map<String, Integer> getKeys() {
