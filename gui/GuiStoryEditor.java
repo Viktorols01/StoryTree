@@ -1,7 +1,5 @@
 package gui;
 
-import javax.swing.JOptionPane;
-
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
 import gui.serializable.GuiTextBox;
@@ -91,7 +89,7 @@ public class GuiStoryEditor extends Gui {
     protected void onMouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case 3:
-                String nodeInput = getTextFromPromt("Adding node...", "");
+                String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
                 if (nodeInput != null) {
                     addStoryNode(nodeInput);
                 }
@@ -163,10 +161,6 @@ public class GuiStoryEditor extends Gui {
 
     @Override
     protected void onKeyTyped(KeyEvent e) {
-    }
-
-    private String getTextFromPromt(String title, String text) {
-        return JOptionPane.showInputDialog(title, text);
     }
 
     private Point2D getRelativeMousePosition() {
@@ -250,12 +244,9 @@ public class GuiStoryEditor extends Gui {
             binding = false;
 
             if (bindMovable.isInside(absPos.getX(), absPos.getY())) {
-                String input = getTextFromPromt("Edit text", bindMovable.getText());
-                if (input != null) {
-                    bindMovable.setText(input);
-                    GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), bindMovable);
-                    bindMovable = null;
-                }
+                UserInputGetter.modifyNode(bindMovable);
+                GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), bindMovable);
+                bindMovable = null;
                 return;
             } else {
                 for (GuiStoryNode node : guiContainer.getNodes()) {
@@ -265,7 +256,7 @@ public class GuiStoryEditor extends Gui {
                             return;
                         }
 
-                        String input = getTextFromPromt("Add option", bindMovable.getText());
+                        String input = UserInputGetter.getTextFromPromt("Add option", bindMovable.getText());
                         if (input != null) {
                             addStoryOption(input, bindMovable, node);
                             bindMovable = null;
@@ -276,8 +267,8 @@ public class GuiStoryEditor extends Gui {
                         }
                     }
                 }
-                String optionInput = getTextFromPromt("Adding option...", bindMovable.getText());
-                String nodeInput = getTextFromPromt("Adding node...", "");
+                String optionInput = UserInputGetter.getTextFromPromt("Adding option...", bindMovable.getText());
+                String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
                 if (optionInput != null && nodeInput != null) {
                     addStoryOption(optionInput, bindMovable, addStoryNode(nodeInput));
                     bindMovable = null;
