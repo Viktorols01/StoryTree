@@ -4,3 +4,4 @@
 - Regex för att byta ut text mot nycklar? Eller något annat...
 
 - Icons 
+- Make keys added from GUI

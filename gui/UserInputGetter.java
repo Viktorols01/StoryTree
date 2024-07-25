@@ -11,11 +11,13 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -30,67 +32,124 @@ import gui.serializable.GuiStoryOption;
 import storyclasses.serializable.StoryKey;
 
 public class UserInputGetter {
-    private static int width = 300;
-    private static int height = 800;
-    private static int buttonHeight = 20;
-    private static int margin = 5;
 
     public static String getTextFromPromt(String title, String text) {
         return JOptionPane.showInputDialog(title, text);
     }
 
     public static void modifyNode(GuiStoryNode node) {
+        int width = 300;
+        int bigHeight = 150;
+        int smallHeight = 20;
+        int margin = 5;
+
         JDialog dialog = new JDialog((JFrame) null, "Modify node", true);
 
         JPanel panel = new JPanel();
         SpringLayout layout = new SpringLayout();
         panel.setLayout(layout);
 
+        JLabel textLabel = new JLabel("Node text");
+        textLabel.setPreferredSize(new Dimension(width, smallHeight - margin));
+        panel.add(textLabel);
+
         JTextArea textArea = new JTextArea(node.getText(), 4, 0);
-        textArea.setPreferredSize(new Dimension(width - margin * 2, height / 3 - margin * 2));
+        textArea.setPreferredSize(new Dimension(width, bigHeight));
         textArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        PlainDocument keyDoc = (PlainDocument) textArea.getDocument();
+        keyDoc.addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                node.setText(textArea.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                node.setText(textArea.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                node.setText(textArea.getText());
+            }
+
+        });
         panel.add(textArea);
 
+        JLabel addedKeysLabel = new JLabel("Added keys");
+        addedKeysLabel.setPreferredSize(new Dimension(width, smallHeight));
+        panel.add(addedKeysLabel);
+
         JScrollPane addedKeysScrollPane = new JScrollPane(
-                new KeyEditPanel(dialog, node.getAddedKeys(), width - margin * 2, buttonHeight));
-        addedKeysScrollPane.setPreferredSize(new Dimension(width - margin * 2, height / 3 - margin * 2));
+                new KeyEditPanel(node.getAddedKeys(), width - margin * 2, smallHeight, Color.green));
+        addedKeysScrollPane.setPreferredSize(new Dimension(width, bigHeight));
         addedKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        addedKeysScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        addedKeysScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(addedKeysScrollPane);
 
+        JLabel removedKeysLabel = new JLabel("Removed keys");
+        removedKeysLabel.setPreferredSize(new Dimension(width, smallHeight));
+        panel.add(removedKeysLabel);
+
         JScrollPane removedKeysScrollPane = new JScrollPane(
-                new KeyEditPanel(dialog, node.getRemovedKeys(), width - margin * 2, buttonHeight));
-        removedKeysScrollPane.setPreferredSize(new Dimension(width - margin * 2, height / 3 - margin * 2));
+                new KeyEditPanel(node.getRemovedKeys(), width - margin * 2, smallHeight, Color.red));
+        removedKeysScrollPane.setPreferredSize(new Dimension(width, bigHeight));
         removedKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        removedKeysScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        removedKeysScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(removedKeysScrollPane);
 
         JButton submitButton = new JButton("Submit");
-        submitButton.setPreferredSize(new Dimension(width - margin * 2, buttonHeight));
+        submitButton.setPreferredSize(new Dimension(width, smallHeight - margin));
         submitButton.addActionListener((a) -> {
             node.setText(textArea.getText());
             dialog.dispose();
         });
         panel.add(submitButton);
 
+        layout.putConstraint(SpringLayout.WEST, textLabel,
+                margin,
+                SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, textLabel,
+                margin,
+                SpringLayout.NORTH, panel);
+
         layout.putConstraint(SpringLayout.WEST, textArea,
                 margin,
                 SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, textArea,
                 margin,
-                SpringLayout.NORTH, panel);
+                SpringLayout.SOUTH, textLabel);
+
+        layout.putConstraint(SpringLayout.WEST, addedKeysLabel,
+                margin,
+                SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, addedKeysLabel,
+                margin,
+                SpringLayout.SOUTH, textArea);
 
         layout.putConstraint(SpringLayout.WEST, addedKeysScrollPane,
                 margin,
                 SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, addedKeysScrollPane,
                 margin,
-                SpringLayout.SOUTH, textArea);
+                SpringLayout.SOUTH, addedKeysLabel);
+
+        layout.putConstraint(SpringLayout.WEST, removedKeysLabel,
+                margin,
+                SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, removedKeysLabel,
+                margin,
+                SpringLayout.SOUTH, addedKeysScrollPane);
 
         layout.putConstraint(SpringLayout.WEST, removedKeysScrollPane,
                 margin,
                 SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, removedKeysScrollPane,
                 margin,
-                SpringLayout.SOUTH, addedKeysScrollPane);
+                SpringLayout.SOUTH, removedKeysLabel);
 
         layout.putConstraint(SpringLayout.WEST, submitButton,
                 margin,
@@ -99,7 +158,7 @@ public class UserInputGetter {
                 margin,
                 SpringLayout.SOUTH, removedKeysScrollPane);
         dialog.add(panel);
-        panel.setPreferredSize(new Dimension(width, height + buttonHeight));
+        panel.setPreferredSize(new Dimension(width + margin * 2, 3 * bigHeight + 4 * smallHeight + 6 * margin));
         dialog.pack();
         dialog.setResizable(false);
         dialog.setVisible(true);
@@ -111,19 +170,22 @@ public class UserInputGetter {
 
     private static class KeyEditPanel extends JPanel {
 
+        private static final int numberSize = 40;
+        private static final int buttonSize = 40;
+
         private int lineWidth;
         private int lineHeight;
 
-        private Component parent;
+        private Color color;
 
         private List<StoryKey> keys;
 
         private SpringLayout layout;
 
-        public KeyEditPanel(Component parent, List<StoryKey> keys, int lineWidth, int lineHeight) {
-            this.parent = parent;
+        public KeyEditPanel(List<StoryKey> keys, int lineWidth, int lineHeight, Color color) {
             this.lineWidth = lineWidth;
             this.lineHeight = lineHeight;
+            this.color = color;
 
             this.keys = keys;
 
@@ -133,18 +195,17 @@ public class UserInputGetter {
         private void generate() {
             this.removeAll();
 
-            System.out.println("Regenerating...");
-            System.out.println(keys.toString());
+            this.setBackground(color);
 
-            this.setBackground(new Color(255, 0, 0));
             this.layout = new SpringLayout();
             this.setLayout(layout);
+
+            this.setPreferredSize(new Dimension(lineWidth, lineHeight * (1 + keys.size())));
 
             JPanel modifyPanel = new JPanel();
             modifyPanel.setLayout(new BoxLayout(modifyPanel, BoxLayout.X_AXIS));
             modifyPanel.setPreferredSize(new Dimension(lineWidth, lineHeight));
             JButton addButton = new JButton("+");
-            addButton.setPreferredSize(new Dimension(lineWidth, lineHeight));
             addButton.addActionListener((a) -> {
                 this.keys.add(new StoryKey("key", 1));
                 this.generate();
@@ -160,7 +221,7 @@ public class UserInputGetter {
                 keyPanel.setLayout(new BoxLayout(keyPanel, BoxLayout.X_AXIS));
                 keyPanel.setPreferredSize(new Dimension(lineWidth, lineHeight));
                 JTextField keyTextField = new JTextField(key.getKey());
-                keyTextField.setPreferredSize(new Dimension((int) (lineWidth * 0.8), lineHeight));
+                keyTextField.setPreferredSize(new Dimension(lineWidth - numberSize - buttonSize, lineHeight));
                 PlainDocument keyDoc = (PlainDocument) keyTextField.getDocument();
                 keyDoc.addDocumentListener(new DocumentListener() {
 
@@ -183,7 +244,7 @@ public class UserInputGetter {
 
                 keyPanel.add(keyTextField);
                 JTextField valueTextField = new JTextField("" + key.getValue());
-                valueTextField.setPreferredSize(new Dimension((int) (lineWidth * 0.2), lineHeight));
+                valueTextField.setPreferredSize(new Dimension(numberSize, lineHeight));
                 PlainDocument valueDoc = (PlainDocument) valueTextField.getDocument();
                 valueDoc.setDocumentFilter(new MyIntFilter());
                 valueDoc.addDocumentListener(new DocumentListener() {
@@ -206,6 +267,14 @@ public class UserInputGetter {
                 });
                 keyPanel.add(valueTextField);
 
+                JButton removeButton = new JButton("-");
+                removeButton.setPreferredSize(new Dimension(buttonSize, lineHeight));
+                removeButton.addActionListener((a) -> {
+                    this.keys.remove(key);
+                    this.generate();
+                });
+                keyPanel.add(removeButton);
+
                 this.add(keyPanel);
                 this.layout.putConstraint(SpringLayout.WEST, keyPanel, 0, SpringLayout.WEST,
                         this);
@@ -215,7 +284,8 @@ public class UserInputGetter {
 
                 previous = keyPanel;
             }
-            this.parent.repaint();
+            this.revalidate();
+            this.repaint();
         }
     }
 
