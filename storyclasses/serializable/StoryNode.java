@@ -3,23 +3,23 @@ package storyclasses.serializable;
 import java.io.Serializable;
 
 public final class StoryNode implements Serializable {
-    private final String text;
-    private final StoryKeys[] addedKeys;
-    private final StoryKeys[] removedKeys;
-    private final StoryOption[] storyOptions;
+    private String text;
+    private StoryKey[] addedKeys;
+    private StoryKey[] removedKeys;
+    private StoryOption[] storyOptions;
 
-    public StoryNode(final String text, final StoryOption[] storyOptions, final StoryKeys[] addedKeys, final StoryKeys[] removedKeys) {
+    public StoryNode(String text, StoryOption[] storyOptions, StoryKey[] addedKeys, StoryKey[] removedKeys) {
         this.text = text;
         this.storyOptions = storyOptions;
         this.addedKeys = addedKeys;
         this.removedKeys = removedKeys;
     }
 
-    public StoryNode(final String text, final StoryOption[] storyOptions) {
+    public StoryNode(String text, StoryOption[] storyOptions) {
         this.text = text;
         this.storyOptions = storyOptions;
-        this.addedKeys = new StoryKeys[0];
-        this.removedKeys = new StoryKeys[0];
+        this.addedKeys = new StoryKey[0];
+        this.removedKeys = new StoryKey[0];
     }
 
     public String getText() {
@@ -30,12 +30,27 @@ public final class StoryNode implements Serializable {
         return storyOptions;
     }
 
-    public StoryKeys[] getAddedKeys() {
+    public StoryKey[] getAddedKeys() {
         return addedKeys;
     }
 
-    public StoryKeys[] getRemovedKeys() {
+    public StoryKey[] getRemovedKeys() {
         return removedKeys;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setStoryOptions(StoryOption[] storyOptions) {
+        this.storyOptions = storyOptions;
+    }
+
+    public void setAddedKeys(StoryKey[] addedKeys) {
+        this.addedKeys = addedKeys;
+    }
+
+    public void setRemovedKeys(StoryKey[] removedKeys) {
+        this.removedKeys = removedKeys;
+    }
 }

@@ -3,20 +3,20 @@ package gui.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import storyclasses.serializable.StoryKeys;
+import storyclasses.serializable.StoryKey;
 
 public class GuiStoryNode extends GuiTextBox {
     private List<GuiStoryOption> inOptions;
     private List<GuiStoryOption> outOptions;
-    private List<StoryKeys> addedKeys;
-    private List<StoryKeys> removedKeys;
+    private List<StoryKey> addedKeys;
+    private List<StoryKey> removedKeys;
 
     public GuiStoryNode(String text, int x, int y) {
         super(text, x, y, 10);
         this.inOptions = new ArrayList<GuiStoryOption>();
         this.outOptions = new ArrayList<GuiStoryOption>();
-        this.addedKeys = new ArrayList<StoryKeys>();
-        this.removedKeys = new ArrayList<StoryKeys>();
+        this.addedKeys = new ArrayList<StoryKey>();
+        this.removedKeys = new ArrayList<StoryKey>();
     }
 
     public List<GuiStoryOption> getInOptions() {
@@ -27,11 +27,20 @@ public class GuiStoryNode extends GuiTextBox {
         return this.outOptions;
     }
 
-    public List<StoryKeys> getAddedKeys() {
+    public List<StoryKey> getAddedKeys() {
         return addedKeys;
     }
 
-    public List<StoryKeys> getRemovedKeys() {
+    public List<StoryKey> getRemovedKeys() {
         return removedKeys;
     }
+
+    public void setAddedKeys(List<StoryKey> addedKeys) {
+        this.addedKeys = addedKeys;
+    }
+
+    public void setRemovedKeys(List<StoryKey> removedKeys) {
+        this.removedKeys = removedKeys;
+    }
+
 }

@@ -3,14 +3,14 @@ package gui.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import storyclasses.serializable.StoryKeys;
+import storyclasses.serializable.StoryKey;
 
 public class GuiStoryOption extends GuiTextBox {
 
     private GuiStoryNode parent;
     private String optionText;
-    private List<StoryKeys> unlockingKeys;
-    private List<StoryKeys> lockingKeys;
+    private List<StoryKey> unlockingKeys;
+    private List<StoryKey> lockingKeys;
     private boolean forced;
     private GuiStoryNode child;
 
@@ -18,8 +18,8 @@ public class GuiStoryOption extends GuiTextBox {
         super(text, 0, 0, 5);
         this.parent = parent;
         this.optionText = text;
-        this.unlockingKeys = new ArrayList<StoryKeys>();
-        this.lockingKeys = new ArrayList<StoryKeys>();
+        this.unlockingKeys = new ArrayList<StoryKey>();
+        this.lockingKeys = new ArrayList<StoryKey>();
         this.forced = false;
         this.child = child;
     }
@@ -32,12 +32,20 @@ public class GuiStoryOption extends GuiTextBox {
         this.optionText = optionText;
     }
 
-    public List<StoryKeys> getUnlockingKeys() {
+    public List<StoryKey> getUnlockingKeys() {
         return unlockingKeys;
     }
 
-    public List<StoryKeys> getLockingKeys() {
+    public List<StoryKey> getLockingKeys() {
         return lockingKeys;
+    }
+
+    public void setUnlockingKeys(List<StoryKey> unlockingKeys) {
+        this.unlockingKeys = unlockingKeys;
+    }
+
+    public void setLockingKeys(List<StoryKey> lockingKeys) {
+        this.lockingKeys = lockingKeys;
     }
 
     public boolean isForced() {

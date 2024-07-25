@@ -20,8 +20,4 @@ public class StoryTree implements Serializable {
     public StoryNode[] getNodes() {
         return nodes;
     }
-
-    public void setNodes(StoryNode[] nodes) {
-        this.nodes = nodes;
-    }
 }

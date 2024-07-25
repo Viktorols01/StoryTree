@@ -8,15 +8,15 @@ public class StoryState implements Serializable {
 
     private StoryTree tree;
     private int storyNodeIndex;
-    private final Map<String, Integer> keys;
+    private Map<String, Integer> keys;
 
-    public StoryState(final StoryTree tree, final int storyNodeIndex, final Map<String, Integer> unlockedKeys) {
+    public StoryState(StoryTree tree, int storyNodeIndex, Map<String, Integer> unlockedKeys) {
         this.tree = tree;
         this.storyNodeIndex = storyNodeIndex;
         this.keys = unlockedKeys;
     }
 
-    public StoryState(final StoryTree tree) {
+    public StoryState(StoryTree tree) {
         this.tree = tree;
         this.storyNodeIndex = 0;
         this.keys = new HashMap<String, Integer>();
@@ -26,7 +26,7 @@ public class StoryState implements Serializable {
         return this.tree.getNode(storyNodeIndex);
     }
 
-    public void setStoryNodeIndex(final int storyNodeIndex) {
+    public void setStoryNodeIndex(int storyNodeIndex) {
         this.storyNodeIndex = storyNodeIndex;
     }
 

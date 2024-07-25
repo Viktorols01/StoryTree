@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import storyclasses.serializable.StoryKeys;
+import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryState;
 import storyclasses.serializable.StoryTree;
@@ -49,15 +49,15 @@ public abstract class StoryReader {
     }
 
     private void acquireKeys() {
-        for (StoryKeys addedKey : storyState.getCurrentNode().getAddedKeys()) {
+        for (StoryKey addedKey : storyState.getCurrentNode().getAddedKeys()) {
             addKey(addedKey);
         }
-        for (StoryKeys removedKey : storyState.getCurrentNode().getRemovedKeys()) {
+        for (StoryKey removedKey : storyState.getCurrentNode().getRemovedKeys()) {
             removeKey(removedKey);
         }
     }
 
-    private void addKey(StoryKeys addedKey) {
+    private void addKey(StoryKey addedKey) {
         if (storyState.getKeys().containsKey(addedKey.getKey())) {
             int currentValue = storyState.getKeys().get(addedKey.getKey());
             storyState.getKeys().put(addedKey.getKey(), currentValue + addedKey.getValue());
@@ -66,7 +66,7 @@ public abstract class StoryReader {
         }
     }
 
-    private void removeKey(StoryKeys removedKey) {
+    private void removeKey(StoryKey removedKey) {
         if (storyState.getKeys().containsKey(removedKey.getKey())) {
             int currentValue = storyState.getKeys().get(removedKey.getKey());
             storyState.getKeys().put(removedKey.getKey(),
@@ -82,12 +82,12 @@ public abstract class StoryReader {
         List<StoryOption> storyOptionList = new LinkedList<StoryOption>();
         outer:
         for (StoryOption storyOption : getAllStoryOptions()) {
-            for (StoryKeys unlockingKey : storyOption.getUnlockingKeys()) {
+            for (StoryKey unlockingKey : storyOption.getUnlockingKeys()) {
                 if (this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
                     continue outer;
                 }
             }
-            for (StoryKeys lockingKey : storyOption.getLockingKeys()) {
+            for (StoryKey lockingKey : storyOption.getLockingKeys()) {
                 if (this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
                     continue outer;
                 }

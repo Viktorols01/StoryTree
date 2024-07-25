@@ -3,47 +3,69 @@ package storyclasses.serializable;
 import java.io.Serializable;
 
 public final class StoryOption implements Serializable {
-    private final String text;
-    private final StoryKeys[] unlockingKeys;
-    private final StoryKeys[] lockingKeys;
-    private final boolean forced;
-    private final int storyNodeIndex;
+    private String text;
+    private StoryKey[] unlockingKeys;
+    private StoryKey[] lockingKeys;
+    private boolean forced;
+    private int storyNodeIndex;
 
-    public StoryOption(final String text, final int storyNodeIndex, final StoryKeys[] unlockingKeys, final StoryKeys[] lockingKeys,
-            final boolean forced) {
+    public StoryOption(String text, int storyNodeIndex, StoryKey[] unlockingKeys, StoryKey[] lockingKeys,
+            boolean forced) {
         this.text = text;
-        this.storyNodeIndex = storyNodeIndex;
         this.unlockingKeys = unlockingKeys;
         this.lockingKeys = lockingKeys;
         this.forced = forced;
+        this.storyNodeIndex = storyNodeIndex;
     }
 
-    public StoryOption(final String text, final int storyNodeIndex) {
+    public StoryOption(String text, int storyNodeIndex) {
         this.text = text;
-        this.storyNodeIndex = storyNodeIndex;
-        this.unlockingKeys = new StoryKeys[0];
-        this.lockingKeys = new StoryKeys[0];
+        this.unlockingKeys = new StoryKey[0];
+        this.lockingKeys = new StoryKey[0];
         this.forced = false;
+        this.storyNodeIndex = storyNodeIndex;
     }
 
     public String getText() {
         return text;
     }
 
-    public int getStoryNodeIndex() {
-        return storyNodeIndex;
-    }
-
-    public StoryKeys[] getUnlockingKeys() {
+    public StoryKey[] getUnlockingKeys() {
         return unlockingKeys;
     }
 
-    public StoryKeys[] getLockingKeys() {
+    public StoryKey[] getLockingKeys() {
         return lockingKeys;
     }
 
     public boolean isForced() {
         return forced;
     }
+
+    public int getStoryNodeIndex() {
+        return storyNodeIndex;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setUnlockingKeys(StoryKey[] unlockingKeys) {
+        this.unlockingKeys = unlockingKeys;
+    }
+
+    public void setLockingKeys(StoryKey[] lockingKeys) {
+        this.lockingKeys = lockingKeys;
+    }
+
+    public void setForced(boolean forced) {
+        this.forced = forced;
+    }
+
+    public void setStoryNodeIndex(int storyNodeIndex) {
+        this.storyNodeIndex = storyNodeIndex;
+    }
+
+    
 
 }
