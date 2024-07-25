@@ -2,12 +2,13 @@ package gui;
 
 import java.util.List;
 
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.JButton;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -31,7 +32,7 @@ import storyclasses.serializable.StoryKey;
 public class UserInputGetter {
     private static int width = 300;
     private static int height = 800;
-    private static int buttonHeight = 40;
+    private static int buttonHeight = 20;
     private static int margin = 5;
 
     public static String getTextFromPromt(String title, String text) {
@@ -39,7 +40,7 @@ public class UserInputGetter {
     }
 
     public static void modifyNode(GuiStoryNode node) {
-        JDialog dialog = new JDialog((JFrame) null, "Custom Input Dialog", true);
+        JDialog dialog = new JDialog((JFrame) null, "Modify node", true);
 
         JPanel panel = new JPanel();
         SpringLayout layout = new SpringLayout();
@@ -50,17 +51,19 @@ public class UserInputGetter {
         textArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
         panel.add(textArea);
 
-        JScrollPane addedKeysScrollPane = new JScrollPane(new KeyEditPanel(node.getAddedKeys()));
+        JScrollPane addedKeysScrollPane = new JScrollPane(
+                new KeyEditPanel(dialog, node.getAddedKeys(), width - margin * 2, buttonHeight));
         addedKeysScrollPane.setPreferredSize(new Dimension(width - margin * 2, height / 3 - margin * 2));
         addedKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
         panel.add(addedKeysScrollPane);
 
-        JScrollPane removedKeysScrollPane = new JScrollPane(new KeyEditPanel(node.getRemovedKeys()));
+        JScrollPane removedKeysScrollPane = new JScrollPane(
+                new KeyEditPanel(dialog, node.getRemovedKeys(), width - margin * 2, buttonHeight));
         removedKeysScrollPane.setPreferredSize(new Dimension(width - margin * 2, height / 3 - margin * 2));
         removedKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
         panel.add(removedKeysScrollPane);
 
-        Button submitButton = new Button("Submit");
+        JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(width - margin * 2, buttonHeight));
         submitButton.addActionListener((a) -> {
             node.setText(textArea.getText());
@@ -108,35 +111,56 @@ public class UserInputGetter {
 
     private static class KeyEditPanel extends JPanel {
 
-        private static int lineWidth = 200;
-        private static int lineHeight = 50;
+        private int lineWidth;
+        private int lineHeight;
+
+        private Component parent;
 
         private List<StoryKey> keys;
 
         private SpringLayout layout;
 
-        public KeyEditPanel(List<StoryKey> keys) {
+        public KeyEditPanel(Component parent, List<StoryKey> keys, int lineWidth, int lineHeight) {
+            this.parent = parent;
+            this.lineWidth = lineWidth;
+            this.lineHeight = lineHeight;
+
             this.keys = keys;
-            this.layout = new SpringLayout();
-            this.setLayout(layout);
-
-            this.setBackground(new Color(255, 0, 0));
-
-            this.keys.add(new StoryKey("test", 5));
 
             generate();
         }
 
         private void generate() {
             this.removeAll();
-            this.setPreferredSize(new Dimension(lineWidth, lineHeight * (1 + keys.size())));
 
-            Component previous = null;
+            System.out.println("Regenerating...");
+            System.out.println(keys.toString());
+
+            this.setBackground(new Color(255, 0, 0));
+            this.layout = new SpringLayout();
+            this.setLayout(layout);
+
+            JPanel modifyPanel = new JPanel();
+            modifyPanel.setLayout(new BoxLayout(modifyPanel, BoxLayout.X_AXIS));
+            modifyPanel.setPreferredSize(new Dimension(lineWidth, lineHeight));
+            JButton addButton = new JButton("+");
+            addButton.setPreferredSize(new Dimension(lineWidth, lineHeight));
+            addButton.addActionListener((a) -> {
+                this.keys.add(new StoryKey("key", 1));
+                this.generate();
+            });
+            modifyPanel.add(addButton);
+            this.add(modifyPanel);
+            this.layout.putConstraint(SpringLayout.WEST, modifyPanel, 0, SpringLayout.WEST, this);
+            this.layout.putConstraint(SpringLayout.NORTH, modifyPanel, 0, SpringLayout.NORTH, this);
+
+            Component previous = modifyPanel;
             for (StoryKey key : keys) {
                 JPanel keyPanel = new JPanel();
-                keyPanel.setBackground(new Color(0, 0, 255));
+                keyPanel.setLayout(new BoxLayout(keyPanel, BoxLayout.X_AXIS));
                 keyPanel.setPreferredSize(new Dimension(lineWidth, lineHeight));
                 JTextField keyTextField = new JTextField(key.getKey());
+                keyTextField.setPreferredSize(new Dimension((int) (lineWidth * 0.8), lineHeight));
                 PlainDocument keyDoc = (PlainDocument) keyTextField.getDocument();
                 keyDoc.addDocumentListener(new DocumentListener() {
 
@@ -159,6 +183,7 @@ public class UserInputGetter {
 
                 keyPanel.add(keyTextField);
                 JTextField valueTextField = new JTextField("" + key.getValue());
+                valueTextField.setPreferredSize(new Dimension((int) (lineWidth * 0.2), lineHeight));
                 PlainDocument valueDoc = (PlainDocument) valueTextField.getDocument();
                 valueDoc.setDocumentFilter(new MyIntFilter());
                 valueDoc.addDocumentListener(new DocumentListener() {
@@ -182,17 +207,19 @@ public class UserInputGetter {
                 keyPanel.add(valueTextField);
 
                 this.add(keyPanel);
-                this.layout.putConstraint(SpringLayout.WEST, keyPanel, 5, SpringLayout.WEST,
+                this.layout.putConstraint(SpringLayout.WEST, keyPanel, 0, SpringLayout.WEST,
                         this);
-                this.layout.putConstraint(SpringLayout.NORTH, keyPanel, 5,
+                this.layout.putConstraint(SpringLayout.NORTH, keyPanel, 0,
                         previous == null ? SpringLayout.NORTH : SpringLayout.SOUTH,
                         previous == null ? this : previous);
 
                 previous = keyPanel;
             }
+            this.parent.repaint();
         }
     }
 
+    // BORROWED FROM STACKOVERFLOW
     static class MyIntFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string,

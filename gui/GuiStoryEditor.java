@@ -246,6 +246,7 @@ public class GuiStoryEditor extends Gui {
             if (bindMovable.isInside(absPos.getX(), absPos.getY())) {
                 UserInputGetter.modifyNode(bindMovable);
                 GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), bindMovable);
+                GuiStoryContainer.updateOptionPositions(getGraphics().getFontMetrics(), bindMovable);
                 bindMovable = null;
                 return;
             } else {
