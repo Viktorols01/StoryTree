@@ -38,10 +38,15 @@ public class ConsoleStoryReader extends StoryReader {
 
     @Override
     protected void displayOptionsToUser(String[] optionStrings) {
-        for (int i = 0; i < optionStrings.length; i++) {
+        int length = optionStrings.length;
+        for (int i = 0; i < length; i++) {
             String option = optionStrings[i];
             System.out.print("\u001b[3m");
-            System.out.println(i + ": " + option);
+            if (length == 1) {
+                System.out.println(option);
+            } else {
+                System.out.println(i + ": " + option);
+            }
             System.out.print("\u001b[0m");
         }
     }
