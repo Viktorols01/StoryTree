@@ -5,6 +5,7 @@ import java.util.List;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Panel;
 
 import javax.swing.JButton;
 import javax.swing.BorderFactory;
@@ -195,10 +196,10 @@ public class UserInputGetter {
         private void generate() {
             this.removeAll();
 
-            this.setBackground(color);
-
             this.layout = new SpringLayout();
             this.setLayout(layout);
+
+            this.setBackground(color);
 
             this.setPreferredSize(new Dimension(lineWidth, lineHeight * (1 + keys.size())));
 
@@ -287,6 +288,37 @@ public class UserInputGetter {
             this.revalidate();
             this.repaint();
         }
+    }
+
+    private static void stackComponents(Panel panel, List<Component> components, int margin) {
+        SpringLayout layout = new SpringLayout();
+        panel.setLayout(layout);
+
+        Component previous = null;
+        for (Component component : components) {
+            panel.add(component);
+            layout.putConstraint(SpringLayout.WEST, component, margin, SpringLayout.WEST,
+                    component);
+            layout.putConstraint(SpringLayout.NORTH, component, margin,
+                    previous == null ? SpringLayout.NORTH : SpringLayout.SOUTH,
+                    previous == null ? component : previous);
+
+            previous = component;
+        }
+
+        int totalWidth = 0;
+        int totalHeight = 0;
+        for (Component component : components) {
+            int width = component.getWidth();
+            int height = component.getHeight();
+
+            if (width > totalWidth) {
+                totalWidth = width;
+            }
+
+            totalHeight += height;
+        }
+        panel.setPreferredSize(new Dimension(totalWidth + 2 * margin, totalHeight + (1 + components.size()) * margin));
     }
 
     // BORROWED FROM STACKOVERFLOW
