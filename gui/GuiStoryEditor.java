@@ -230,6 +230,12 @@ public class GuiStoryEditor extends Gui {
                     bindMovable = node;
                     return;
                 }
+                for (GuiStoryOption option : node.getOutOptions()) {
+                    if (option.isInside(absPos.getX(), absPos.getY())) {
+                        UserInputGetter.modifyOption(option);
+                        return;
+                    }
+                }
             }
         }
     }
@@ -269,11 +275,13 @@ public class GuiStoryEditor extends Gui {
                     }
                 }
                 String optionInput = UserInputGetter.getTextFromPromt("Adding option...", bindMovable.getText());
-                String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
-                if (optionInput != null && nodeInput != null) {
-                    addStoryOption(optionInput, bindMovable, addStoryNode(nodeInput));
-                    bindMovable = null;
-                    return;
+                if (optionInput != null) {
+                    String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
+                    if (nodeInput != null) {
+                        addStoryOption(optionInput, bindMovable, addStoryNode(nodeInput));
+                        bindMovable = null;
+                        return;
+                    }
                 } else {
                     bindMovable = null;
                     return;

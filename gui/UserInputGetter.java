@@ -50,7 +50,7 @@ public class UserInputGetter {
         List<Component> components = new LinkedList<Component>();
 
         JLabel textLabel = new JLabel("Node text");
-        textLabel.setPreferredSize(new Dimension(width, smallHeight - margin));
+        textLabel.setPreferredSize(new Dimension(width, smallHeight));
         components.add(textLabel);
 
         JTextArea textArea = new JTextArea(node.getText(), 4, 0);
@@ -102,9 +102,8 @@ public class UserInputGetter {
         components.add(removedKeysScrollPane);
 
         JButton submitButton = new JButton("Submit");
-        submitButton.setPreferredSize(new Dimension(width, smallHeight - margin));
+        submitButton.setPreferredSize(new Dimension(width, smallHeight));
         submitButton.addActionListener((a) -> {
-            node.setText(textArea.getText());
             dialog.dispose();
         });
         components.add(submitButton);
@@ -117,7 +116,88 @@ public class UserInputGetter {
     }
 
     public static void modifyOption(GuiStoryOption option) {
+        int width = 300;
+        int bigHeight = 150;
+        int smallHeight = 20;
+        int margin = 5;
 
+        JDialog dialog = new JDialog((JFrame) null, "Modify option", true);
+
+        JPanel panel = new JPanel();
+        List<Component> components = new LinkedList<Component>();
+
+        JLabel textLabel = new JLabel("Option text");
+        textLabel.setPreferredSize(new Dimension(width, smallHeight));
+        components.add(textLabel);
+
+        JTextField textField = new JTextField(option.getText());
+        textField.setPreferredSize(new Dimension(width, smallHeight));
+        textField.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        PlainDocument keyDoc = (PlainDocument) textField.getDocument();
+        keyDoc.addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                option.setText(textField.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                option.setText(textField.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                option.setText(textField.getText());
+            }
+
+        });
+        components.add(textField);
+
+        JLabel unlockingKeysLabel = new JLabel("Unlocking keys");
+        unlockingKeysLabel.setPreferredSize(new Dimension(width, smallHeight));
+        components.add(unlockingKeysLabel);
+
+        JScrollPane unlockingKeysScrollPane = new JScrollPane(
+                new KeyEditPanel(option.getUnlockingKeys(), width - margin * 2, smallHeight, Color.green));
+        unlockingKeysScrollPane.setPreferredSize(new Dimension(width, bigHeight));
+        unlockingKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        unlockingKeysScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        unlockingKeysScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        components.add(unlockingKeysScrollPane);
+
+        JLabel lockingKeysLabel = new JLabel("Locking keys");
+        lockingKeysLabel.setPreferredSize(new Dimension(width, smallHeight));
+        components.add(lockingKeysLabel);
+
+        JScrollPane lockingKeysScrollPane = new JScrollPane(
+                new KeyEditPanel(option.getLockingKeys(), width - margin * 2, smallHeight, Color.red));
+        lockingKeysScrollPane.setPreferredSize(new Dimension(width, bigHeight));
+        lockingKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        lockingKeysScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        lockingKeysScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        components.add(lockingKeysScrollPane);
+
+        JButton toggleForcedButton = new JButton(option.isForced() ? "Forced" : "Not forced");
+        toggleForcedButton.setPreferredSize(new Dimension(width, smallHeight));
+        toggleForcedButton.addActionListener((a) -> {
+            option.setForced(!option.isForced());
+            toggleForcedButton.setText(option.isForced() ? "Forced" : "Not forced");
+        });
+        components.add(toggleForcedButton);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(width, smallHeight));
+        submitButton.addActionListener((a) -> {
+            dialog.dispose();
+        });
+        components.add(submitButton);
+
+        stackComponents(panel, components, margin);
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setVisible(true);
     }
 
     private static class KeyEditPanel extends JPanel {
