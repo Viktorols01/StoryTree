@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import gui.GuiStoryEditor;
 import gui.serializable.GuiStoryNode;
+import storyclasses.readers.ConsoleStoryReader;
 import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
@@ -22,6 +23,17 @@ public class EditorProgram {
         panel.add(gui, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
+
+        Button playButton = new Button("Play story");
+        playButton.addActionListener((a) -> {
+            StoryTree tree = gui.getGuiContainer().toStoryTree();
+            if (tree != null) {
+                ConsoleStoryReader reader = new ConsoleStoryReader(tree);
+                reader.read();
+            }
+        });
+        buttonPanel.add(playButton);
+
         Button savePlayableButton = new Button("Save playable story");
         savePlayableButton.addActionListener((a) -> {
             StoryTree tree = gui.getGuiContainer().toStoryTree();
@@ -44,7 +56,8 @@ public class EditorProgram {
         loadButton.addActionListener((a) -> {
             GuiStoryNode root = FileHandler.loadObject("files/guistories", "GUI story files", "gst");
             if (root != null) {
-                gui.getGuiContainer().loadRoot(root);;
+                gui.getGuiContainer().loadRoot(root);
+                ;
             }
         });
         buttonPanel.add(loadButton);

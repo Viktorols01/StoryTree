@@ -8,6 +8,7 @@ import java.util.List;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
 import gui.serializable.GuiTextBox;
+import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
@@ -78,9 +79,15 @@ public class GuiStoryContainer {
             int optionIndex = 0;
             for (GuiStoryOption pointer : guiNode.getOutOptions()) {
                 String optionText = pointer.getOptionText();
+                StoryKey[] unlockingKeys = new StoryKey[pointer.getUnlockingKeys().size()];
+                pointer.getUnlockingKeys().toArray(unlockingKeys);
+                StoryKey[] lockingKeys = new StoryKey[pointer.getLockingKeys().size()];
+                pointer.getLockingKeys().toArray(lockingKeys);
+                boolean forced = pointer.isForced();
                 GuiStoryNode optionNode = pointer.getChild();
                 int nodeIndex = nodes.indexOf(optionNode);
-                serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText, nodeIndex);
+                serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText, nodeIndex, unlockingKeys,
+                        lockingKeys, forced);
                 optionIndex++;
             }
         }
@@ -91,7 +98,12 @@ public class GuiStoryContainer {
     }
 
     private StoryNode serializeNode(GuiStoryNode guiNode) {
-        return new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutOptions().size()]);
+        StoryKey[] addedKeys = new StoryKey[guiNode.getAddedKeys().size()];
+        guiNode.getAddedKeys().toArray(addedKeys);
+        StoryKey[] removedKeys = new StoryKey[guiNode.getRemovedKeys().size()];
+        guiNode.getRemovedKeys().toArray(removedKeys);
+        return new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutOptions().size()], addedKeys,
+                removedKeys);
     }
 
     public void loadRoot(GuiStoryNode root) {

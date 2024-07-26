@@ -80,27 +80,30 @@ public abstract class StoryReader {
 
     private List<StoryOption> getAvailableStoryOptions() {
         List<StoryOption> storyOptionList = new LinkedList<StoryOption>();
-        outer:
-        for (StoryOption storyOption : getAllStoryOptions()) {
+        outer: for (StoryOption storyOption : getAllStoryOptions()) {
             for (StoryKey unlockingKey : storyOption.getUnlockingKeys()) {
-                if (this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
+                if (!this.storyState.getKeys().containsKey(unlockingKey.getKey())
+                        || this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
                     continue outer;
                 }
             }
             for (StoryKey lockingKey : storyOption.getLockingKeys()) {
-                if (this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
+                if (this.storyState.getKeys().containsKey(lockingKey.getKey())
+                        && this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
                     continue outer;
                 }
             }
             storyOptionList.add(storyOption);
         }
 
+        List<StoryOption> forcedList = new LinkedList<StoryOption>();
         for (StoryOption option : storyOptionList) {
             if (option.isForced()) {
-                List<StoryOption> forcedList = new LinkedList<StoryOption>();
                 forcedList.add(option);
-                return forcedList; 
             }
+        }
+        if (!forcedList.isEmpty()) {
+            return forcedList;
         }
 
         return storyOptionList;

@@ -18,7 +18,7 @@ public class GuiStyle {
     public static final Color COLOR_UNUSED_NODE = new Color(25, 25, 25);
 
     public static final Color COLOR_OPTION = new Color(205, 205, 205);
-    public static final Color COLOR_OPTION_FORCED = new Color(205, 105, 105);
+    public static final Color COLOR_OPTION_FORCED = new Color(255, 105, 105);
 
     public static final Color COLOR_BLACK = new Color(0, 0, 0);
     public static final Color COLOR_WHITE = new Color(255, 255, 255);
