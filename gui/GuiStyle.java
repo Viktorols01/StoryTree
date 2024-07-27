@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Iterator;
@@ -10,7 +11,7 @@ import gui.serializable.GuiTextBox;
 
 public class GuiStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
-    
+
     public static final Color COLOR_ROOT_NODE = new Color(0, 155, 0);
     public static final Color COLOR_EXTENSION_NODE = new Color(105, 105, 105);
     public static final Color COLOR_BRANCH_NODE = new Color(155, 155, 0);
@@ -23,6 +24,9 @@ public class GuiStyle {
     public static final Color COLOR_BLACK = new Color(0, 0, 0);
     public static final Color COLOR_WHITE = new Color(255, 255, 255);
 
+    public static final Color COLOR_LOCK = new Color(105, 105, 105);
+    public static final Color COLOR_KEY = new Color(205, 205, 0);
+
     public static Color getNodeColor(GuiStoryNode node) {
         int inCount = node.getInOptions().size();
         int outCount = node.getOutOptions().size();
@@ -30,8 +34,7 @@ public class GuiStyle {
         if (inCount == 0) {
             if (outCount == 0) {
                 color = COLOR_UNUSED_NODE;
-            } 
-            else {
+            } else {
                 color = COLOR_ROOT_NODE;
             }
         } else {
@@ -67,6 +70,7 @@ public class GuiStyle {
 
     public static void renderTextBoxOutline(Graphics2D g2d, GuiTextBox box, Color color) {
         g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(5));
         g2d.drawRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
                 (int) box.getPadding(),
                 (int) box.getPadding());
@@ -84,7 +88,14 @@ public class GuiStyle {
     public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
         g2d.setColor(COLOR_BACKGROUND);
         renderTextBox(g2d, option, COLOR_OPTION);
-        renderTextBoxOutline(g2d, option, option.isForced() ? COLOR_OPTION_FORCED: COLOR_OPTION);
+        renderTextBoxOutline(g2d, option, option.isForced() ? COLOR_OPTION_FORCED : COLOR_OPTION);
+
+        if (!option.getUnlockingKeys().isEmpty() || !option.getLockingKeys().isEmpty()) {
+            int lockSize = option.getLineHeight() / 2;
+            renderLock(g2d, option.getX() + option.getW() / 2 - lockSize / 2,
+                    option.getY() + option.getH() - lockSize / 2,
+                    lockSize, option.getPadding() / 2);
+        }
     }
 
     public static void renderOutOptionLines(Graphics2D g2d, GuiStoryNode node) {
@@ -101,6 +112,22 @@ public class GuiStyle {
     public static void renderOutoptions(Graphics2D g2d, GuiStoryNode node) {
         for (GuiStoryOption option : node.getOutOptions()) {
             renderOption(g2d, option);
+        }
+    }
+
+    public static void renderLock(Graphics2D g2d, int x, int y, int size, int padding) {
+        g2d.setColor(COLOR_LOCK);
+        g2d.fillRoundRect(x, y, size, size, padding, padding);
+        g2d.setColor(COLOR_BLACK);
+        {
+            int w = size / 2;
+            int h = size / 2;
+            g2d.fillOval(x + size / 2 - w / 2, y + 2 * size / 5 - h / 2, w, h);
+        }
+        {
+            int w = size / 4;
+            int h = 2 * size / 3;
+            g2d.fillRect(x + size / 2 - w / 2, y + size / 2 - h / 2, w, h);
         }
     }
 }

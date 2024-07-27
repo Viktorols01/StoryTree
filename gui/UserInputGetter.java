@@ -152,6 +152,9 @@ public class UserInputGetter {
             }
 
         });
+        textField.addActionListener((a) -> {
+            dialog.dispose();
+        });
         components.add(textField);
 
         JLabel unlockingKeysLabel = new JLabel("Unlocking keys");

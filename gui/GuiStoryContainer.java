@@ -15,6 +15,11 @@ import storyclasses.serializable.StoryTree;
 import tools.Camera;
 
 public class GuiStoryContainer {
+    public static void update(FontMetrics fontMetrics, GuiStoryNode node) {
+        updateSize(fontMetrics, node);
+        updateOptionPositions(fontMetrics, node);
+    }
+
     public static void updateSize(FontMetrics fontMetrics, GuiTextBox box) {
         box.setLineHeight(fontMetrics.getHeight());
 
@@ -33,7 +38,7 @@ public class GuiStoryContainer {
     }
 
     public static void updateOptionPositions(FontMetrics fontMetrics, GuiStoryNode node) {
-        final int margin = 2;
+        final int margin = 10;
         int totalWidth = 0;
 
         for (GuiStoryOption option : node.getOutOptions()) {

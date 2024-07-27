@@ -28,7 +28,7 @@ public class GuiStoryEditor extends Gui {
         super(width, height);
         this.guiContainer = new GuiStoryContainer(width, height);
 
-        setFont(new Font("Arial", Font.PLAIN, 10));
+        setFont(new Font("Arial", Font.PLAIN, 50));
     }
 
     public GuiStoryContainer getGuiContainer() {
@@ -233,6 +233,8 @@ public class GuiStoryEditor extends Gui {
                 for (GuiStoryOption option : node.getOutOptions()) {
                     if (option.isInside(absPos.getX(), absPos.getY())) {
                         UserInputGetter.modifyOption(option);
+                        GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), option);
+                        GuiStoryContainer.update(getGraphics().getFontMetrics(), node);
                         return;
                     }
                 }
@@ -251,8 +253,7 @@ public class GuiStoryEditor extends Gui {
 
             if (bindMovable.isInside(absPos.getX(), absPos.getY())) {
                 UserInputGetter.modifyNode(bindMovable);
-                GuiStoryContainer.updateSize(getGraphics().getFontMetrics(), bindMovable);
-                GuiStoryContainer.updateOptionPositions(getGraphics().getFontMetrics(), bindMovable);
+                GuiStoryContainer.update(getGraphics().getFontMetrics(), bindMovable);
                 bindMovable = null;
                 return;
             } else {
@@ -306,8 +307,9 @@ public class GuiStoryEditor extends Gui {
 
         if (guiContainer.getNodes().isEmpty()) {
             guiContainer.loadRoot(node);
+        } else {
+            guiContainer.getNodes().add(node);
         }
-        guiContainer.getNodes().add(node);
         return node;
     }
 
