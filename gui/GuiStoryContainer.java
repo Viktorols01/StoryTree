@@ -84,7 +84,6 @@ public class GuiStoryContainer {
             int optionIndex = 0;
             for (GuiStoryOption pointer : guiNode.getOutOptions()) {
                 String optionText = pointer.getText();
-                System.out.println(optionText);
                 StoryKey[] unlockingKeys = new StoryKey[pointer.getUnlockingKeys().size()];
                 pointer.getUnlockingKeys().toArray(unlockingKeys);
                 StoryKey[] lockingKeys = new StoryKey[pointer.getLockingKeys().size()];
@@ -108,7 +107,6 @@ public class GuiStoryContainer {
         guiNode.getAddedKeys().toArray(addedKeys);
         StoryKey[] removedKeys = new StoryKey[guiNode.getRemovedKeys().size()];
         guiNode.getRemovedKeys().toArray(removedKeys);
-        System.out.println(guiNode.getText());
         return new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutOptions().size()], addedKeys,
                 removedKeys);
     }

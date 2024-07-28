@@ -4,4 +4,5 @@
 
 - Save files properly
 
-- Fan... Jag har optionText men den ska bort ju?
+- I can not make changes to serialized classes without losing progress. This is NOT good. 
+- Is it fixable? Do I have to make a special kind of serialization? Or can I accept that the behaviour is set in stone?
