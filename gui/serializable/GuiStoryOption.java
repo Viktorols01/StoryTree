@@ -8,7 +8,6 @@ import storyclasses.serializable.StoryKey;
 public class GuiStoryOption extends GuiTextBox {
 
     private GuiStoryNode parent;
-    private String optionText;
     private List<StoryKey> unlockingKeys;
     private List<StoryKey> lockingKeys;
     private boolean forced;
@@ -17,19 +16,10 @@ public class GuiStoryOption extends GuiTextBox {
     public GuiStoryOption(String text, GuiStoryNode parent, GuiStoryNode child) {
         super(text, 0, 0, 10);
         this.parent = parent;
-        this.optionText = text;
         this.unlockingKeys = new ArrayList<StoryKey>();
         this.lockingKeys = new ArrayList<StoryKey>();
         this.forced = false;
         this.child = child;
-    }
-
-    public String getOptionText() {
-        return optionText;
-    }
-
-    public void setOptionText(String optionText) {
-        this.optionText = optionText;
     }
 
     public List<StoryKey> getUnlockingKeys() {
