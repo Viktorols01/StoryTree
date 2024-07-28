@@ -3,6 +3,7 @@ package gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.util.Iterator;
 
 import gui.serializable.GuiStoryNode;
@@ -23,8 +24,9 @@ public class GuiStyle {
 
     public static final Color COLOR_BLACK = new Color(0, 0, 0);
     public static final Color COLOR_WHITE = new Color(255, 255, 255);
+    public static final Color COLOR_GREEN = new Color(0, 255, 0);
+    public static final Color COLOR_RED = new Color(255, 0, 0);
 
-    public static final Color COLOR_LOCK = new Color(105, 105, 105);
     public static final Color COLOR_KEY = new Color(205, 205, 0);
 
     public static Color getNodeColor(GuiStoryNode node) {
@@ -83,6 +85,15 @@ public class GuiStyle {
             renderTextBoxOutline(g2d, node, new Color(255, 255, 255));
             g2d.drawString("Root", (int) node.getX(), (int) node.getY() - 2);
         }
+        if (!node.getAddedKeys().isEmpty()) {
+            renderPlus(g2d, node.getX() + node.getW(), node.getY(), node.getLineHeight() / 2);
+            renderKey(g2d, node.getX() + node.getW() + node.getLineHeight() / 2, node.getY(), node.getLineHeight());
+        }
+        if (!node.getRemovedKeys().isEmpty()) {
+            renderMinus(g2d, node.getX() + node.getW(), node.getY() + node.getLineHeight(), node.getLineHeight() / 2);
+            renderKey(g2d, node.getX() + node.getW() + node.getLineHeight() / 2, node.getY() + node.getLineHeight(),
+                    node.getLineHeight());
+        }
     }
 
     public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
@@ -116,7 +127,7 @@ public class GuiStyle {
     }
 
     public static void renderLock(Graphics2D g2d, int x, int y, int size, int padding) {
-        g2d.setColor(COLOR_LOCK);
+        g2d.setColor(COLOR_OPTION);
         g2d.fillRoundRect(x, y, size, size, padding, padding);
         g2d.setColor(COLOR_BLACK);
         {
@@ -129,5 +140,46 @@ public class GuiStyle {
             int h = 2 * size / 3;
             g2d.fillRect(x + size / 2 - w / 2, y + size / 2 - h / 2, w, h);
         }
+    }
+
+    public static void renderKey(Graphics2D g2d, int x, int y, int size) {
+        int[][] points = new int[16][2];
+        int[] xPoints = new int[points.length];
+        int[] yPoints = new int[points.length];
+        points[0] = new int[] { size * 4 / 7, size * 0 / 7 };
+        points[1] = new int[] { size * 7 / 7, size * 3 / 7 };
+        points[2] = new int[] { size * 5 / 7, size * 5 / 7 };
+        points[3] = new int[] { size * 4 / 7, size * 4 / 7 };
+        points[4] = new int[] { size * 3 / 7, size * 5 / 7 };
+        points[5] = new int[] { size * 1 / 2, size * 11 / 14 };
+        points[6] = new int[] { size * 3 / 7, size * 6 / 7 };
+        points[7] = new int[] { size * 5 / 14, size * 11 / 14 };
+        points[8] = new int[] { size * 2 / 7, size * 6 / 7 };
+        points[9] = new int[] { size * 5 / 14, size * 13 / 14 };
+        points[10] = new int[] { size * 2 / 7, size * 7 / 7 };
+        points[11] = new int[] { size * 3 / 14, size * 13 / 14 };
+        points[12] = new int[] { size * 1 / 7, size * 7 / 7 };
+        points[13] = new int[] { size * 0 / 7, size * 6 / 7 };
+        points[14] = new int[] { size * 3 / 7, size * 3 / 7 };
+        points[15] = new int[] { size * 2 / 7, size * 2 / 7 };
+        for (int i = 0; i < points.length; i++) {
+            int[] point = points[i];
+            xPoints[i] = x + point[0];
+            yPoints[i] = y + point[1];
+        }
+        Polygon keyPolygon = new Polygon(xPoints, yPoints, points.length);
+        g2d.setColor(COLOR_KEY);
+        g2d.fillPolygon(keyPolygon);
+    }
+
+    public static void renderPlus(Graphics2D g2d, int x, int y, int size) {
+        g2d.setColor(COLOR_GREEN);
+        g2d.fillRect(x + size / 3, y, size / 3, size);
+        g2d.fillRect(x, y + size / 3, size, size / 3);
+    }
+
+    public static void renderMinus(Graphics2D g2d, int x, int y, int size) {
+        g2d.setColor(COLOR_RED);
+        g2d.fillRect(x, y + size / 3, size, size / 3);
     }
 }
