@@ -105,7 +105,7 @@ public class GuiStyle {
             int lockSize = option.getLineHeight() / 2;
             renderLock(g2d, option.getX() + option.getW() / 2 - lockSize / 2,
                     option.getY() + option.getH() - lockSize / 2,
-                    lockSize, option.getPadding() / 2);
+                    lockSize, option.getPadding() / 2, option.isForced());
         }
     }
 
@@ -126,8 +126,8 @@ public class GuiStyle {
         }
     }
 
-    public static void renderLock(Graphics2D g2d, int x, int y, int size, int padding) {
-        g2d.setColor(COLOR_OPTION);
+    public static void renderLock(Graphics2D g2d, int x, int y, int size, int padding, boolean forced) {
+        g2d.setColor(forced ? COLOR_OPTION_FORCED : COLOR_OPTION);
         g2d.fillRoundRect(x, y, size, size, padding, padding);
         g2d.setColor(COLOR_BLACK);
         {

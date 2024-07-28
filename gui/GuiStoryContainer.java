@@ -83,7 +83,7 @@ public class GuiStoryContainer {
 
             int optionIndex = 0;
             for (GuiStoryOption pointer : guiNode.getOutOptions()) {
-                String optionText = pointer.getOptionText();
+                String optionText = pointer.getText();
                 StoryKey[] unlockingKeys = new StoryKey[pointer.getUnlockingKeys().size()];
                 pointer.getUnlockingKeys().toArray(unlockingKeys);
                 StoryKey[] lockingKeys = new StoryKey[pointer.getLockingKeys().size()];

@@ -3,3 +3,5 @@
 - Regex för att byta ut text mot nycklar? Eller något annat...
 
 - Save files properly
+
+- Fan... Jag har optionText men den ska bort ju?
