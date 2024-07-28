@@ -1,7 +1,5 @@
-- Make it possible to enter dialog that is several lines long
 - CLEAN THE CODE 
 - Folders
 - Regex för att byta ut text mot nycklar? Eller något annat...
 
-- Icons 
-- Make keys added from GUI
+- Save files properly

@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FileHandler {
@@ -32,6 +33,13 @@ public class FileHandler {
 
     public static <T extends Serializable> void saveObject(T t, String pathname, String description, String extension) {
         File file = getFile(pathname, description, extension, true);
+
+        // Ensure file name has the correct extension
+        FileFilter filter = new FileNameExtensionFilter(description, extension);
+        if (!filter.accept(file)) {
+            String updatedName = file.getName() + "." + extension;
+            file = new File(file.getParent(), updatedName);
+        }
 
         FileOutputStream fos;
         try {
