@@ -1,66 +1,24 @@
 package gui;
 
-import java.awt.FontMetrics;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
-import gui.serializable.GuiTextBox;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
-import tools.Camera;
 
-public class GuiStoryContainer {
-    public static void update(FontMetrics fontMetrics, GuiStoryNode node) {
-        updateSize(fontMetrics, node);
-        updateOptionPositions(fontMetrics, node);
-    }
-
-    public static void updateSize(FontMetrics fontMetrics, GuiTextBox box) {
-        box.setLineHeight(fontMetrics.getHeight());
-
-        Iterator<String> iterable = box.getText().lines().iterator();
-        int width = 0;
-        while (iterable.hasNext()) {
-            String line = iterable.next();
-            int lineWidth = fontMetrics.stringWidth(line);
-            if (lineWidth > width) {
-                width = lineWidth;
-            }
-        }
-        box.setTextWidth(width);
-        int height = (int) (box.getLineHeight() * box.getText().lines().count());
-        box.setSize(width + 2 * box.getPadding(), height + 2 * box.getPadding());
-    }
-
-    public static void updateOptionPositions(FontMetrics fontMetrics, GuiStoryNode node) {
-        final int margin = 10;
-        int totalWidth = 0;
-
-        for (GuiStoryOption option : node.getOutOptions()) {
-            totalWidth += option.getTextWidth() + option.getPadding() * 2 + margin;
-        }
-        totalWidth -= margin;
-
-        int x = node.getX() + node.getW() / 2 - totalWidth / 2;
-        int y = node.getY() + node.getH() + margin;
-        for (GuiStoryOption option : node.getOutOptions()) {
-            int width = option.getTextWidth();
-            option.setPosition(x, y);
-            x += width + option.getPadding() * 2 + margin;
-        }
-    }
-
-    private Camera camera;
+public class GuiStoryFolder implements Serializable {
+    // TODO: entry, exit, parent, position, folders
+    // getRoot ska ge Entry
+    // serialization ska behandla folders, entry och exit
 
     private List<GuiStoryNode> nodes;
 
-    public GuiStoryContainer(int width, int height) {
-        this.camera = new Camera(width, height);
+    public GuiStoryFolder() {
         this.nodes = new ArrayList<GuiStoryNode>();
     }
 
@@ -111,33 +69,11 @@ public class GuiStoryContainer {
                 removedKeys);
     }
 
-    public void loadRoot(GuiStoryNode root) {
-        camera.setX(root.getX());
-        camera.setX(root.getY());
-        this.nodes = new ArrayList<GuiStoryNode>();
-        this.nodes.add(root);
-        loadNode(root);
-    }
-
-    private void loadNode(GuiStoryNode node) {
-        for (GuiStoryOption option : node.getOutOptions()) {
-            GuiStoryNode optionNode = option.getChild();
-            if (!this.nodes.contains(optionNode)) {
-                this.nodes.add(optionNode);
-                loadNode(optionNode);
-            }
-        }
-    }
-
-    public Camera getCamera() {
-        return camera;
+    public List<GuiStoryNode> getNodes() {
+        return nodes;
     }
 
     public GuiStoryNode getRoot() {
-        return nodes.get(0);
-    }
-
-    public List<GuiStoryNode> getNodes() {
-        return nodes;
+        return nodes.get(0); // must be replaced with the node connected to entry...
     }
 }

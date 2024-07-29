@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.util.Iterator;
@@ -49,6 +50,46 @@ public class GuiStyle {
             }
         }
         return color;
+    }
+
+    public static void update(FontMetrics fontMetrics, GuiStoryNode node) {
+        updateSize(fontMetrics, node);
+        updateOptionPositions(fontMetrics, node);
+    }
+
+    public static void updateSize(FontMetrics fontMetrics, GuiTextBox box) {
+        box.setLineHeight(fontMetrics.getHeight());
+
+        Iterator<String> iterable = box.getText().lines().iterator();
+        int width = 0;
+        while (iterable.hasNext()) {
+            String line = iterable.next();
+            int lineWidth = fontMetrics.stringWidth(line);
+            if (lineWidth > width) {
+                width = lineWidth;
+            }
+        }
+        box.setTextWidth(width);
+        int height = (int) (box.getLineHeight() * box.getText().lines().count());
+        box.setSize(width + 2 * box.getPadding(), height + 2 * box.getPadding());
+    }
+
+    public static void updateOptionPositions(FontMetrics fontMetrics, GuiStoryNode node) {
+        final int margin = 10;
+        int totalWidth = 0;
+
+        for (GuiStoryOption option : node.getOutOptions()) {
+            totalWidth += option.getTextWidth() + option.getPadding() * 2 + margin;
+        }
+        totalWidth -= margin;
+
+        int x = node.getX() + node.getW() / 2 - totalWidth / 2;
+        int y = node.getY() + node.getH() + margin;
+        for (GuiStoryOption option : node.getOutOptions()) {
+            int width = option.getTextWidth();
+            option.setPosition(x, y);
+            x += width + option.getPadding() * 2 + margin;
+        }
     }
 
     public static void renderLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
