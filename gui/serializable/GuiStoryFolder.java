@@ -25,6 +25,18 @@ public class GuiStoryFolder extends GuiBox {
         this.children = new ArrayList<GuiStoryFolder>();
 
         this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
+        this.exitBox = null;
+
+        this.nodes = new ArrayList<GuiStoryNode>();
+    }
+
+    public GuiStoryFolder(GuiStoryFolder parent, int size) {
+        super(0, 0, size, size);
+
+        this.parent = parent;
+        this.children = new ArrayList<GuiStoryFolder>();
+
+        this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
         this.exitBox = new GuiExitBox(0, size, size / 2, size / 2);
 
         this.nodes = new ArrayList<GuiStoryNode>();
