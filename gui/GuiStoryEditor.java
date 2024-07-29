@@ -1,5 +1,6 @@
 package gui;
 
+import gui.serializable.GuiStoryFolder;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
 import gui.serializable.GuiTextBox;
@@ -30,7 +31,7 @@ public class GuiStoryEditor extends Gui {
     public GuiStoryEditor(int width, int height) {
         super(width, height);
         this.camera = new Camera(width, height);
-        this.guiFolder = new GuiStoryFolder();
+        this.guiFolder = new GuiStoryFolder(50);
 
         setFont(new Font("Arial", Font.PLAIN, 50));
     }
@@ -70,12 +71,10 @@ public class GuiStoryEditor extends Gui {
             GuiStyle.renderOutoptions(g2d, node);
         }
         for (GuiStoryNode node : guiFolder.getNodes()) {
-            if (node == guiFolder.getRoot()) {
-                continue;
-            }
             GuiStyle.renderStoryNode(g2d, node, false);
         }
-        GuiStyle.renderStoryNode(g2d, guiFolder.getRoot(), true);
+        GuiStyle.renderEntryBox(g2d, guiFolder.getEntryBox());
+        GuiStyle.renderExitBox(g2d, guiFolder.getExitBox());
     }
 
     @Override

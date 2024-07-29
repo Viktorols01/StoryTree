@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.util.Iterator;
 
+import gui.serializable.GuiEntryBox;
+import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
 import gui.serializable.GuiTextBox;
@@ -95,6 +97,16 @@ public class GuiStyle {
     public static void renderLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
         g2d.setColor(new Color(255, 255, 255));
         g2d.drawLine(x1, y1, x2, y2);
+    }
+
+    public static void renderEntryBox(Graphics2D g2d, GuiEntryBox box) {
+        g2d.fillRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
+                (int) box.getW() / 4, (int) box.getH() / 4);
+    }
+
+    public static void renderExitBox(Graphics2D g2d, GuiExitBox box) {
+        g2d.fillRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
+                (int) box.getW() / 4, (int) box.getH() / 4);
     }
 
     public static void renderTextBox(Graphics2D g2d, GuiTextBox box, Color textColor) {

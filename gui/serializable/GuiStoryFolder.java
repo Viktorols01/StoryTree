@@ -1,24 +1,32 @@
-package gui;
+package gui.serializable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.serializable.GuiStoryNode;
-import gui.serializable.GuiStoryOption;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
 
-public class GuiStoryFolder implements Serializable {
-    // TODO: entry, exit, parent, position, folders
-    // getRoot ska ge Entry
-    // serialization ska behandla folders, entry och exit
+public class GuiStoryFolder extends GuiBox {
+
+    private GuiStoryFolder parent;
+    private List<GuiStoryFolder> children;
+
+    private GuiEntryBox entryBox;
+    private GuiExitBox exitBox;
 
     private List<GuiStoryNode> nodes;
 
-    public GuiStoryFolder() {
+    public GuiStoryFolder(int size) {
+        super(0, 0, size, size);
+
+        this.parent = null;
+        this.children = new ArrayList<GuiStoryFolder>();
+
+        this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
+        this.exitBox = new GuiExitBox(0, size, size / 2, size / 2);
+
         this.nodes = new ArrayList<GuiStoryNode>();
     }
 
@@ -74,6 +82,43 @@ public class GuiStoryFolder implements Serializable {
     }
 
     public GuiStoryNode getRoot() {
-        return nodes.get(0); // must be replaced with the node connected to entry...
+        return entryBox.getOutNode();
     }
+
+    public GuiStoryFolder getParent() {
+        return parent;
+    }
+
+    public void setParent(GuiStoryFolder parent) {
+        this.parent = parent;
+    }
+
+    public List<GuiStoryFolder> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<GuiStoryFolder> children) {
+        this.children = children;
+    }
+
+    public GuiEntryBox getEntryBox() {
+        return entryBox;
+    }
+
+    public void setEntryBox(GuiEntryBox entry) {
+        this.entryBox = entry;
+    }
+
+    public GuiExitBox getExitBox() {
+        return exitBox;
+    }
+
+    public void setExitBox(GuiExitBox exit) {
+        this.exitBox = exit;
+    }
+
+    public void setNodes(List<GuiStoryNode> nodes) {
+        this.nodes = nodes;
+    }
+
 }
