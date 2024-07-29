@@ -12,7 +12,7 @@ public class GuiStoryNode extends GuiTextBox {
     private List<StoryKey> removedKeys;
 
     public GuiStoryNode(String text, int x, int y) {
-        super(text, x, y, 25);
+        super(text, x, y);
         this.inOptions = new ArrayList<GuiStoryOption>();
         this.outOptions = new ArrayList<GuiStoryOption>();
         this.addedKeys = new ArrayList<StoryKey>();

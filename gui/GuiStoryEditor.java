@@ -31,7 +31,7 @@ public class GuiStoryEditor extends Gui {
     public GuiStoryEditor(int width, int height) {
         super(width, height);
         this.camera = new Camera(width, height);
-        this.guiFolder = new GuiStoryFolder(50);
+        this.guiFolder = new GuiStoryFolder(200);
 
         setFont(new Font("Arial", Font.PLAIN, 50));
     }
@@ -40,8 +40,8 @@ public class GuiStoryEditor extends Gui {
         return this.guiFolder;
     }
 
-    public void setGuiFolder(GuiStoryFolder guiContainer) {
-        this.guiFolder = guiContainer;
+    public void setGuiFolder(GuiStoryFolder guiFolder) {
+        this.guiFolder = guiFolder;
     }
 
     @Override
@@ -58,10 +58,6 @@ public class GuiStoryEditor extends Gui {
                     (int) (bindMovable.getY() + bindMovable.getH() / 2),
                     (int) absPos.getX(),
                     (int) absPos.getY());
-        }
-
-        if (guiFolder.getNodes().isEmpty()) {
-            return;
         }
 
         for (GuiStoryNode node : guiFolder.getNodes()) {
@@ -325,9 +321,6 @@ public class GuiStoryEditor extends Gui {
     }
 
     private GuiStoryNode deleteStoryNode(GuiStoryNode node) {
-        if (node == guiFolder.getRoot()) {
-            return null;
-        }
         for (int i = node.getInOptions().size() - 1; i >= 0; i--) {
             GuiStoryOption option = node.getInOptions().get(i);
             deleteStoryOption(option);

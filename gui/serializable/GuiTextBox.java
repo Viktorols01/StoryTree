@@ -4,23 +4,17 @@ public class GuiTextBox extends GuiBox {
     private String text;
     private int lineHeight;
     private int textWidth;
-    private int padding;
 
-    public GuiTextBox(final String text, final int x, final int y, final int padding) {
+    public GuiTextBox(String text, int x, int y) {
         super(x, y, 0, 0);
         this.text = text;
-        this.padding = padding;
     }
 
     public String getText() {
         return text;
     }
 
-    public int getPadding() {
-        return padding;
-    }
-
-    public void setText(final String text) {
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -28,7 +22,7 @@ public class GuiTextBox extends GuiBox {
         return lineHeight;
     }
 
-    public void setLineHeight(final int lineHeight) {
+    public void setLineHeight(int lineHeight) {
         this.lineHeight = lineHeight;
     }
 
@@ -36,11 +30,7 @@ public class GuiTextBox extends GuiBox {
         return textWidth;
     }
 
-    public void setTextWidth(final int textWidth) {
+    public void setTextWidth(int textWidth) {
         this.textWidth = textWidth;
     }
-
-    public void setPadding(final int padding) {
-        this.padding = padding;
-    }    
 }
