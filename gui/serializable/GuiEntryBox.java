@@ -2,30 +2,29 @@ package gui.serializable;
 
 public class GuiEntryBox extends GuiConnectableBox {
 
-    private GuiStoryNode outNode;
-
     public GuiEntryBox(int x, int y, int w, int h) {
         super(x, y, w, h);
     }
 
-    public GuiStoryNode getOutNode() {
-        return outNode;
-    }
-
-    public void setOutNode(GuiStoryNode outNode) {
-        this.outNode = outNode;
+    @Override
+    public void connectOutput(GuiConnectableBox bindable) {
+        this.outputs.clear();
+        this.outputs.add(bindable);
     }
 
     @Override
-    public void connect(GuiConnectable bindable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+    public void connectInput(GuiConnectableBox bindable) {
+        return;
     }
 
     @Override
-    public void disconnect(GuiConnectable bindable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
+    public void disconnectOutput(GuiConnectableBox bindable) {
+        this.outputs.clear();
     }
-    
+
+    @Override
+    public void disconnectInput(GuiConnectableBox bindable) {
+        return;
+    }
+
 }

@@ -7,19 +7,15 @@ import storyclasses.serializable.StoryKey;
 
 public class GuiStoryOption extends GuiTextBox {
 
-    private GuiStoryNode parent;
     private List<StoryKey> unlockingKeys;
     private List<StoryKey> lockingKeys;
     private boolean forced;
-    private GuiStoryNode child;
 
-    public GuiStoryOption(String text, GuiStoryNode parent, GuiStoryNode child) {
+    public GuiStoryOption(String text) {
         super(text, 0, 0);
-        this.parent = parent;
         this.unlockingKeys = new ArrayList<StoryKey>();
         this.lockingKeys = new ArrayList<StoryKey>();
         this.forced = false;
-        this.child = child;
     }
 
     public List<StoryKey> getUnlockingKeys() {
@@ -46,24 +42,27 @@ public class GuiStoryOption extends GuiTextBox {
         this.forced = forced;
     }
 
-    public GuiStoryNode getChild() {
-        return this.child;
-    }
-
-    public GuiStoryNode getParent() {
-        return this.parent;
+    @Override
+    public void connectOutput(GuiConnectableBox bindable) {
+        this.outputs.clear();
+        this.outputs.add(bindable);
     }
 
     @Override
-    public void connect(GuiConnectable bindable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+    public void connectInput(GuiConnectableBox bindable) {
+        if (bindable instanceof GuiStoryNode) {
+            this.inputs.clear();
+            this.inputs.add(bindable);
+        }
     }
 
     @Override
-    public void disconnect(GuiConnectable bindable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
+    public void disconnectOutput(GuiConnectableBox bindable) {
+        this.outputs.clear();
     }
 
+    @Override
+    public void disconnectInput(GuiConnectableBox bindable) {
+        this.inputs.clear();
+    }
 }

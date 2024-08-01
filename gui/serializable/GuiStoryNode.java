@@ -6,25 +6,13 @@ import java.util.List;
 import storyclasses.serializable.StoryKey;
 
 public class GuiStoryNode extends GuiTextBox {
-    private List<GuiConnectableBox> inOptions;
-    private List<GuiStoryOption> outOptions;
     private List<StoryKey> addedKeys;
     private List<StoryKey> removedKeys;
 
     public GuiStoryNode(String text, int x, int y) {
         super(text, x, y);
-        this.inOptions = new ArrayList<GuiConnectableBox>();
-        this.outOptions = new ArrayList<GuiStoryOption>();
         this.addedKeys = new ArrayList<StoryKey>();
         this.removedKeys = new ArrayList<StoryKey>();
-    }
-
-    public List<GuiConnectableBox> getInOptions() {
-        return this.inOptions;
-    }
-
-    public List<GuiStoryOption> getOutOptions() {
-        return this.outOptions;
     }
 
     public List<StoryKey> getAddedKeys() {
@@ -44,15 +32,26 @@ public class GuiStoryNode extends GuiTextBox {
     }
 
     @Override
-    public void connect(GuiConnectable bindable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+    public void connectOutput(GuiConnectableBox bindable) {
+        if (bindable instanceof GuiStoryOption) {
+            System.out.println("connected storynode output to option");
+            this.outputs.add(bindable);
+        }
     }
 
     @Override
-    public void disconnect(GuiConnectable bindable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
+    public void connectInput(GuiConnectableBox bindable) {
+        this.inputs.add(bindable);
+    }
+
+    @Override
+    public void disconnectOutput(GuiConnectableBox bindable) {
+        this.outputs.remove(bindable);
+    }
+
+    @Override
+    public void disconnectInput(GuiConnectableBox bindable) {
+        this.inputs.remove(bindable);
     }
 
 }

@@ -8,6 +8,7 @@ import java.awt.Polygon;
 import java.util.Iterator;
 
 import gui.serializable.GuiBox;
+import gui.serializable.GuiConnectableBox;
 import gui.serializable.GuiEntryBox;
 import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryNode;
@@ -36,8 +37,8 @@ public class GuiStyle {
     public static final int BOX_PADDING = 25;
 
     public static Color getNodeColor(GuiStoryNode node) {
-        int inCount = node.getInOptions().size();
-        int outCount = node.getOutOptions().size();
+        int inCount = node.getInputs().size();
+        int outCount = node.getOutputs().size();
         Color color;
         if (inCount == 0) {
             if (outCount == 0) {
@@ -83,14 +84,16 @@ public class GuiStyle {
         final int margin = 10;
         int totalWidth = 0;
 
-        for (GuiStoryOption option : node.getOutOptions()) {
+        for (GuiConnectableBox output : node.getOutputs()) {
+            GuiStoryOption option = (GuiStoryOption) output;
             totalWidth += option.getTextWidth() + BOX_PADDING * 2 + margin;
         }
         totalWidth -= margin;
 
         int x = node.getX() + node.getW() / 2 - totalWidth / 2;
         int y = node.getY() + node.getH() + margin;
-        for (GuiStoryOption option : node.getOutOptions()) {
+        for (GuiConnectableBox output : node.getOutputs()) {
+            GuiStoryOption option = (GuiStoryOption) output;
             int width = option.getTextWidth();
             option.setPosition(x, y);
             x += width + BOX_PADDING * 2 + margin;
@@ -167,19 +170,20 @@ public class GuiStyle {
         }
     }
 
-    public static void renderOutOptionLines(Graphics2D g2d, GuiStoryNode node) {
-        for (GuiStoryOption pointer : node.getOutOptions()) {
-            GuiStoryNode child = pointer.getChild();
+    public static void renderOutputs(Graphics2D g2d, GuiConnectableBox box) {
+        for (GuiConnectableBox output : box.getOutputs()) {
             GuiStyle.renderLine(g2d,
-                    (int) (pointer.getX() + pointer.getW() / 2),
-                    (int) (pointer.getY() + pointer.getH() / 2),
-                    (int) (child.getX() + child.getW() / 2),
-                    (int) (child.getY() + child.getH() / 2));
+                    (int) (box.getX() + box.getW() / 2),
+                    (int) (box.getY() + box.getH() / 2),
+                    (int) (output.getX() + output.getW() / 2),
+                    (int) (output.getY() + output.getH() / 2));
         }
     }
 
-    public static void renderOutoptions(Graphics2D g2d, GuiStoryNode node) {
-        for (GuiStoryOption option : node.getOutOptions()) {
+    public static void renderOutOptions(Graphics2D g2d, GuiStoryNode node) {
+        for (GuiConnectableBox output : node.getOutputs()) {
+            GuiStoryOption option = (GuiStoryOption) output;
+            renderOutputs(g2d, option);
             renderOption(g2d, option);
         }
     }
