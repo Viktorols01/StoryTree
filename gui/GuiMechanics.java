@@ -5,6 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 import gui.serializable.GuiBox;
+import gui.serializable.GuiConnectableBox;
+import gui.serializable.GuiEntryBox;
+import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryFolder;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
@@ -22,8 +25,8 @@ public class GuiMechanics {
     private boolean dragging = false;
     private Point2D draggedDelta = null;
 
-    private GuiBox bindBox = null;
-    private boolean binding = false;
+    private GuiConnectableBox connectBox = null;
+    private boolean connecting = false;
 
     private GuiStoryFolder guiFolder;
 
@@ -47,11 +50,11 @@ public class GuiMechanics {
         g2d.fillRect(0, 0, camera.getRelativeWidth(), camera.getRelativeHeight());
         camera.transform(g2d);
 
-        if (binding) {
+        if (connecting) {
             Point2D absPos = getAbsoluteMousePosition();
             GuiStyle.renderLine(g2d,
-                    (int) (bindBox.getX() + bindBox.getW() / 2),
-                    (int) (bindBox.getY() + bindBox.getH() / 2),
+                    (int) (connectBox.getX() + connectBox.getW() / 2),
+                    (int) (connectBox.getY() + connectBox.getH() / 2),
                     (int) absPos.getX(),
                     (int) absPos.getY());
         }
@@ -84,6 +87,17 @@ public class GuiMechanics {
                     return;
                 }
             }
+
+            GuiExitBox exitBox = guiFolder.getExitBox();
+            if (exitBox != null) {
+                if (exitBox.isInside(absPos.getX(), absPos.getY())) {
+                    dragging = true;
+                    draggedDelta = new Point2D.Double(absPos.getX() - exitBox.getX(), absPos.getY() - exitBox.getY());
+                    draggedBox = exitBox;
+                    return;
+                }
+            }
+
             dragging = true;
             draggedDelta = new Point2D.Double(
                     -relPos.getX() / camera.getZoom() - camera.getX(),
@@ -119,13 +133,13 @@ public class GuiMechanics {
         }
     }
 
-    public void startBinding() {
+    public void startConnecting() {
         Point2D absPos = getAbsoluteMousePosition();
-        if (!binding) {
+        if (!connecting) {
             for (GuiStoryNode node : guiFolder.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
-                    binding = true;
-                    bindBox = node;
+                    connecting = true;
+                    connectBox = node;
                     return;
                 }
                 for (GuiStoryOption option : node.getOutOptions()) {
@@ -137,24 +151,31 @@ public class GuiMechanics {
                     }
                 }
             }
+
+            GuiEntryBox entryBox = guiFolder.getEntryBox();
+            if (entryBox.isInside(absPos.getX(), absPos.getY())) {
+                connecting = true;
+                connectBox = entryBox;
+                return;
+            }
         }
     }
 
-    public void binding() {
+    public void connecting() {
     }
 
-    public void endBinding() {
+    public void endConnecting() {
         Point2D absPos = getAbsoluteMousePosition();
 
-        if (binding) {
-            binding = false;
+        if (connecting) {
+            connecting = false;
 
-            if (bindBox.isInside(absPos.getX(), absPos.getY())) {
-                if (bindBox instanceof GuiStoryNode) {
-                    GuiStoryNode bindNode = (GuiStoryNode) bindBox;
+            if (connectBox.isInside(absPos.getX(), absPos.getY())) {
+                if (connectBox instanceof GuiStoryNode) {
+                    GuiStoryNode bindNode = (GuiStoryNode) connectBox;
                     UserInputGetter.modifyNode(bindNode);
                     GuiStyle.update(fontMetrics, bindNode);
-                    bindBox = null;
+                    connectBox = null;
                     return;
                 }
             } else {
@@ -162,31 +183,39 @@ public class GuiMechanics {
                     if (node.isInside(absPos.getX(), absPos.getY())) {
                         String input = UserInputGetter.getTextFromPromt("Add option", "");
                         if (input != null) {
-                            if (bindBox instanceof GuiStoryNode) {
-                                GuiStoryNode bindNode = (GuiStoryNode) bindBox;
+                            if (connectBox instanceof GuiStoryNode) {
+                                GuiStoryNode bindNode = (GuiStoryNode) connectBox;
                                 addStoryOption(input, bindNode, node);
-                                bindBox = null;
+                                connectBox = null;
                                 return;
                             }
                         } else {
-                            bindBox = null;
+                            connectBox = null;
                             return;
                         }
                     }
                 }
+
+                GuiExitBox exitBox = guiFolder.getExitBox();
+                if (exitBox != null) {
+                    if (exitBox.isInside(absPos.getX(), absPos.getY())) {
+                        exitBox.getInOptions().add(null);
+                    }
+                }
+
                 String optionInput = UserInputGetter.getTextFromPromt("Adding option...", "");
                 if (optionInput != null) {
                     String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
                     if (nodeInput != null) {
-                        if (bindBox instanceof GuiStoryNode) {
-                            GuiStoryNode bindNode = (GuiStoryNode) bindBox;
+                        if (connectBox instanceof GuiStoryNode) {
+                            GuiStoryNode bindNode = (GuiStoryNode) connectBox;
                             addStoryOption(optionInput, bindNode, addStoryNode(nodeInput));
-                            bindBox = null;
+                            connectBox = null;
                             return;
                         }
                     }
                 } else {
-                    bindBox = null;
+                    connectBox = null;
                     return;
                 }
             }
@@ -234,11 +263,14 @@ public class GuiMechanics {
 
     private GuiStoryNode deleteStoryNode(GuiStoryNode node) {
         for (int i = node.getInOptions().size() - 1; i >= 0; i--) {
-            GuiStoryOption option = node.getInOptions().get(i);
-            deleteStoryOption(option);
+            GuiConnectableBox outBox = node.getInOptions().get(i);
+            if (outBox instanceof GuiStoryOption) {
+                GuiStoryOption option = (GuiStoryOption) outBox;
+                deleteStoryOption(option);
+            }
         }
         for (int i = node.getOutOptions().size() - 1; i >= 0; i--) {
-            GuiStoryOption option = node.getInOptions().get(i);
+            GuiStoryOption option = node.getOutOptions().get(i);
             deleteStoryOption(option);
         }
         guiFolder.getNodes().remove(node);
@@ -274,12 +306,12 @@ public class GuiMechanics {
         return draggedDelta;
     }
 
-    public GuiBox getBindBox() {
-        return bindBox;
+    public GuiBox getConnectBox() {
+        return connectBox;
     }
 
-    public boolean isBinding() {
-        return binding;
+    public boolean isConnecting() {
+        return connecting;
     }
 
 }

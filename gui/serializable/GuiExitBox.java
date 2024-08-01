@@ -2,7 +2,7 @@ package gui.serializable;
 
 import java.util.List;
 
-public class GuiExitBox extends GuiBox {
+public class GuiExitBox extends GuiConnectableBox {
 
     private List<GuiStoryOption> inOptions;
 
@@ -16,6 +16,18 @@ public class GuiExitBox extends GuiBox {
 
     public void setInOptions(List<GuiStoryOption> inOptions) {
         this.inOptions = inOptions;
+    }
+
+    @Override
+    public void connect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+    }
+
+    @Override
+    public void disconnect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
     }
 
 }

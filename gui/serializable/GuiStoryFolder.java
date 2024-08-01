@@ -8,7 +8,7 @@ import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
 
-public class GuiStoryFolder extends GuiBox {
+public class GuiStoryFolder extends GuiConnectableBox {
 
     private GuiStoryFolder parent;
     private List<GuiStoryFolder> children;
@@ -131,6 +131,18 @@ public class GuiStoryFolder extends GuiBox {
 
     public void setNodes(List<GuiStoryNode> nodes) {
         this.nodes = nodes;
+    }
+
+    @Override
+    public void connect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'attach'");
+    }
+
+    @Override
+    public void disconnect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'detach'");
     }
 
 }

@@ -62,7 +62,7 @@ public class GuiStoryEditor extends Gui {
                 guiMechanics.startDragging();
                 break;
             case 3:
-                guiMechanics.startBinding();
+                guiMechanics.startConnecting();
                 break;
         }
         this.repaint();
@@ -75,7 +75,7 @@ public class GuiStoryEditor extends Gui {
                 guiMechanics.endDragging();
                 break;
             case 3:
-                guiMechanics.endBinding();
+                guiMechanics.endConnecting();
                 break;
         }
         this.repaint();
@@ -84,7 +84,7 @@ public class GuiStoryEditor extends Gui {
     @Override
     protected void onMouseDragged(MouseEvent e) {
         guiMechanics.dragging();
-        guiMechanics.binding();
+        guiMechanics.connecting();
         this.repaint();
     }
 

@@ -1,6 +1,6 @@
 package gui.serializable;
 
-public class GuiTextBox extends GuiBox {
+public abstract class GuiTextBox extends GuiConnectableBox {
     private String text;
     private int lineHeight;
     private int textWidth;

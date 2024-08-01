@@ -6,20 +6,20 @@ import java.util.List;
 import storyclasses.serializable.StoryKey;
 
 public class GuiStoryNode extends GuiTextBox {
-    private List<GuiStoryOption> inOptions;
+    private List<GuiConnectableBox> inOptions;
     private List<GuiStoryOption> outOptions;
     private List<StoryKey> addedKeys;
     private List<StoryKey> removedKeys;
 
     public GuiStoryNode(String text, int x, int y) {
         super(text, x, y);
-        this.inOptions = new ArrayList<GuiStoryOption>();
+        this.inOptions = new ArrayList<GuiConnectableBox>();
         this.outOptions = new ArrayList<GuiStoryOption>();
         this.addedKeys = new ArrayList<StoryKey>();
         this.removedKeys = new ArrayList<StoryKey>();
     }
 
-    public List<GuiStoryOption> getInOptions() {
+    public List<GuiConnectableBox> getInOptions() {
         return this.inOptions;
     }
 
@@ -41,6 +41,18 @@ public class GuiStoryNode extends GuiTextBox {
 
     public void setRemovedKeys(List<StoryKey> removedKeys) {
         this.removedKeys = removedKeys;
+    }
+
+    @Override
+    public void connect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+    }
+
+    @Override
+    public void disconnect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
     }
 
 }

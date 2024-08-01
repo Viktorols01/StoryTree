@@ -54,4 +54,16 @@ public class GuiStoryOption extends GuiTextBox {
         return this.parent;
     }
 
+    @Override
+    public void connect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+    }
+
+    @Override
+    public void disconnect(GuiConnectable bindable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
+    }
+
 }
