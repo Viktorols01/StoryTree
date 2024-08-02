@@ -5,8 +5,8 @@ import java.util.List;
 
 public class GuiStoryFolder extends GuiConnectableBox {
 
-    private GuiStoryFolder parent;
-    private List<GuiStoryFolder> children;
+    private GuiStoryFolder parentFolder;
+    private List<GuiStoryFolder> childrenFolders;
 
     private GuiEntryBox entryBox;
     private GuiExitBox exitBox;
@@ -15,8 +15,8 @@ public class GuiStoryFolder extends GuiConnectableBox {
     public GuiStoryFolder(int size) {
         super(0, 0, size, size);
 
-        this.parent = null;
-        this.children = new ArrayList<GuiStoryFolder>();
+        this.parentFolder = null;
+        this.childrenFolders = new ArrayList<GuiStoryFolder>();
 
         this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
         this.exitBox = null;
@@ -27,8 +27,8 @@ public class GuiStoryFolder extends GuiConnectableBox {
     public GuiStoryFolder(GuiStoryFolder parent, int size) {
         super(0, 0, size, size);
 
-        this.parent = parent;
-        this.children = new ArrayList<GuiStoryFolder>();
+        this.parentFolder = parent;
+        this.childrenFolders = new ArrayList<GuiStoryFolder>();
 
         this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
         this.exitBox = new GuiExitBox(0, size, size / 2, size / 2);
@@ -36,73 +36,24 @@ public class GuiStoryFolder extends GuiConnectableBox {
         this.nodes = new ArrayList<GuiStoryNode>();
     }
 
-    // public StoryTree toStoryTree() {
-    // List<StoryNode> serializedNodes = new ArrayList<StoryNode>();
-    // StoryNode serializedRoot = serializeNode(getRoot());
-    // serializedNodes.add(serializedRoot);
-
-    // for (GuiStoryNode guiNode : nodes) {
-    // if (guiNode == getRoot()) {
-    // continue;
-    // }
-    // StoryNode serializedNode = serializeNode(guiNode);
-    // serializedNodes.add(serializedNode);
-    // }
-
-    // for (int i = 0; i < nodes.size(); i++) {
-    // GuiStoryNode guiNode = nodes.get(i);
-    // StoryNode serializedNode = serializedNodes.get(i);
-
-    // int optionIndex = 0;
-    // for (GuiStoryOption pointer : guiNode.getOutputs()) {
-    // String optionText = pointer.getText();
-    // StoryKey[] unlockingKeys = new StoryKey[pointer.getUnlockingKeys().size()];
-    // pointer.getUnlockingKeys().toArray(unlockingKeys);
-    // StoryKey[] lockingKeys = new StoryKey[pointer.getLockingKeys().size()];
-    // pointer.getLockingKeys().toArray(lockingKeys);
-    // boolean forced = pointer.isForced();
-    // GuiConnectableBox optionNode = pointer.getChild();
-    // int nodeIndex = nodes.indexOf(optionNode);
-    // serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText,
-    // nodeIndex, unlockingKeys,
-    // lockingKeys, forced);
-    // optionIndex++;
-    // }
-    // }
-
-    // StoryNode[] storyArray = new StoryNode[serializedNodes.size()];
-    // serializedNodes.toArray(storyArray);
-    // return new StoryTree(storyArray);
-    // }
-
-    // private StoryNode serializeNode(GuiStoryNode guiNode) {
-    // StoryKey[] addedKeys = new StoryKey[guiNode.getAddedKeys().size()];
-    // guiNode.getAddedKeys().toArray(addedKeys);
-    // StoryKey[] removedKeys = new StoryKey[guiNode.getRemovedKeys().size()];
-    // guiNode.getRemovedKeys().toArray(removedKeys);
-    // return new StoryNode(guiNode.getText(), new
-    // StoryOption[guiNode.getOutOptions().size()], addedKeys,
-    // removedKeys);
-    // }
-
     public List<GuiStoryNode> getNodes() {
         return nodes;
     }
 
-    public GuiStoryFolder getParent() {
-        return parent;
+    public GuiStoryFolder getParentFolder() {
+        return parentFolder;
     }
 
-    public void setParent(GuiStoryFolder parent) {
-        this.parent = parent;
+    public void setParentFolder(GuiStoryFolder parent) {
+        this.parentFolder = parent;
     }
 
-    public List<GuiStoryFolder> getChildren() {
-        return children;
+    public List<GuiStoryFolder> getChildrenFolders() {
+        return childrenFolders;
     }
 
-    public void setChildren(List<GuiStoryFolder> children) {
-        this.children = children;
+    public void setChildrenFolders(List<GuiStoryFolder> children) {
+        this.childrenFolders = children;
     }
 
     public GuiEntryBox getEntryBox() {

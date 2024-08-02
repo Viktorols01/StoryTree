@@ -1,6 +1,7 @@
 package gui;
 
 import gui.serializable.GuiStoryFolder;
+import storyclasses.serializable.StoryTree;
 import tools.Gui;
 
 import java.awt.Font;
@@ -118,5 +119,9 @@ public class GuiStoryEditor extends Gui {
 
     @Override
     protected void onKeyTyped(KeyEvent e) {
+    }
+
+    public StoryTree toStoryTree() {
+        return guiMechanics.toStoryTree();
     }
 }

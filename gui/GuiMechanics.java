@@ -3,6 +3,8 @@ package gui;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import gui.serializable.GuiBox;
 import gui.serializable.GuiConnectableBox;
@@ -12,6 +14,10 @@ import gui.serializable.GuiStoryFolder;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
 import gui.serializable.GuiTextBox;
+import storyclasses.serializable.StoryKey;
+import storyclasses.serializable.StoryNode;
+import storyclasses.serializable.StoryOption;
+import storyclasses.serializable.StoryTree;
 import tools.Camera;
 import tools.Gui.Input;
 
@@ -309,24 +315,102 @@ public class GuiMechanics {
         return absPos;
     }
 
-    public GuiBox getDraggedBox() {
-        return draggedBox;
+    public StoryTree toStoryTree() {
+        NodePairList addedNodes = new NodePairList();
+
+        appendStoryNodesToList(addedNodes);
+
+        connectStoryNodes(addedNodes);
+
+        StoryNode[] storyArray = new StoryNode[addedNodes.serializedNodes.size()];
+        addedNodes.serializedNodes.toArray(storyArray);
+        return new StoryTree(storyArray);
     }
 
-    public boolean isDragging() {
-        return dragging;
+    private void appendStoryNodesToList(NodePairList list) {
+        appendStoryNodesToList(guiFolder.getEntryBox(), list);
     }
 
-    public Point2D getDraggedDelta() {
-        return draggedDelta;
+    private void appendStoryNodesToList(GuiConnectableBox box, NodePairList list) {
+        if (box instanceof GuiStoryNode) {
+            GuiStoryNode guiNode = (GuiStoryNode) box;
+            list.addAndSerializeGuiNode(guiNode);
+        }
+
+        for (GuiConnectableBox subBox : box.getOutputs()) {
+            appendStoryNodesToList(subBox, list);
+        }
     }
 
-    public GuiBox getConnectBox() {
-        return connectBox;
+    private void connectStoryNodes(NodePairList list) {
+        connectStoryNodes(guiFolder.getEntryBox(), list);
     }
 
-    public boolean isConnecting() {
-        return connecting;
+    private void connectStoryNodes(GuiConnectableBox box, NodePairList list) {
+        if (box instanceof GuiStoryNode) {
+            GuiStoryNode guiNode = (GuiStoryNode) box;
+            int index = list.indexOf(guiNode);
+            StoryNode serializedNode = list.get(index);
+            int optionIndex = 0;
+            for (GuiConnectableBox subBox : guiNode.getOutputs()) {
+                GuiStoryOption option = (GuiStoryOption) subBox;
+                String optionText = option.getText();
+                StoryKey[] unlockingKeys = new StoryKey[option.getUnlockingKeys().size()];
+                option.getUnlockingKeys().toArray(unlockingKeys);
+                StoryKey[] lockingKeys = new StoryKey[option.getLockingKeys().size()];
+                option.getLockingKeys().toArray(lockingKeys);
+                boolean forced = option.isForced();
+                int nextIndex = nextStoryNodeIndex(subBox.getOutputs().get(0), list);
+                serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText,
+                        nextIndex, unlockingKeys,
+                        lockingKeys, forced);
+                optionIndex++;
+            }
+        }
+
+        for (GuiConnectableBox subBox : box.getOutputs()) {
+            connectStoryNodes(subBox, list);
+        }
+    }
+
+    private int nextStoryNodeIndex(GuiConnectableBox box, NodePairList list) {
+        if (box instanceof GuiStoryNode) {
+            GuiStoryNode guiNode = (GuiStoryNode) box;
+            return list.indexOf(guiNode);
+        }
+
+        return nextStoryNodeIndex(box.getOutputs().get(0), list);
+    }
+
+    class NodePairList {
+        public List<GuiStoryNode> guiNodes;
+        public List<StoryNode> serializedNodes;
+
+        public NodePairList() {
+            this.guiNodes = new ArrayList<GuiStoryNode>();
+            this.serializedNodes = new ArrayList<StoryNode>();
+        }
+
+        public void addAndSerializeGuiNode(GuiStoryNode guiNode) {
+            guiNodes.add(guiNode);
+
+            StoryKey[] addedKeys = new StoryKey[guiNode.getAddedKeys().size()];
+            guiNode.getAddedKeys().toArray(addedKeys);
+            StoryKey[] removedKeys = new StoryKey[guiNode.getRemovedKeys().size()];
+            guiNode.getRemovedKeys().toArray(removedKeys);
+            StoryNode serializedNode = new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutputs().size()],
+                    addedKeys,
+                    removedKeys);
+            serializedNodes.add(serializedNode);
+        }
+
+        public int indexOf(GuiStoryNode guiNode) {
+            return guiNodes.indexOf(guiNode);
+        }
+
+        public StoryNode get(int index) {
+            return this.serializedNodes.get(index);
+        }
     }
 
 }

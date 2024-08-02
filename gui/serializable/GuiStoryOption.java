@@ -53,7 +53,7 @@ public class GuiStoryOption extends GuiTextBox {
         if (bindable instanceof GuiStoryNode) {
             this.inputs.clear();
             this.inputs.add(bindable);
-        }
+        } 
     }
 
     @Override

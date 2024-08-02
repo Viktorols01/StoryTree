@@ -26,7 +26,7 @@ public class EditorProgram {
 
         Button playButton = new Button("Play story");
         playButton.addActionListener((a) -> {
-            StoryTree tree = null; //gui.getGuiFolder().toStoryTree();
+            StoryTree tree = gui.toStoryTree();
             if (tree != null) {
                 ConsoleStoryReader reader = new ConsoleStoryReader(tree);
                 reader.read();
@@ -36,7 +36,7 @@ public class EditorProgram {
 
         Button savePlayableButton = new Button("Save playable story");
         savePlayableButton.addActionListener((a) -> {
-            StoryTree tree = null; // gui.getGuiFolder().toStoryTree();
+            StoryTree tree = gui.toStoryTree();
             if (tree != null) {
                 FileHandler.saveObject(tree, "files/stories", "Story files", "st");
             }

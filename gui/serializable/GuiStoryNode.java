@@ -34,7 +34,6 @@ public class GuiStoryNode extends GuiTextBox {
     @Override
     public void connectOutput(GuiConnectableBox bindable) {
         if (bindable instanceof GuiStoryOption) {
-            System.out.println("connected storynode output to option");
             this.outputs.add(bindable);
         }
     }
