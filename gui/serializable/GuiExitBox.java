@@ -1,6 +1,7 @@
 package gui.serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class GuiExitBox extends GuiBox implements ConnectableInput<GuiBox> {
@@ -28,7 +29,7 @@ public class GuiExitBox extends GuiBox implements ConnectableInput<GuiBox> {
     }
 
     @Override
-    public Iterable<GuiBox> getInputs() {
+    public Collection<GuiBox> getInputs() {
         return inputs;
     }
 

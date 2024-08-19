@@ -1,6 +1,7 @@
 package gui.serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import storyclasses.serializable.StoryKey;
@@ -34,18 +35,27 @@ public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>
         this.removedKeys = removedKeys;
     }
 
-    public List<OptionPair> geOptionPairs() {
+    public List<OptionPair> getOptionPairs() {
         return optionPairs;
     }
 
     public class OptionPair {
-        GuiStoryOption option;
-        GuiBox connectable;
+        private GuiStoryOption option;
+        private GuiBox connectable;
 
-        OptionPair(GuiBox connectable) {
+        private OptionPair(GuiBox connectable) {
             this.option = new GuiStoryOption("");
             this.connectable = connectable;
         }
+
+        public GuiStoryOption getOption() {
+            return option;
+        }
+
+        public GuiBox getConnectable() {
+            return connectable;
+        }
+
     }
 
     @Override
@@ -64,7 +74,7 @@ public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>
     }
 
     @Override
-    public Iterable<GuiBox> getOutputs() {
+    public Collection<GuiBox> getOutputs() {
         List<GuiBox> list = new ArrayList<GuiBox>();
         for (OptionPair pair : optionPairs) {
             list.add(pair.connectable);
@@ -88,7 +98,7 @@ public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>
     }
 
     @Override
-    public Iterable<GuiBox> getInputs() {
+    public Collection<GuiBox> getInputs() {
         return this.inputs;
     }
 }

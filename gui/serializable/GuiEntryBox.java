@@ -1,5 +1,6 @@
 package gui.serializable;
 
+import java.util.Collection;
 import java.util.Collections;
 
 public class GuiEntryBox extends GuiBox implements ConnectableOutput<GuiBox> {
@@ -26,7 +27,7 @@ public class GuiEntryBox extends GuiBox implements ConnectableOutput<GuiBox> {
     }
 
     @Override
-    public Iterable<GuiBox> getOutputs() {
+    public Collection<GuiBox> getOutputs() {
         return Collections.singleton(output);
     }
 

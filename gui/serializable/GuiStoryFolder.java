@@ -1,6 +1,7 @@
 package gui.serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, 
     }
 
     @Override
-    public Iterable<GuiBox> getOutputs() {
+    public Collection<GuiBox> getOutputs() {
         return Collections.singleton(output);
     }
 
@@ -116,7 +117,7 @@ public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, 
     }
 
     @Override
-    public Iterable<GuiBox> getInputs() {
+    public Collection<GuiBox> getInputs() {
         return inputs;
     }
 

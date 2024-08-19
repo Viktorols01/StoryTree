@@ -1,5 +1,7 @@
 package gui.serializable;
 
+import java.util.Collection;
+
 public interface ConnectableInput<T> {
 
     public abstract void connectInput(T connectable);
@@ -8,6 +10,6 @@ public interface ConnectableInput<T> {
 
     public abstract void disconnectInputs();
 
-    public abstract Iterable<T> getInputs();
+    public abstract Collection<T> getInputs();
 
 }

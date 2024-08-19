@@ -1,5 +1,7 @@
 package gui.serializable;
 
+import java.util.Collection;
+
 public interface ConnectableOutput<T> {
 
     public abstract void connectOutput(T connectable);
@@ -8,5 +10,5 @@ public interface ConnectableOutput<T> {
 
     public abstract void disconnectOutputs();
 
-    public abstract Iterable<T> getOutputs();
+    public abstract Collection<T> getOutputs();
 }

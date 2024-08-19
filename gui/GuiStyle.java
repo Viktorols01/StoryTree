@@ -8,7 +8,6 @@ import java.awt.Polygon;
 import java.util.Iterator;
 
 import gui.serializable.GuiBox;
-import gui.serializable.GuiConnectableBox;
 import gui.serializable.GuiEntryBox;
 import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryNode;
@@ -84,16 +83,16 @@ public class GuiStyle {
         final int margin = 10;
         int totalWidth = 0;
 
-        for (GuiConnectableBox output : node.getOutputs()) {
-            GuiStoryOption option = (GuiStoryOption) output;
+        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+            GuiStoryOption option = pair.getOption();
             totalWidth += option.getTextWidth() + BOX_PADDING * 2 + margin;
         }
         totalWidth -= margin;
 
         int x = node.getX() + node.getW() / 2 - totalWidth / 2;
         int y = node.getY() + node.getH() + margin;
-        for (GuiConnectableBox output : node.getOutputs()) {
-            GuiStoryOption option = (GuiStoryOption) output;
+        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+            GuiStoryOption option = pair.getOption();
             int width = option.getTextWidth();
             option.setPosition(x, y);
             x += width + BOX_PADDING * 2 + margin;
@@ -120,7 +119,7 @@ public class GuiStyle {
 
     public static void renderTextBox(Graphics2D g2d, GuiTextBox box, Color textColor) {
         g2d.fillRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
-        BOX_PADDING, BOX_PADDING);
+                BOX_PADDING, BOX_PADDING);
 
         g2d.setColor(textColor);
         Iterator<String> iterable = box.getText().lines().iterator();
@@ -161,7 +160,7 @@ public class GuiStyle {
     public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
         g2d.setColor(COLOR_BACKGROUND);
         renderTextBox(g2d, option, COLOR_OPTION);
-        
+
         renderBoxOutline(g2d, option, option.isForced() ? COLOR_OPTION_FORCED : COLOR_OPTION);
 
         if (!option.getUnlockingKeys().isEmpty() || !option.getLockingKeys().isEmpty()) {
@@ -172,8 +171,8 @@ public class GuiStyle {
         }
     }
 
-    public static void renderOutputs(Graphics2D g2d, GuiConnectableBox box) {
-        for (GuiConnectableBox output : box.getOutputs()) {
+    public static void renderOutputs(Graphics2D g2d, GuiEntryBox box) {
+        for (GuiBox output : box.getOutputs()) {
             GuiStyle.renderLine(g2d,
                     (int) (box.getX() + box.getW() / 2),
                     (int) (box.getY() + box.getH() / 2),
@@ -182,10 +181,19 @@ public class GuiStyle {
         }
     }
 
-    public static void renderOutOptions(Graphics2D g2d, GuiStoryNode node) {
-        for (GuiConnectableBox output : node.getOutputs()) {
-            GuiStoryOption option = (GuiStoryOption) output;
-            renderOutputs(g2d, option);
+    public static void renderOptionPairs(Graphics2D g2d, GuiStoryNode node) {
+        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+            GuiStoryOption option = pair.getOption();
+            GuiBox connectable = pair.getConnectable();
+            GuiStyle.renderLine(g2d,
+                    (int) (option.getX() + option.getW() / 2),
+                    (int) (option.getY() + option.getH() / 2),
+                    (int) (connectable.getX() + connectable.getW() / 2),
+                    (int) (connectable.getY() + connectable.getH() / 2));
+        }
+
+        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+            GuiStoryOption option = pair.getOption();
             renderOption(g2d, option);
         }
     }

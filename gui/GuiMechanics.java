@@ -31,7 +31,7 @@ public class GuiMechanics {
     private boolean dragging = false;
     private Point2D draggedDelta = null;
 
-    private ConnectableInput connectBox = null;
+    private GuiBox connectBox = null;
     private boolean connecting = false;
 
     private GuiStoryFolder guiFolder;
@@ -71,7 +71,7 @@ public class GuiMechanics {
             GuiStyle.renderOutputs(g2d, node);
         }
         for (GuiStoryNode node : guiFolder.getNodes()) {
-            GuiStyle.renderOutOptions(g2d, node);
+            GuiStyle.renderOptionPairs(g2d, node);
         }
         for (GuiStoryNode node : guiFolder.getNodes()) {
             GuiStyle.renderStoryNode(g2d, node, false);
