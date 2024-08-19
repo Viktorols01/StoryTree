@@ -10,9 +10,9 @@ import java.util.Iterator;
 import gui.serializable.GuiBox;
 import gui.serializable.GuiEntryBox;
 import gui.serializable.GuiExitBox;
+import gui.serializable.GuiStoryFolder;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
-import gui.serializable.GuiTextBox;
 
 public class GuiStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
@@ -37,7 +37,7 @@ public class GuiStyle {
 
     public static Color getNodeColor(GuiStoryNode node) {
         int inCount = node.getInputs().size();
-        int outCount = node.getOutputs().size();
+        int outCount = node.getOptionPairs().size();
         Color color;
         if (inCount == 0) {
             if (outCount == 0) {
@@ -57,15 +57,8 @@ public class GuiStyle {
         return color;
     }
 
-    public static void update(FontMetrics fontMetrics, GuiStoryNode node) {
-        updateSize(fontMetrics, node);
-        updateOptionPositions(fontMetrics, node);
-    }
-
-    public static void updateSize(FontMetrics fontMetrics, GuiTextBox box) {
-        box.setLineHeight(fontMetrics.getHeight());
-
-        Iterator<String> iterable = box.getText().lines().iterator();
+    public static int getTextWidth(String text, FontMetrics fontMetrics) {
+        Iterator<String> iterable = text.lines().iterator();
         int width = 0;
         while (iterable.hasNext()) {
             String line = iterable.next();
@@ -74,9 +67,24 @@ public class GuiStyle {
                 width = lineWidth;
             }
         }
-        box.setTextWidth(width);
-        int height = (int) (box.getLineHeight() * box.getText().lines().count());
-        box.setSize(width + 2 * BOX_PADDING, height + 2 * BOX_PADDING);
+
+        return width;
+    }
+
+    public static int getLineHeight(String text, FontMetrics fontMetrics) {
+        int lineHeight = fontMetrics.getHeight();
+        return lineHeight;
+    }
+
+    public static int getTextHeight(String text, FontMetrics fontMetrics) {
+        int height = (int) (getLineHeight(text, fontMetrics) * text.lines().count());
+        return height;
+    }
+
+    public static void updateOptionSize(FontMetrics fontMetrics, GuiStoryOption option) {
+        int width = getTextWidth(option.getText(), fontMetrics);
+        int height = getTextHeight(option.getText(), fontMetrics);
+        option.setSize(width + 2 * BOX_PADDING, height + 2 * BOX_PADDING);
     }
 
     public static void updateOptionPositions(FontMetrics fontMetrics, GuiStoryNode node) {
@@ -85,7 +93,7 @@ public class GuiStyle {
 
         for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
             GuiStoryOption option = pair.getOption();
-            totalWidth += option.getTextWidth() + BOX_PADDING * 2 + margin;
+            totalWidth += getTextWidth(option.getText(), fontMetrics) + BOX_PADDING * 2 + margin;
         }
         totalWidth -= margin;
 
@@ -93,7 +101,7 @@ public class GuiStyle {
         int y = node.getY() + node.getH() + margin;
         for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
             GuiStoryOption option = pair.getOption();
-            int width = option.getTextWidth();
+            int width = getTextWidth(option.getText(), fontMetrics);
             option.setPosition(x, y);
             x += width + BOX_PADDING * 2 + margin;
         }
@@ -117,16 +125,17 @@ public class GuiStyle {
         renderArrow(g2d, box.getX(), box.getY(), box.getW(), true);
     }
 
-    public static void renderTextBox(Graphics2D g2d, GuiTextBox box, Color textColor) {
+    public static void renderTextBox(Graphics2D g2d, GuiBox box, String text, Color textColor) {
         g2d.fillRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
                 BOX_PADDING, BOX_PADDING);
 
         g2d.setColor(textColor);
-        Iterator<String> iterable = box.getText().lines().iterator();
+        int lineHeight = getLineHeight(text, g2d.getFontMetrics());
+        Iterator<String> iterable = text.lines().iterator();
         int i = 0;
         while (iterable.hasNext()) {
             g2d.drawString(iterable.next(), (int) (box.getX() + BOX_PADDING),
-                    (int) (box.getY() + BOX_PADDING / 2 + (i + 1) * box.getLineHeight()));
+                    (int) (box.getY() + BOX_PADDING / 2 + (i + 1) * lineHeight));
             i++;
         }
     }
@@ -140,51 +149,63 @@ public class GuiStyle {
     }
 
     public static void renderStoryNode(Graphics2D g2d, GuiStoryNode node, boolean isRoot) {
+        FontMetrics fontMetrics = g2d.getFontMetrics();
+        int lineHeight = getLineHeight(node.getText(), fontMetrics);
         g2d.setColor(getNodeColor(node));
-        renderTextBox(g2d, node, COLOR_WHITE);
+        renderTextBox(g2d, node, node.getText(), COLOR_WHITE);
         if (isRoot) {
             renderBoxOutline(g2d, node, new Color(255, 255, 255));
             g2d.drawString("Root", (int) node.getX(), (int) node.getY() - 2);
         }
         if (!node.getAddedKeys().isEmpty()) {
-            renderPlus(g2d, node.getX() + node.getW(), node.getY(), node.getLineHeight() / 2);
-            renderKey(g2d, node.getX() + node.getW() + node.getLineHeight() / 2, node.getY(), node.getLineHeight());
+            renderPlus(g2d, node.getX() + node.getW(), node.getY(), lineHeight / 2);
+            renderKey(g2d, node.getX() + node.getW() + lineHeight / 2, node.getY(), lineHeight);
         }
         if (!node.getRemovedKeys().isEmpty()) {
-            renderMinus(g2d, node.getX() + node.getW(), node.getY() + node.getLineHeight(), node.getLineHeight() / 2);
-            renderKey(g2d, node.getX() + node.getW() + node.getLineHeight() / 2, node.getY() + node.getLineHeight(),
-                    node.getLineHeight());
+            renderMinus(g2d, node.getX() + node.getW(), node.getY() + lineHeight, lineHeight / 2);
+            renderKey(g2d, node.getX() + node.getW() + lineHeight / 2, node.getY() + lineHeight,
+                    lineHeight);
         }
     }
 
     public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
         g2d.setColor(COLOR_BACKGROUND);
-        renderTextBox(g2d, option, COLOR_OPTION);
+        renderTextBox(g2d, option, option.getText(), COLOR_OPTION);
 
         renderBoxOutline(g2d, option, option.isForced() ? COLOR_OPTION_FORCED : COLOR_OPTION);
 
         if (!option.getUnlockingKeys().isEmpty() || !option.getLockingKeys().isEmpty()) {
-            int lockSize = option.getLineHeight() / 2;
+            int lockSize = getLineHeight(option.getText(), g2d.getFontMetrics()) / 2;
             renderLock(g2d, option.getX() + option.getW() / 2 - lockSize / 2,
                     option.getY() + option.getH() - lockSize / 2,
                     lockSize, BOX_PADDING / 2, option.isForced());
         }
     }
 
-    public static void renderOutputs(Graphics2D g2d, GuiEntryBox box) {
-        for (GuiBox output : box.getOutputs()) {
-            GuiStyle.renderLine(g2d,
-                    (int) (box.getX() + box.getW() / 2),
-                    (int) (box.getY() + box.getH() / 2),
-                    (int) (output.getX() + output.getW() / 2),
-                    (int) (output.getY() + output.getH() / 2));
-        }
+    public static void renderOutputLine(Graphics2D g2d, GuiEntryBox box) {
+        GuiBox output = box.getOutput();
+        GuiStyle.renderLine(g2d,
+                (int) (box.getX() + box.getW() / 2),
+                (int) (box.getY() + box.getH() / 2),
+                (int) (output.getX() + output.getW() / 2),
+                (int) (output.getY() + output.getH() / 2));
+
+    }
+
+    public static void renderOutputLine(Graphics2D g2d, GuiStoryFolder box) {
+        GuiBox output = box.getOutput();
+        GuiStyle.renderLine(g2d,
+                (int) (box.getX() + box.getW() / 2),
+                (int) (box.getY() + box.getH() / 2),
+                (int) (output.getX() + output.getW() / 2),
+                (int) (output.getY() + output.getH() / 2));
+
     }
 
     public static void renderOptionPairs(Graphics2D g2d, GuiStoryNode node) {
         for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
             GuiStoryOption option = pair.getOption();
-            GuiBox connectable = pair.getConnectable();
+            GuiBox connectable = pair.getOutput();
             GuiStyle.renderLine(g2d,
                     (int) (option.getX() + option.getW() / 2),
                     (int) (option.getY() + option.getH() / 2),

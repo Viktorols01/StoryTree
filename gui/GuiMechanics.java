@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gui.serializable.ConnectableInput;
+import gui.serializable.ConnectableOutput;
 import gui.serializable.GuiBox;
+import gui.serializable.GuiInputBox;
 import gui.serializable.GuiEntryBox;
 import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryFolder;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
-import gui.serializable.GuiTextBox;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
@@ -31,7 +32,7 @@ public class GuiMechanics {
     private boolean dragging = false;
     private Point2D draggedDelta = null;
 
-    private GuiBox connectBox = null;
+    private GuiInputBox connectBox = null;
     private boolean connecting = false;
 
     private GuiStoryFolder guiFolder;
@@ -65,11 +66,8 @@ public class GuiMechanics {
                     (int) absPos.getY());
         }
 
-        GuiStyle.renderOutputs(g2d, guiFolder.getEntryBox());
+        GuiStyle.renderOutputLine(g2d, guiFolder.getEntryBox());
 
-        for (GuiStoryNode node : guiFolder.getNodes()) {
-            GuiStyle.renderOutputs(g2d, node);
-        }
         for (GuiStoryNode node : guiFolder.getNodes()) {
             GuiStyle.renderOptionPairs(g2d, node);
         }
@@ -150,12 +148,12 @@ public class GuiMechanics {
                     connectBox = node;
                     return;
                 }
-                for (GuiConnectableBox output : node.getOutputs()) {
-                    GuiStoryOption option = (GuiStoryOption) output;
+                for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+                    GuiStoryOption option = pair.getOption();
                     if (option.isInside(absPos.getX(), absPos.getY())) {
                         UserInputGetter.modifyOption(option);
-                        GuiStyle.updateSize(fontMetrics, option);
-                        GuiStyle.update(fontMetrics, node);
+                        GuiStyle.updateOptionSize(fontMetrics, option);
+                        GuiStyle.updateOptionPositions(fontMetrics, node);
                         return;
                     }
                 }
@@ -181,9 +179,9 @@ public class GuiMechanics {
 
             if (connectBox.isInside(absPos.getX(), absPos.getY())) {
                 if (connectBox instanceof GuiStoryNode) {
-                    GuiStoryNode bindNode = (GuiStoryNode) connectBox;
-                    UserInputGetter.modifyNode(bindNode);
-                    GuiStyle.update(fontMetrics, bindNode);
+                    GuiStoryNode node = (GuiStoryNode) connectBox;
+                    UserInputGetter.modifyNode(node);
+                    GuiStyle.updateOptionPositions(fontMetrics, node);
                     connectBox = null;
                     return;
                 }
@@ -192,7 +190,8 @@ public class GuiMechanics {
             for (GuiStoryNode node : guiFolder.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     if (connectBox instanceof GuiEntryBox) {
-                        connectBox.connectOutput(node);
+                        GuiEntryBox entryBox = (GuiEntryBox) connectBox;
+                        entryBox.connectOutput(node);
                         node.connectInput(connectBox);
                         connectBox = null;
                         return;
@@ -243,35 +242,23 @@ public class GuiMechanics {
         camera.setZoom(camera.getZoom() * Math.pow(1.15, -rotations));
     }
 
-    public GuiStoryOption addStoryOption(String optionText, GuiStoryNode parent, GuiStoryNode child) {
-        GuiStoryOption option = new GuiStoryOption(optionText);
-        GuiStyle.updateSize(fontMetrics, option);
-        parent.connectOutput(option);
-        option.connectInput(parent);
-        option.connectOutput(child);
-        child.connectInput(option);
-        GuiStyle.updateOptionPositions(fontMetrics, parent);
-        return option;
-    }
-
     public GuiStoryNode addStoryNode(String text) {
         Point2D absPos = getAbsoluteMousePosition();
         GuiStoryNode node = new GuiStoryNode(text, (int) absPos.getX(), (int) absPos.getY());
-        GuiStyle.updateSize(fontMetrics, node);
 
         guiFolder.getNodes().add(node);
         return node;
     }
 
-    public GuiTextBox deleteTextBox() {
+    public GuiBox deleteBox() {
         Point2D absPos = getAbsoluteMousePosition();
         for (GuiStoryNode node : guiFolder.getNodes()) {
             if (node.isInside(absPos.getX(), absPos.getY())) {
                 deleteStoryNode(node);
                 return node;
             }
-            for (GuiConnectableBox output : node.getOutputs()) {
-                GuiStoryOption option = (GuiStoryOption) output;
+            for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+                GuiStoryOption option = pair.getOption();
                 if (option.isInside(absPos.getX(), absPos.getY())) {
                     deleteStoryOption(option);
                     return option;
@@ -283,14 +270,14 @@ public class GuiMechanics {
 
     private GuiStoryNode deleteStoryNode(GuiStoryNode node) {
         for (int i = node.getInputs().size() - 1; i >= 0; i--) {
-            GuiConnectableBox input = node.getInputs().get(i);
+            GuiBox input = node.getInputs().get(i);
             if (input instanceof GuiStoryOption) {
                 GuiStoryOption option = (GuiStoryOption) input;
                 deleteStoryOption(option);
             }
         }
         for (int i = node.getOutputs().size() - 1; i >= 0; i--) {
-            GuiConnectableBox output = node.getInputs().get(i);
+            GuiInputBox output = node.getInputs().get(i);
             GuiStoryOption option = (GuiStoryOption) output;
             deleteStoryOption(option);
         }
@@ -314,103 +301,4 @@ public class GuiMechanics {
         Point2D absPos = camera.inverseTransform(relPos);
         return absPos;
     }
-
-    public StoryTree toStoryTree() {
-        NodePairList addedNodes = new NodePairList();
-
-        appendStoryNodesToList(addedNodes);
-
-        connectStoryNodes(addedNodes);
-
-        StoryNode[] storyArray = new StoryNode[addedNodes.serializedNodes.size()];
-        addedNodes.serializedNodes.toArray(storyArray);
-        return new StoryTree(storyArray);
-    }
-
-    private void appendStoryNodesToList(NodePairList list) {
-        appendStoryNodesToList(guiFolder.getEntryBox(), list);
-    }
-
-    private void appendStoryNodesToList(GuiConnectableBox box, NodePairList list) {
-        if (box instanceof GuiStoryNode) {
-            GuiStoryNode guiNode = (GuiStoryNode) box;
-            list.addAndSerializeGuiNode(guiNode);
-        }
-
-        for (GuiConnectableBox subBox : box.getOutputs()) {
-            appendStoryNodesToList(subBox, list);
-        }
-    }
-
-    private void connectStoryNodes(NodePairList list) {
-        connectStoryNodes(guiFolder.getEntryBox(), list);
-    }
-
-    private void connectStoryNodes(GuiConnectableBox box, NodePairList list) {
-        if (box instanceof GuiStoryNode) {
-            GuiStoryNode guiNode = (GuiStoryNode) box;
-            int index = list.indexOf(guiNode);
-            StoryNode serializedNode = list.get(index);
-            int optionIndex = 0;
-            for (GuiConnectableBox subBox : guiNode.getOutputs()) {
-                GuiStoryOption option = (GuiStoryOption) subBox;
-                String optionText = option.getText();
-                StoryKey[] unlockingKeys = new StoryKey[option.getUnlockingKeys().size()];
-                option.getUnlockingKeys().toArray(unlockingKeys);
-                StoryKey[] lockingKeys = new StoryKey[option.getLockingKeys().size()];
-                option.getLockingKeys().toArray(lockingKeys);
-                boolean forced = option.isForced();
-                int nextIndex = nextStoryNodeIndex(subBox.getOutputs().get(0), list);
-                serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText,
-                        nextIndex, unlockingKeys,
-                        lockingKeys, forced);
-                optionIndex++;
-            }
-        }
-
-        for (GuiConnectableBox subBox : box.getOutputs()) {
-            connectStoryNodes(subBox, list);
-        }
-    }
-
-    private int nextStoryNodeIndex(GuiConnectableBox box, NodePairList list) {
-        if (box instanceof GuiStoryNode) {
-            GuiStoryNode guiNode = (GuiStoryNode) box;
-            return list.indexOf(guiNode);
-        }
-
-        return nextStoryNodeIndex(box.getOutputs().get(0), list);
-    }
-
-    class NodePairList {
-        public List<GuiStoryNode> guiNodes;
-        public List<StoryNode> serializedNodes;
-
-        public NodePairList() {
-            this.guiNodes = new ArrayList<GuiStoryNode>();
-            this.serializedNodes = new ArrayList<StoryNode>();
-        }
-
-        public void addAndSerializeGuiNode(GuiStoryNode guiNode) {
-            guiNodes.add(guiNode);
-
-            StoryKey[] addedKeys = new StoryKey[guiNode.getAddedKeys().size()];
-            guiNode.getAddedKeys().toArray(addedKeys);
-            StoryKey[] removedKeys = new StoryKey[guiNode.getRemovedKeys().size()];
-            guiNode.getRemovedKeys().toArray(removedKeys);
-            StoryNode serializedNode = new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutputs().size()],
-                    addedKeys,
-                    removedKeys);
-            serializedNodes.add(serializedNode);
-        }
-
-        public int indexOf(GuiStoryNode guiNode) {
-            return guiNodes.indexOf(guiNode);
-        }
-
-        public StoryNode get(int index) {
-            return this.serializedNodes.get(index);
-        }
-    }
-
 }

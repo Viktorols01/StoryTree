@@ -1,23 +1,20 @@
 package gui.serializable;
 
-import java.util.Collection;
-import java.util.Collections;
+public class GuiEntryBox extends GuiOutputBox {
 
-public class GuiEntryBox extends GuiBox implements ConnectableOutput<GuiBox> {
-
-    private GuiBox output;
+    private InputSocket output;
 
     public GuiEntryBox(int x, int y, int w, int h) {
         super(x, y, w, h);
     }
 
     @Override
-    public void connectOutput(GuiBox connectable) {
+    public void connectOutput(InputSocket connectable) {
         output = connectable;
     }
 
     @Override
-    public void disconnectOutput(GuiBox connectable) {
+    public void disconnectOutput(InputSocket connectable) {
         output = null;
     }
 
@@ -26,11 +23,8 @@ public class GuiEntryBox extends GuiBox implements ConnectableOutput<GuiBox> {
         output = null;
     }
 
-    @Override
-    public Collection<GuiBox> getOutputs() {
-        return Collections.singleton(output);
+    public InputSocket getOutput() {
+        return output;
     }
-
-    
 
 }

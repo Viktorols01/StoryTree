@@ -122,6 +122,6 @@ public class GuiStoryEditor extends Gui {
     }
 
     public StoryTree toStoryTree() {
-        return guiMechanics.toStoryTree();
+        return GuiSerializer.toStoryTree(guiMechanics.getGuiFolder());
     }
 }

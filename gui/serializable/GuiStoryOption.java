@@ -5,17 +5,27 @@ import java.util.List;
 
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryOption extends GuiTextBox {
+public class GuiStoryOption extends GuiBox {
 
+    private String text;
     private List<StoryKey> unlockingKeys;
     private List<StoryKey> lockingKeys;
     private boolean forced;
 
     public GuiStoryOption(String text) {
-        super(text, 0, 0);
+        super(0, 0, 0, 0);
+        this.text = text;
         this.unlockingKeys = new ArrayList<StoryKey>();
         this.lockingKeys = new ArrayList<StoryKey>();
         this.forced = false;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public List<StoryKey> getUnlockingKeys() {

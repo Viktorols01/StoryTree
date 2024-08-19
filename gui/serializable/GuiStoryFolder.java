@@ -2,10 +2,9 @@ package gui.serializable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, ConnectableOutput<GuiBox> {
+public class GuiStoryFolder extends GuiInputOutputBox {
 
     private GuiStoryFolder parentFolder;
     private List<GuiStoryFolder> childrenFolders;
@@ -13,8 +12,8 @@ public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, 
     private GuiEntryBox entryBox;
     private GuiExitBox exitBox;
 
-    private List<GuiBox> inputs;
-    private GuiBox output;
+    private List<OutputSocket> inputs;
+    private InputSocket output;
     private List<GuiStoryNode> nodes;
 
     public GuiStoryFolder(int size) {
@@ -82,12 +81,12 @@ public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, 
     }
 
     @Override
-    public void connectOutput(GuiBox connectable) {
+    public void connectOutput(InputSocket connectable) {
         this.output = connectable;
     }
 
     @Override
-    public void disconnectOutput(GuiBox connectable) {
+    public void disconnectOutput(InputSocket connectable) {
         this.output = null;
     }
 
@@ -97,17 +96,12 @@ public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, 
     }
 
     @Override
-    public Collection<GuiBox> getOutputs() {
-        return Collections.singleton(output);
-    }
-
-    @Override
-    public void connectInput(GuiBox connectable) {
+    public void connectInput(OutputSocket connectable) {
         inputs.add(connectable);
     }
 
     @Override
-    public void disconnectInput(GuiBox connectable) {
+    public void disconnectInput(OutputSocket connectable) {
         inputs.remove(connectable);
     }
 
@@ -116,8 +110,11 @@ public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, 
         inputs.clear();
     }
 
-    @Override
-    public Collection<GuiBox> getInputs() {
+    public InputSocket getOutput() {
+        return output;
+    }
+
+    public Collection<OutputSocket> getInputs() {
         return inputs;
     }
 

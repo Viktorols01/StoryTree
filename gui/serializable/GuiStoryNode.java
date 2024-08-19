@@ -1,22 +1,31 @@
 package gui.serializable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>, ConnectableOutput<GuiBox> {
-    private List<GuiBox> inputs;
+public class GuiStoryNode extends GuiInputOutputBox {
+    private List<OutputSocket> inputs;
     private List<OptionPair> optionPairs;
 
+    private String text;
     private List<StoryKey> addedKeys;
     private List<StoryKey> removedKeys;
 
     public GuiStoryNode(String text, int x, int y) {
-        super(text, x, y);
+        super(x, y, 0, 0);
+        this.text = text;
         this.addedKeys = new ArrayList<StoryKey>();
         this.removedKeys = new ArrayList<StoryKey>();
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public List<StoryKey> getAddedKeys() {
@@ -39,33 +48,37 @@ public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>
         return optionPairs;
     }
 
+    public List<OutputSocket> getInputs() {
+        return inputs;
+    }
+
     public class OptionPair {
         private GuiStoryOption option;
-        private GuiBox connectable;
+        private InputSocket output;
 
-        private OptionPair(GuiBox connectable) {
+        private OptionPair(InputSocket output) {
             this.option = new GuiStoryOption("");
-            this.connectable = connectable;
+            this.output = output;
         }
 
         public GuiStoryOption getOption() {
             return option;
         }
 
-        public GuiBox getConnectable() {
-            return connectable;
+        public InputSocket getOutput() {
+            return output;
         }
 
     }
 
     @Override
-    public void connectOutput(GuiBox connectable) {
+    public void connectOutput(InputSocket connectable) {
         this.optionPairs.add(new OptionPair(connectable));
     }
 
     @Override
-    public void disconnectOutput(GuiBox connectable) {
-        this.optionPairs.removeIf(pair -> pair.connectable.equals(connectable));
+    public void disconnectOutput(InputSocket connectable) {
+        this.optionPairs.removeIf(pair -> pair.getOutput().equals(connectable));
     }
 
     @Override
@@ -74,31 +87,17 @@ public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>
     }
 
     @Override
-    public Collection<GuiBox> getOutputs() {
-        List<GuiBox> list = new ArrayList<GuiBox>();
-        for (OptionPair pair : optionPairs) {
-            list.add(pair.connectable);
-        }
-        return list;
-    }
-
-    @Override
-    public void connectInput(GuiBox connectable) {
+    public void connectInput(OutputSocket connectable) {
         this.inputs.add(connectable);
     }
 
     @Override
-    public void disconnectInput(GuiBox connectable) {
+    public void disconnectInput(OutputSocket connectable) {
         this.inputs.remove(connectable);
     }
 
     @Override
     public void disconnectInputs() {
         this.inputs.clear();
-    }
-
-    @Override
-    public Collection<GuiBox> getInputs() {
-        return this.inputs;
     }
 }
