@@ -13,6 +13,8 @@ import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryFolder;
 import gui.serializable.GuiStoryNode;
 import gui.serializable.GuiStoryOption;
+import gui.serializable.InputInteractible;
+import gui.serializable.TextInteractible;
 
 public class GuiStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
@@ -81,15 +83,20 @@ public class GuiStyle {
         return height;
     }
 
-    public static void updateOptionSize(FontMetrics fontMetrics, GuiStoryOption option) {
-        int width = getTextWidth(option.getText(), fontMetrics);
-        int height = getTextHeight(option.getText(), fontMetrics);
-        option.setSize(width + 2 * BOX_PADDING, height + 2 * BOX_PADDING);
+    public static void updateSize(FontMetrics fontMetrics, TextInteractible textInteractible) {
+        int width = getTextWidth(textInteractible.getText(), fontMetrics);
+        int height = getTextHeight(textInteractible.getText(), fontMetrics);
+        textInteractible.setSize(width + 2 * BOX_PADDING, height + 2 * BOX_PADDING);
     }
 
-    public static void updateOptionPositions(FontMetrics fontMetrics, GuiStoryNode node) {
+    public static void updateOptions(FontMetrics fontMetrics, GuiStoryNode node) {
         final int margin = 10;
         int totalWidth = 0;
+
+        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
+            GuiStoryOption option = pair.getOption();
+            updateSize(fontMetrics, option);
+        }
 
         for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
             GuiStoryOption option = pair.getOption();
@@ -183,7 +190,7 @@ public class GuiStyle {
     }
 
     public static void renderOutputLine(Graphics2D g2d, GuiEntryBox box) {
-        GuiBox output = box.getOutput();
+        InputInteractible output = box.getOutput();
         GuiStyle.renderLine(g2d,
                 (int) (box.getX() + box.getW() / 2),
                 (int) (box.getY() + box.getH() / 2),
@@ -193,7 +200,7 @@ public class GuiStyle {
     }
 
     public static void renderOutputLine(Graphics2D g2d, GuiStoryFolder box) {
-        GuiBox output = box.getOutput();
+        InputInteractible output = box.getOutput();
         GuiStyle.renderLine(g2d,
                 (int) (box.getX() + box.getW() / 2),
                 (int) (box.getY() + box.getH() / 2),
@@ -205,7 +212,7 @@ public class GuiStyle {
     public static void renderOptionPairs(Graphics2D g2d, GuiStoryNode node) {
         for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
             GuiStoryOption option = pair.getOption();
-            GuiBox connectable = pair.getOutput();
+            InputInteractible connectable = pair.getOutput();
             GuiStyle.renderLine(g2d,
                     (int) (option.getX() + option.getW() / 2),
                     (int) (option.getY() + option.getH() / 2),

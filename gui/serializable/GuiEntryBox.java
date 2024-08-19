@@ -1,20 +1,20 @@
 package gui.serializable;
 
-public class GuiEntryBox extends GuiOutputBox {
+public class GuiEntryBox extends GuiBox implements OutputInteractible  {
 
-    private InputSocket output;
+    private InputInteractible output;
 
     public GuiEntryBox(int x, int y, int w, int h) {
         super(x, y, w, h);
     }
 
     @Override
-    public void connectOutput(InputSocket connectable) {
+    public void connectOutput(InputInteractible connectable) {
         output = connectable;
     }
 
     @Override
-    public void disconnectOutput(InputSocket connectable) {
+    public void disconnectOutput(InputInteractible connectable) {
         output = null;
     }
 
@@ -23,7 +23,7 @@ public class GuiEntryBox extends GuiOutputBox {
         output = null;
     }
 
-    public InputSocket getOutput() {
+    public InputInteractible getOutput() {
         return output;
     }
 

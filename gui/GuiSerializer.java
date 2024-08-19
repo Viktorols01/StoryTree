@@ -29,13 +29,13 @@ public class GuiSerializer {
         appendStoryNodesToList(folder.getEntryBox(), list);
     }
 
-    private static void appendStoryNodesToList(GuiInputBox box, NodePairList list) {
+    private static void appendStoryNodesToList(InputInteractible box, NodePairList list) {
         if (box instanceof GuiStoryNode) {
             GuiStoryNode guiNode = (GuiStoryNode) box;
             list.addAndSerializeGuiNode(guiNode);
         }
 
-        for (GuiInputBox subBox : box.getOutputs()) {
+        for (InputInteractible subBox : box.getOutputs()) {
             appendStoryNodesToList(subBox, list);
         }
     }
@@ -44,13 +44,13 @@ public class GuiSerializer {
         connectStoryNodes(guiFolder.getEntryBox(), list);
     }
 
-    private static void connectStoryNodes(GuiInputBox box, NodePairList list) {
+    private static void connectStoryNodes(InputInteractible box, NodePairList list) {
         if (box instanceof GuiStoryNode) {
             GuiStoryNode guiNode = (GuiStoryNode) box;
             int index = list.indexOf(guiNode);
             StoryNode serializedNode = list.get(index);
             int optionIndex = 0;
-            for (GuiInputBox subBox : guiNode.getOutputs()) {
+            for (InputInteractible subBox : guiNode.getOutputs()) {
                 GuiStoryOption option = (GuiStoryOption) subBox;
                 String optionText = option.getText();
                 StoryKey[] unlockingKeys = new StoryKey[option.getUnlockingKeys().size()];
@@ -66,12 +66,12 @@ public class GuiSerializer {
             }
         }
 
-        for (GuiInputBox subBox : box.getOutputs()) {
+        for (InputInteractible subBox : box.getOutputs()) {
             connectStoryNodes(subBox, list);
         }
     }
 
-    private static int nextStoryNodeIndex(GuiInputBox box, NodePairList list) {
+    private static int nextStoryNodeIndex(InputInteractible box, NodePairList list) {
         if (box instanceof GuiStoryNode) {
             GuiStoryNode guiNode = (GuiStoryNode) box;
             return list.indexOf(guiNode);

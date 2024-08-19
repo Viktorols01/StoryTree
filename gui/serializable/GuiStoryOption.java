@@ -5,7 +5,7 @@ import java.util.List;
 
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryOption extends GuiBox {
+public class GuiStoryOption extends GuiBox implements TextInteractible {
 
     private String text;
     private List<StoryKey> unlockingKeys;
@@ -20,10 +20,12 @@ public class GuiStoryOption extends GuiBox {
         this.forced = false;
     }
 
+    @Override
     public String getText() {
         return text;
     }
 
+    @Override
     public void setText(String text) {
         this.text = text;
     }

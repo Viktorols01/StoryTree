@@ -3,22 +3,22 @@ package gui.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiExitBox extends GuiInputBox {
+public class GuiExitBox extends GuiBox implements InputInteractible {
 
-    private List<OutputSocket> inputs;
+    private List<OutputInteractible> inputs;
 
     public GuiExitBox(int x, int y, int w, int h) {
         super(x, y, w, h);
-        this.inputs = new ArrayList<OutputSocket>();
+        this.inputs = new ArrayList<OutputInteractible>();
     }
 
     @Override
-    public void connectInput(OutputSocket connectable) {
+    public void connectInput(OutputInteractible connectable) {
         inputs.add(connectable);
     }
 
     @Override
-    public void disconnectInput(OutputSocket connectable) {
+    public void disconnectInput(OutputInteractible connectable) {
         inputs.remove(connectable);
     }
 
@@ -27,7 +27,7 @@ public class GuiExitBox extends GuiInputBox {
         inputs.clear();
     }
 
-    public List<OutputSocket> getInputs() {
+    public List<OutputInteractible> getInputs() {
         return inputs;
     }
 }

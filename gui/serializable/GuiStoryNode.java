@@ -1,12 +1,14 @@
 package gui.serializable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.UserInputGetter;
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryNode extends GuiInputOutputBox {
-    private List<OutputSocket> inputs;
+public class GuiStoryNode extends GuiBox implements IOInteractible, TextInteractible {
+    private List<OutputInteractible> inputs;
     private List<OptionPair> optionPairs;
 
     private String text;
@@ -18,12 +20,17 @@ public class GuiStoryNode extends GuiInputOutputBox {
         this.text = text;
         this.addedKeys = new ArrayList<StoryKey>();
         this.removedKeys = new ArrayList<StoryKey>();
+
+        this.inputs = new ArrayList<OutputInteractible>();
+        this.optionPairs = new ArrayList<OptionPair>();
     }
 
+    @Override
     public String getText() {
         return text;
     }
 
+    @Override
     public void setText(String text) {
         this.text = text;
     }
@@ -48,16 +55,16 @@ public class GuiStoryNode extends GuiInputOutputBox {
         return optionPairs;
     }
 
-    public List<OutputSocket> getInputs() {
+    public List<OutputInteractible> getInputs() {
         return inputs;
     }
 
-    public class OptionPair {
+    public class OptionPair implements Serializable {
         private GuiStoryOption option;
-        private InputSocket output;
+        private InputInteractible output;
 
-        private OptionPair(InputSocket output) {
-            this.option = new GuiStoryOption("");
+        private OptionPair(InputInteractible output) {
+            this.option = new GuiStoryOption(UserInputGetter.getTextFromPromt("Adding option...", ""));
             this.output = output;
         }
 
@@ -65,19 +72,19 @@ public class GuiStoryNode extends GuiInputOutputBox {
             return option;
         }
 
-        public InputSocket getOutput() {
+        public InputInteractible getOutput() {
             return output;
         }
 
     }
 
     @Override
-    public void connectOutput(InputSocket connectable) {
+    public void connectOutput(InputInteractible connectable) {
         this.optionPairs.add(new OptionPair(connectable));
     }
 
     @Override
-    public void disconnectOutput(InputSocket connectable) {
+    public void disconnectOutput(InputInteractible connectable) {
         this.optionPairs.removeIf(pair -> pair.getOutput().equals(connectable));
     }
 
@@ -87,12 +94,12 @@ public class GuiStoryNode extends GuiInputOutputBox {
     }
 
     @Override
-    public void connectInput(OutputSocket connectable) {
+    public void connectInput(OutputInteractible connectable) {
         this.inputs.add(connectable);
     }
 
     @Override
-    public void disconnectInput(OutputSocket connectable) {
+    public void disconnectInput(OutputInteractible connectable) {
         this.inputs.remove(connectable);
     }
 

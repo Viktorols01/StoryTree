@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class GuiStoryFolder extends GuiInputOutputBox {
+public class GuiStoryFolder extends GuiBox implements IOInteractible {
 
     private GuiStoryFolder parentFolder;
     private List<GuiStoryFolder> childrenFolders;
@@ -12,8 +12,8 @@ public class GuiStoryFolder extends GuiInputOutputBox {
     private GuiEntryBox entryBox;
     private GuiExitBox exitBox;
 
-    private List<OutputSocket> inputs;
-    private InputSocket output;
+    private List<OutputInteractible> inputs;
+    private InputInteractible output;
     private List<GuiStoryNode> nodes;
 
     public GuiStoryFolder(int size) {
@@ -81,12 +81,12 @@ public class GuiStoryFolder extends GuiInputOutputBox {
     }
 
     @Override
-    public void connectOutput(InputSocket connectable) {
+    public void connectOutput(InputInteractible connectable) {
         this.output = connectable;
     }
 
     @Override
-    public void disconnectOutput(InputSocket connectable) {
+    public void disconnectOutput(InputInteractible connectable) {
         this.output = null;
     }
 
@@ -96,12 +96,12 @@ public class GuiStoryFolder extends GuiInputOutputBox {
     }
 
     @Override
-    public void connectInput(OutputSocket connectable) {
+    public void connectInput(OutputInteractible connectable) {
         inputs.add(connectable);
     }
 
     @Override
-    public void disconnectInput(OutputSocket connectable) {
+    public void disconnectInput(OutputInteractible connectable) {
         inputs.remove(connectable);
     }
 
@@ -110,11 +110,11 @@ public class GuiStoryFolder extends GuiInputOutputBox {
         inputs.clear();
     }
 
-    public InputSocket getOutput() {
+    public InputInteractible getOutput() {
         return output;
     }
 
-    public Collection<OutputSocket> getInputs() {
+    public Collection<OutputInteractible> getInputs() {
         return inputs;
     }
 

@@ -1,7 +1,7 @@
 package gui;
 
 import gui.serializable.GuiStoryFolder;
-import storyclasses.serializable.StoryTree;
+//import storyclasses.serializable.StoryTree;
 import tools.Gui;
 
 import java.awt.Font;
@@ -107,7 +107,7 @@ public class GuiStoryEditor extends Gui {
     protected void onKeyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-                guiMechanics.deleteTextBox();
+                guiMechanics.deleteBox();
                 break;
         }
         this.repaint();
@@ -121,7 +121,7 @@ public class GuiStoryEditor extends Gui {
     protected void onKeyTyped(KeyEvent e) {
     }
 
-    public StoryTree toStoryTree() {
-        return GuiSerializer.toStoryTree(guiMechanics.getGuiFolder());
-    }
+    // public StoryTree toStoryTree() {
+    //     return GuiSerializer.toStoryTree(guiMechanics.getGuiFolder());
+    // }
 }

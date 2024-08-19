@@ -1,8 +1,6 @@
 package gui.serializable;
 
-import java.io.Serializable;
-
-public class GuiBox implements Serializable {
+public class GuiBox implements Interactible {
     private int x;
     private int y;
     private int w;
