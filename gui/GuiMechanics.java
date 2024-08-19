@@ -6,8 +6,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.serializable.ConnectableInput;
 import gui.serializable.GuiBox;
-import gui.serializable.GuiConnectableBox;
 import gui.serializable.GuiEntryBox;
 import gui.serializable.GuiExitBox;
 import gui.serializable.GuiStoryFolder;
@@ -31,7 +31,7 @@ public class GuiMechanics {
     private boolean dragging = false;
     private Point2D draggedDelta = null;
 
-    private GuiConnectableBox connectBox = null;
+    private ConnectableInput connectBox = null;
     private boolean connecting = false;
 
     private GuiStoryFolder guiFolder;

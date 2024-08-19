@@ -9,6 +9,12 @@
 
 - Use dispose on graphics etc...
 
+PROBLEM:
 - Klara upp dum skit. get(0) är konstigt, det måste regleras på något smartare sätt!
 - Alltså bestäm konkret regler för alla noder
 - Även att GuiStoryNode alltid går till GuiStoryOption
+LÖSNING:
+- Låt alla klasser själva implementera hur de binds, interfacet är bara till för att veta att de kan bindas.
+- GuiStoryOption ska inte vara bindable. Gör istället en par-klass för koppling.
+
+- GuiTextBox ska inte ha någon koll på sammanhanget. Därmed försvinner textWidth och skit.

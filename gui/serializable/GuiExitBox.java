@@ -1,32 +1,35 @@
 package gui.serializable;
 
-public class GuiExitBox extends GuiConnectableBox {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GuiExitBox extends GuiBox implements ConnectableInput<GuiBox> {
+
+    private List<GuiBox> inputs;
 
     public GuiExitBox(int x, int y, int w, int h) {
         super(x, y, w, h);
+        this.inputs = new ArrayList<GuiBox>();
     }
 
     @Override
-    public void connectOutput(GuiConnectableBox bindable) {
-        return;
+    public void connectInput(GuiBox connectable) {
+        inputs.add(connectable);
     }
 
     @Override
-    public void connectInput(GuiConnectableBox bindable) {
-        if (bindable instanceof GuiStoryOption) {
-
-        }
-        this.inputs.add(bindable);
+    public void disconnectInput(GuiBox connectable) {
+        inputs.remove(connectable);
     }
 
     @Override
-    public void disconnectOutput(GuiConnectableBox bindable) {
-        return;
+    public void disconnectInputs() {
+        inputs.clear();
     }
 
     @Override
-    public void disconnectInput(GuiConnectableBox bindable) {
-        this.inputs.remove(bindable);
+    public Iterable<GuiBox> getInputs() {
+        return inputs;
     }
 
 }

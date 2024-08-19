@@ -1,30 +1,35 @@
 package gui.serializable;
 
-public class GuiEntryBox extends GuiConnectableBox {
+import java.util.Collections;
+
+public class GuiEntryBox extends GuiBox implements ConnectableOutput<GuiBox> {
+
+    private GuiBox output;
 
     public GuiEntryBox(int x, int y, int w, int h) {
         super(x, y, w, h);
     }
 
     @Override
-    public void connectOutput(GuiConnectableBox bindable) {
-        this.outputs.clear();
-        this.outputs.add(bindable);
+    public void connectOutput(GuiBox connectable) {
+        output = connectable;
     }
 
     @Override
-    public void connectInput(GuiConnectableBox bindable) {
-        return;
+    public void disconnectOutput(GuiBox connectable) {
+        output = null;
     }
 
     @Override
-    public void disconnectOutput(GuiConnectableBox bindable) {
-        this.outputs.clear();
+    public void disconnectOutputs() {
+        output = null;
     }
 
     @Override
-    public void disconnectInput(GuiConnectableBox bindable) {
-        return;
+    public Iterable<GuiBox> getOutputs() {
+        return Collections.singleton(output);
     }
+
+    
 
 }

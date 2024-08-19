@@ -1,15 +1,19 @@
 package gui.serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class GuiStoryFolder extends GuiConnectableBox {
+public class GuiStoryFolder extends GuiBox implements ConnectableInput<GuiBox>, ConnectableOutput<GuiBox> {
 
     private GuiStoryFolder parentFolder;
     private List<GuiStoryFolder> childrenFolders;
 
     private GuiEntryBox entryBox;
     private GuiExitBox exitBox;
+
+    private List<GuiBox> inputs;
+    private GuiBox output;
     private List<GuiStoryNode> nodes;
 
     public GuiStoryFolder(int size) {
@@ -77,24 +81,43 @@ public class GuiStoryFolder extends GuiConnectableBox {
     }
 
     @Override
-    public void connectOutput(GuiConnectableBox bindable) {
-        this.outputs.clear();
-        this.outputs.add(bindable);
+    public void connectOutput(GuiBox connectable) {
+        this.output = connectable;
     }
 
     @Override
-    public void connectInput(GuiConnectableBox bindable) {
-        this.inputs.add(bindable);
+    public void disconnectOutput(GuiBox connectable) {
+        this.output = null;
     }
 
     @Override
-    public void disconnectOutput(GuiConnectableBox bindable) {
-        this.outputs.clear();
+    public void disconnectOutputs() {
+        this.output = null;
     }
 
     @Override
-    public void disconnectInput(GuiConnectableBox bindable) {
-        this.inputs.remove(bindable);
+    public Iterable<GuiBox> getOutputs() {
+        return Collections.singleton(output);
+    }
+
+    @Override
+    public void connectInput(GuiBox connectable) {
+        inputs.add(connectable);
+    }
+
+    @Override
+    public void disconnectInput(GuiBox connectable) {
+        inputs.remove(connectable);
+    }
+
+    @Override
+    public void disconnectInputs() {
+        inputs.clear();
+    }
+
+    @Override
+    public Iterable<GuiBox> getInputs() {
+        return inputs;
     }
 
 }

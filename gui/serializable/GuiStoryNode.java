@@ -5,7 +5,10 @@ import java.util.List;
 
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryNode extends GuiTextBox {
+public class GuiStoryNode extends GuiTextBox implements ConnectableInput<GuiBox>, ConnectableOutput<GuiBox> {
+    private List<GuiBox> inputs;
+    private List<OptionPair> optionPairs;
+
     private List<StoryKey> addedKeys;
     private List<StoryKey> removedKeys;
 
@@ -31,26 +34,61 @@ public class GuiStoryNode extends GuiTextBox {
         this.removedKeys = removedKeys;
     }
 
-    @Override
-    public void connectOutput(GuiConnectableBox bindable) {
-        if (bindable instanceof GuiStoryOption) {
-            this.outputs.add(bindable);
+    public List<OptionPair> geOptionPairs() {
+        return optionPairs;
+    }
+
+    public class OptionPair {
+        GuiStoryOption option;
+        GuiBox connectable;
+
+        OptionPair(GuiBox connectable) {
+            this.option = new GuiStoryOption("");
+            this.connectable = connectable;
         }
     }
 
     @Override
-    public void connectInput(GuiConnectableBox bindable) {
-        this.inputs.add(bindable);
+    public void connectOutput(GuiBox connectable) {
+        this.optionPairs.add(new OptionPair(connectable));
     }
 
     @Override
-    public void disconnectOutput(GuiConnectableBox bindable) {
-        this.outputs.remove(bindable);
+    public void disconnectOutput(GuiBox connectable) {
+        this.optionPairs.removeIf(pair -> pair.connectable.equals(connectable));
     }
 
     @Override
-    public void disconnectInput(GuiConnectableBox bindable) {
-        this.inputs.remove(bindable);
+    public void disconnectOutputs() {
+        this.optionPairs.clear();
     }
 
+    @Override
+    public Iterable<GuiBox> getOutputs() {
+        List<GuiBox> list = new ArrayList<GuiBox>();
+        for (OptionPair pair : optionPairs) {
+            list.add(pair.connectable);
+        }
+        return list;
+    }
+
+    @Override
+    public void connectInput(GuiBox connectable) {
+        this.inputs.add(connectable);
+    }
+
+    @Override
+    public void disconnectInput(GuiBox connectable) {
+        this.inputs.remove(connectable);
+    }
+
+    @Override
+    public void disconnectInputs() {
+        this.inputs.clear();
+    }
+
+    @Override
+    public Iterable<GuiBox> getInputs() {
+        return this.inputs;
+    }
 }

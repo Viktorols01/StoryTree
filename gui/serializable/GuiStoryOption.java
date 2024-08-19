@@ -41,28 +41,4 @@ public class GuiStoryOption extends GuiTextBox {
     public void setForced(boolean forced) {
         this.forced = forced;
     }
-
-    @Override
-    public void connectOutput(GuiConnectableBox bindable) {
-        this.outputs.clear();
-        this.outputs.add(bindable);
-    }
-
-    @Override
-    public void connectInput(GuiConnectableBox bindable) {
-        if (bindable instanceof GuiStoryNode) {
-            this.inputs.clear();
-            this.inputs.add(bindable);
-        } 
-    }
-
-    @Override
-    public void disconnectOutput(GuiConnectableBox bindable) {
-        this.outputs.clear();
-    }
-
-    @Override
-    public void disconnectInput(GuiConnectableBox bindable) {
-        this.inputs.clear();
-    }
 }

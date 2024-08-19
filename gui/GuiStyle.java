@@ -102,6 +102,7 @@ public class GuiStyle {
 
     public static void renderLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
         g2d.setColor(new Color(255, 255, 255));
+        g2d.setStroke(new BasicStroke(5));
         g2d.drawLine(x1, y1, x2, y2);
     }
 
@@ -119,7 +120,7 @@ public class GuiStyle {
 
     public static void renderTextBox(Graphics2D g2d, GuiTextBox box, Color textColor) {
         g2d.fillRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
-                15, 15);
+        BOX_PADDING, BOX_PADDING);
 
         g2d.setColor(textColor);
         Iterator<String> iterable = box.getText().lines().iterator();
@@ -160,6 +161,7 @@ public class GuiStyle {
     public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
         g2d.setColor(COLOR_BACKGROUND);
         renderTextBox(g2d, option, COLOR_OPTION);
+        
         renderBoxOutline(g2d, option, option.isForced() ? COLOR_OPTION_FORCED : COLOR_OPTION);
 
         if (!option.getUnlockingKeys().isEmpty() || !option.getLockingKeys().isEmpty()) {
