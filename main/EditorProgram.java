@@ -6,8 +6,8 @@ import java.awt.Button;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import gui.GuiStoryEditor;
-import gui.serializable.GuiStoryFolder;
+import editor.EditorPanel;
+import editor.serializable.EditorFolder;
 import storyclasses.readers.ConsoleStoryReader;
 import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
@@ -19,7 +19,7 @@ public class EditorProgram {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        GuiStoryEditor gui = new GuiStoryEditor(1000, 800);
+        EditorPanel gui = new EditorPanel(1000, 800);
         panel.add(gui, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
@@ -45,7 +45,7 @@ public class EditorProgram {
 
         Button saveButton = new Button("Save story");
         saveButton.addActionListener((a) -> {
-            GuiStoryFolder folder = gui.getGuiFolder();
+            EditorFolder folder = gui.getGuiFolder();
             if (folder != null) {
                 FileHandler.saveObject(folder, "files/guistories", "GUI story files", "gst");
             }
@@ -54,7 +54,7 @@ public class EditorProgram {
 
         Button loadButton = new Button("Load story");
         loadButton.addActionListener((a) -> {
-            GuiStoryFolder folder = FileHandler.loadObject("files/guistories", "GUI story files", "gst");
+            EditorFolder folder = FileHandler.loadObject("files/guistories", "GUI story files", "gst");
             if (folder != null) {
                 gui.setGuiFolder(folder);
             }

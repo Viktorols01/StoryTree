@@ -1,82 +1,82 @@
-package gui.serializable;
+package editor.serializable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class GuiStoryFolder extends GuiBox implements IOInteractible {
+public class EditorFolder extends Box implements IOInteractible {
 
-    private GuiStoryFolder parentFolder;
-    private List<GuiStoryFolder> childrenFolders;
+    private EditorFolder parentFolder;
+    private List<EditorFolder> childrenFolders;
 
-    private GuiEntryBox entryBox;
-    private GuiExitBox exitBox;
+    private EditorFolderEntry entryBox;
+    private EditorFolderExit exitBox;
 
     private List<OutputInteractible> inputs;
     private InputInteractible output;
-    private List<GuiStoryNode> nodes;
+    private List<EditorNode> nodes;
 
-    public GuiStoryFolder(int size) {
+    public EditorFolder(int size) {
         super(0, 0, size, size);
 
         this.parentFolder = null;
-        this.childrenFolders = new ArrayList<GuiStoryFolder>();
+        this.childrenFolders = new ArrayList<EditorFolder>();
 
-        this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
+        this.entryBox = new EditorFolderEntry(0, 0, size / 2, size / 2);
         this.exitBox = null;
 
-        this.nodes = new ArrayList<GuiStoryNode>();
+        this.nodes = new ArrayList<EditorNode>();
     }
 
-    public GuiStoryFolder(GuiStoryFolder parent, int size) {
+    public EditorFolder(EditorFolder parent, int size) {
         super(0, 0, size, size);
 
         this.parentFolder = parent;
-        this.childrenFolders = new ArrayList<GuiStoryFolder>();
+        this.childrenFolders = new ArrayList<EditorFolder>();
 
-        this.entryBox = new GuiEntryBox(0, 0, size / 2, size / 2);
-        this.exitBox = new GuiExitBox(0, size, size / 2, size / 2);
+        this.entryBox = new EditorFolderEntry(0, 0, size / 2, size / 2);
+        this.exitBox = new EditorFolderExit(0, size, size / 2, size / 2);
 
-        this.nodes = new ArrayList<GuiStoryNode>();
+        this.nodes = new ArrayList<EditorNode>();
     }
 
-    public List<GuiStoryNode> getNodes() {
+    public List<EditorNode> getNodes() {
         return nodes;
     }
 
-    public GuiStoryFolder getParentFolder() {
+    public EditorFolder getParentFolder() {
         return parentFolder;
     }
 
-    public void setParentFolder(GuiStoryFolder parent) {
+    public void setParentFolder(EditorFolder parent) {
         this.parentFolder = parent;
     }
 
-    public List<GuiStoryFolder> getChildrenFolders() {
+    public List<EditorFolder> getChildrenFolders() {
         return childrenFolders;
     }
 
-    public void setChildrenFolders(List<GuiStoryFolder> children) {
+    public void setChildrenFolders(List<EditorFolder> children) {
         this.childrenFolders = children;
     }
 
-    public GuiEntryBox getEntryBox() {
+    public EditorFolderEntry getEntryBox() {
         return entryBox;
     }
 
-    public void setEntryBox(GuiEntryBox entry) {
+    public void setEntryBox(EditorFolderEntry entry) {
         this.entryBox = entry;
     }
 
-    public GuiExitBox getExitBox() {
+    public EditorFolderExit getExitBox() {
         return exitBox;
     }
 
-    public void setExitBox(GuiExitBox exit) {
+    public void setExitBox(EditorFolderExit exit) {
         this.exitBox = exit;
     }
 
-    public void setNodes(List<GuiStoryNode> nodes) {
+    public void setNodes(List<EditorNode> nodes) {
         this.nodes = nodes;
     }
 

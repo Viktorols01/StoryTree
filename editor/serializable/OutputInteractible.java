@@ -1,4 +1,4 @@
-package gui.serializable;
+package editor.serializable;
 
 public interface OutputInteractible extends Interactible {
     public abstract void connectOutput(InputInteractible connectable);

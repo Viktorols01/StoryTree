@@ -1,10 +1,10 @@
-package gui.serializable;
+package editor.serializable;
 
-public class GuiEntryBox extends GuiBox implements OutputInteractible  {
+public class EditorFolderEntry extends Box implements OutputInteractible  {
 
     private InputInteractible output;
 
-    public GuiEntryBox(int x, int y, int w, int h) {
+    public EditorFolderEntry(int x, int y, int w, int h) {
         super(x, y, w, h);
     }
 

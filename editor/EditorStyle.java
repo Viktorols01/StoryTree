@@ -1,4 +1,4 @@
-package gui;
+package editor;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -7,16 +7,16 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.util.Iterator;
 
-import gui.serializable.GuiBox;
-import gui.serializable.GuiEntryBox;
-import gui.serializable.GuiExitBox;
-import gui.serializable.GuiStoryFolder;
-import gui.serializable.GuiStoryNode;
-import gui.serializable.GuiStoryOption;
-import gui.serializable.InputInteractible;
-import gui.serializable.TextInteractible;
+import editor.serializable.Box;
+import editor.serializable.EditorFolder;
+import editor.serializable.EditorFolderEntry;
+import editor.serializable.EditorFolderExit;
+import editor.serializable.EditorNode;
+import editor.serializable.EditorOption;
+import editor.serializable.InputInteractible;
+import editor.serializable.TextInteractible;
 
-public class GuiStyle {
+public class EditorStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
 
     public static final Color COLOR_ROOT_NODE = new Color(0, 155, 0);
@@ -37,7 +37,7 @@ public class GuiStyle {
 
     public static final int BOX_PADDING = 25;
 
-    public static Color getNodeColor(GuiStoryNode node) {
+    public static Color getNodeColor(EditorNode node) {
         int inCount = node.getInputs().size();
         int outCount = node.getOptionPairs().size();
         Color color;
@@ -89,29 +89,35 @@ public class GuiStyle {
         textInteractible.setSize(width + 2 * BOX_PADDING, height + 2 * BOX_PADDING);
     }
 
-    public static void updateOptions(FontMetrics fontMetrics, GuiStoryNode node) {
+    public static void updateOptions(FontMetrics fontMetrics, EditorNode node) {
         final int margin = 10;
         int totalWidth = 0;
 
-        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
-            GuiStoryOption option = pair.getOption();
+        sortOptions(node);
+
+        for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+            EditorOption option = pair.getOption();
             updateSize(fontMetrics, option);
         }
 
-        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
-            GuiStoryOption option = pair.getOption();
+        for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+            EditorOption option = pair.getOption();
             totalWidth += getTextWidth(option.getText(), fontMetrics) + BOX_PADDING * 2 + margin;
         }
         totalWidth -= margin;
 
         int x = node.getX() + node.getW() / 2 - totalWidth / 2;
         int y = node.getY() + node.getH() + margin;
-        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
-            GuiStoryOption option = pair.getOption();
+        for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+            EditorOption option = pair.getOption();
             int width = getTextWidth(option.getText(), fontMetrics);
             option.setPosition(x, y);
             x += width + BOX_PADDING * 2 + margin;
         }
+    }
+
+    public static void sortOptions(EditorNode node) {
+        node.getOptionPairs().sort((a, b) -> a.getOutput().getX() - b.getOutput().getX());
     }
 
     public static void renderLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
@@ -120,19 +126,19 @@ public class GuiStyle {
         g2d.drawLine(x1, y1, x2, y2);
     }
 
-    public static void renderEntryBox(Graphics2D g2d, GuiEntryBox box) {
+    public static void renderEntryBox(Graphics2D g2d, EditorFolderEntry box) {
         renderBoxOutline(g2d, box, COLOR_WHITE);
         g2d.setColor(COLOR_GREEN);
         renderArrow(g2d, box.getX(), box.getY(), box.getW(), false);
     }
 
-    public static void renderExitBox(Graphics2D g2d, GuiExitBox box) {
+    public static void renderExitBox(Graphics2D g2d, EditorFolderExit box) {
         renderBoxOutline(g2d, box, COLOR_WHITE);
         g2d.setColor(COLOR_RED);
         renderArrow(g2d, box.getX(), box.getY(), box.getW(), true);
     }
 
-    public static void renderTextBox(Graphics2D g2d, GuiBox box, String text, Color textColor) {
+    public static void renderTextBox(Graphics2D g2d, Box box, String text, Color textColor) {
         g2d.fillRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
                 BOX_PADDING, BOX_PADDING);
 
@@ -147,7 +153,7 @@ public class GuiStyle {
         }
     }
 
-    public static void renderBoxOutline(Graphics2D g2d, GuiBox box, Color color) {
+    public static void renderBoxOutline(Graphics2D g2d, Box box, Color color) {
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(5));
         g2d.drawRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
@@ -155,7 +161,7 @@ public class GuiStyle {
                 BOX_PADDING);
     }
 
-    public static void renderStoryNode(Graphics2D g2d, GuiStoryNode node, boolean isRoot) {
+    public static void renderStoryNode(Graphics2D g2d, EditorNode node, boolean isRoot) {
         FontMetrics fontMetrics = g2d.getFontMetrics();
         int lineHeight = getLineHeight(node.getText(), fontMetrics);
         g2d.setColor(getNodeColor(node));
@@ -175,7 +181,7 @@ public class GuiStyle {
         }
     }
 
-    public static void renderOption(Graphics2D g2d, GuiStoryOption option) {
+    public static void renderOption(Graphics2D g2d, EditorOption option) {
         g2d.setColor(COLOR_BACKGROUND);
         renderTextBox(g2d, option, option.getText(), COLOR_OPTION);
 
@@ -189,9 +195,9 @@ public class GuiStyle {
         }
     }
 
-    public static void renderOutputLine(Graphics2D g2d, GuiEntryBox box) {
+    public static void renderOutputLine(Graphics2D g2d, EditorFolderEntry box) {
         InputInteractible output = box.getOutput();
-        GuiStyle.renderLine(g2d,
+        EditorStyle.renderLine(g2d,
                 (int) (box.getX() + box.getW() / 2),
                 (int) (box.getY() + box.getH() / 2),
                 (int) (output.getX() + output.getW() / 2),
@@ -199,9 +205,9 @@ public class GuiStyle {
 
     }
 
-    public static void renderOutputLine(Graphics2D g2d, GuiStoryFolder box) {
+    public static void renderOutputLine(Graphics2D g2d, EditorFolder box) {
         InputInteractible output = box.getOutput();
-        GuiStyle.renderLine(g2d,
+        EditorStyle.renderLine(g2d,
                 (int) (box.getX() + box.getW() / 2),
                 (int) (box.getY() + box.getH() / 2),
                 (int) (output.getX() + output.getW() / 2),
@@ -209,19 +215,19 @@ public class GuiStyle {
 
     }
 
-    public static void renderOptionPairs(Graphics2D g2d, GuiStoryNode node) {
-        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
-            GuiStoryOption option = pair.getOption();
+    public static void renderOptionPairs(Graphics2D g2d, EditorNode node) {
+        for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+            EditorOption option = pair.getOption();
             InputInteractible connectable = pair.getOutput();
-            GuiStyle.renderLine(g2d,
+            EditorStyle.renderLine(g2d,
                     (int) (option.getX() + option.getW() / 2),
                     (int) (option.getY() + option.getH() / 2),
                     (int) (connectable.getX() + connectable.getW() / 2),
                     (int) (connectable.getY() + connectable.getH() / 2));
         }
 
-        for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
-            GuiStoryOption option = pair.getOption();
+        for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+            EditorOption option = pair.getOption();
             renderOption(g2d, option);
         }
     }

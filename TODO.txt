@@ -17,4 +17,4 @@ LÖSNING:
 - Låt alla klasser själva implementera hur de binds, interfacet är bara till för att veta att de kan bindas.
 - GuiStoryOption ska inte vara bindable. Gör istället en par-klass för koppling.
 
-- GuiTextBox ska inte ha någon koll på sammanhanget. Därmed försvinner textWidth och skit.
+- Sortera options efter x-position

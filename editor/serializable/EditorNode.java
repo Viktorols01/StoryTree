@@ -1,13 +1,13 @@
-package gui.serializable;
+package editor.serializable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.UserInputGetter;
+import editor.UserInputGetter;
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryNode extends GuiBox implements IOInteractible, TextInteractible {
+public class EditorNode extends Box implements IOInteractible, TextInteractible {
     private List<OutputInteractible> inputs;
     private List<OptionPair> optionPairs;
 
@@ -15,7 +15,7 @@ public class GuiStoryNode extends GuiBox implements IOInteractible, TextInteract
     private List<StoryKey> addedKeys;
     private List<StoryKey> removedKeys;
 
-    public GuiStoryNode(String text, int x, int y) {
+    public EditorNode(String text, int x, int y) {
         super(x, y, 0, 0);
         this.text = text;
         this.addedKeys = new ArrayList<StoryKey>();
@@ -60,15 +60,15 @@ public class GuiStoryNode extends GuiBox implements IOInteractible, TextInteract
     }
 
     public class OptionPair implements Serializable {
-        private GuiStoryOption option;
+        private EditorOption option;
         private InputInteractible output;
 
         private OptionPair(InputInteractible output) {
-            this.option = new GuiStoryOption(UserInputGetter.getTextFromPromt("Adding option...", ""));
+            this.option = new EditorOption(UserInputGetter.getTextFromPromt("Adding option...", ""));
             this.output = output;
         }
 
-        public GuiStoryOption getOption() {
+        public EditorOption getOption() {
             return option;
         }
 

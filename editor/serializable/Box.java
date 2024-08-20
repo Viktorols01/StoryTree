@@ -1,12 +1,12 @@
-package gui.serializable;
+package editor.serializable;
 
-public class GuiBox implements Interactible {
+public class Box implements Interactible {
     private int x;
     private int y;
     private int w;
     private int h;
 
-    public GuiBox(final int x, final int y, final int w, final int h) {
+    public Box(final int x, final int y, final int w, final int h) {
         setPosition(x, y);
         setSize(w, h);
     }

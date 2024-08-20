@@ -1,19 +1,19 @@
-package gui;
+package editor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.serializable.GuiStoryFolder;
-import gui.serializable.GuiStoryNode;
-import gui.serializable.GuiStoryOption;
+import editor.serializable.EditorFolder;
+import editor.serializable.EditorNode;
+import editor.serializable.EditorOption;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
 
 // implementera visitor pattern!!!!
-public class GuiSerializer {
-    public static StoryTree toStoryTree(GuiStoryFolder folder) {
+public class EditorSerializer {
+    public static StoryTree toStoryTree(EditorFolder folder) {
         NodePairList addedNodes = new NodePairList();
 
         appendStoryNodesToList(folder, addedNodes);
@@ -25,13 +25,13 @@ public class GuiSerializer {
         return new StoryTree(storyArray);
     }
 
-    private static void appendStoryNodesToList(GuiStoryFolder folder, NodePairList list) {
+    private static void appendStoryNodesToList(EditorFolder folder, NodePairList list) {
         appendStoryNodesToList(folder.getEntryBox(), list);
     }
 
     private static void appendStoryNodesToList(InputInteractible box, NodePairList list) {
-        if (box instanceof GuiStoryNode) {
-            GuiStoryNode guiNode = (GuiStoryNode) box;
+        if (box instanceof EditorNode) {
+            EditorNode guiNode = (EditorNode) box;
             list.addAndSerializeGuiNode(guiNode);
         }
 
@@ -45,13 +45,13 @@ public class GuiSerializer {
     }
 
     private static void connectStoryNodes(InputInteractible box, NodePairList list) {
-        if (box instanceof GuiStoryNode) {
-            GuiStoryNode guiNode = (GuiStoryNode) box;
+        if (box instanceof EditorNode) {
+            EditorNode guiNode = (EditorNode) box;
             int index = list.indexOf(guiNode);
             StoryNode serializedNode = list.get(index);
             int optionIndex = 0;
             for (InputInteractible subBox : guiNode.getOutputs()) {
-                GuiStoryOption option = (GuiStoryOption) subBox;
+                EditorOption option = (EditorOption) subBox;
                 String optionText = option.getText();
                 StoryKey[] unlockingKeys = new StoryKey[option.getUnlockingKeys().size()];
                 option.getUnlockingKeys().toArray(unlockingKeys);
@@ -72,8 +72,8 @@ public class GuiSerializer {
     }
 
     private static int nextStoryNodeIndex(InputInteractible box, NodePairList list) {
-        if (box instanceof GuiStoryNode) {
-            GuiStoryNode guiNode = (GuiStoryNode) box;
+        if (box instanceof EditorNode) {
+            EditorNode guiNode = (EditorNode) box;
             return list.indexOf(guiNode);
         }
 
@@ -81,15 +81,15 @@ public class GuiSerializer {
     }
 
     private static class NodePairList {
-        List<GuiStoryNode> guiNodes;
+        List<EditorNode> guiNodes;
         List<StoryNode> serializedNodes;
 
         NodePairList() {
-            this.guiNodes = new ArrayList<GuiStoryNode>();
+            this.guiNodes = new ArrayList<EditorNode>();
             this.serializedNodes = new ArrayList<StoryNode>();
         }
 
-        void addAndSerializeGuiNode(GuiStoryNode guiNode) {
+        void addAndSerializeGuiNode(EditorNode guiNode) {
             guiNodes.add(guiNode);
 
             StoryKey[] addedKeys = new StoryKey[guiNode.getAddedKeys().size()];
@@ -102,7 +102,7 @@ public class GuiSerializer {
             serializedNodes.add(serializedNode);
         }
 
-        int indexOf(GuiStoryNode guiNode) {
+        int indexOf(EditorNode guiNode) {
             return guiNodes.indexOf(guiNode);
         }
 

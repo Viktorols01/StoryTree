@@ -1,4 +1,4 @@
-package gui;
+package editor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,8 +28,8 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
-import gui.serializable.GuiStoryNode;
-import gui.serializable.GuiStoryOption;
+import editor.serializable.EditorNode;
+import editor.serializable.EditorOption;
 import storyclasses.serializable.StoryKey;
 
 public class UserInputGetter {
@@ -38,7 +38,7 @@ public class UserInputGetter {
         return JOptionPane.showInputDialog(title, text);
     }
 
-    public static void modifyNode(GuiStoryNode node) {
+    public static void modifyNode(EditorNode node) {
         int width = 300;
         int bigHeight = 150;
         int smallHeight = 20;
@@ -116,7 +116,7 @@ public class UserInputGetter {
         dialog.setVisible(true);
     }
 
-    public static void modifyOption(GuiStoryOption option) {
+    public static void modifyOption(EditorOption option) {
         int width = 300;
         int bigHeight = 150;
         int smallHeight = 20;

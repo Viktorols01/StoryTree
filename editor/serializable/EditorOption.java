@@ -1,18 +1,18 @@
-package gui.serializable;
+package editor.serializable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import storyclasses.serializable.StoryKey;
 
-public class GuiStoryOption extends GuiBox implements TextInteractible {
+public class EditorOption extends Box implements TextInteractible {
 
     private String text;
     private List<StoryKey> unlockingKeys;
     private List<StoryKey> lockingKeys;
     private boolean forced;
 
-    public GuiStoryOption(String text) {
+    public EditorOption(String text) {
         super(0, 0, 0, 0);
         this.text = text;
         this.unlockingKeys = new ArrayList<StoryKey>();

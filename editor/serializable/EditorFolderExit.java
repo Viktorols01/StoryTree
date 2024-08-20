@@ -1,13 +1,13 @@
-package gui.serializable;
+package editor.serializable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiExitBox extends GuiBox implements InputInteractible {
+public class EditorFolderExit extends Box implements InputInteractible {
 
     private List<OutputInteractible> inputs;
 
-    public GuiExitBox(int x, int y, int w, int h) {
+    public EditorFolderExit(int x, int y, int w, int h) {
         super(x, y, w, h);
         this.inputs = new ArrayList<OutputInteractible>();
     }

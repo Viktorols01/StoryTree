@@ -1,60 +1,59 @@
-package gui;
+package editor;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
-import gui.serializable.GuiBox;
-import gui.serializable.InputInteractible;
-import gui.serializable.OutputInteractible;
-import gui.serializable.GuiEntryBox;
-import gui.serializable.GuiExitBox;
-import gui.serializable.GuiStoryFolder;
-import gui.serializable.GuiStoryNode;
-import gui.serializable.GuiStoryNode.OptionPair;
-import gui.serializable.GuiStoryOption;
-
+import editor.serializable.Box;
+import editor.serializable.EditorFolder;
+import editor.serializable.EditorFolderEntry;
+import editor.serializable.EditorFolderExit;
+import editor.serializable.EditorNode;
+import editor.serializable.EditorOption;
+import editor.serializable.InputInteractible;
+import editor.serializable.OutputInteractible;
+import editor.serializable.EditorNode.OptionPair;
 import tools.Camera;
-import tools.Gui.Input;
+import tools.InterfacePanel.Input;
 
-public class GuiMechanics {
+public class EditorController {
 
     private Camera camera;
     private Input input;
     private FontMetrics fontMetrics;
 
-    private GuiBox draggedBox = null;
+    private Box draggedBox = null;
     private boolean dragging = false;
     private Point2D draggedDelta = null;
 
     private OutputInteractible connectComponent = null;
     private boolean connecting = false;
 
-    private GuiStoryFolder guiFolder;
+    private EditorFolder guiFolder;
 
-    public GuiMechanics(Input input, int width, int height, FontMetrics fontMetrics) {
+    public EditorController(Input input, int width, int height, FontMetrics fontMetrics) {
         this.camera = new Camera(width, height);
         this.input = input;
         this.fontMetrics = fontMetrics;
-        this.guiFolder = new GuiStoryFolder(200);
+        this.guiFolder = new EditorFolder(200);
     }
 
-    public GuiStoryFolder getGuiFolder() {
+    public EditorFolder getGuiFolder() {
         return guiFolder;
     }
 
-    public void setGuiFolder(GuiStoryFolder guiFolder) {
+    public void setGuiFolder(EditorFolder guiFolder) {
         this.guiFolder = guiFolder;
     }
 
     public void render(Graphics2D g2d) {
-        g2d.setColor(GuiStyle.COLOR_BACKGROUND);
+        g2d.setColor(EditorStyle.COLOR_BACKGROUND);
         g2d.fillRect(0, 0, camera.getRelativeWidth(), camera.getRelativeHeight());
         camera.transform(g2d);
 
         if (connecting) {
             Point2D absPos = getAbsoluteMousePosition();
-            GuiStyle.renderLine(g2d,
+            EditorStyle.renderLine(g2d,
                     (int) (connectComponent.getX() + connectComponent.getW() / 2),
                     (int) (connectComponent.getY() + connectComponent.getH() / 2),
                     (int) absPos.getX(),
@@ -62,19 +61,19 @@ public class GuiMechanics {
         }
 
         if (guiFolder.getEntryBox().getOutput() != null) {
-            GuiStyle.renderOutputLine(g2d, guiFolder.getEntryBox());
+            EditorStyle.renderOutputLine(g2d, guiFolder.getEntryBox());
         }
 
-        for (GuiStoryNode node : guiFolder.getNodes()) {
-            GuiStyle.renderOptionPairs(g2d, node);
+        for (EditorNode node : guiFolder.getNodes()) {
+            EditorStyle.renderOptionPairs(g2d, node);
         }
-        for (GuiStoryNode node : guiFolder.getNodes()) {
-            GuiStyle.renderStoryNode(g2d, node, false);
+        for (EditorNode node : guiFolder.getNodes()) {
+            EditorStyle.renderStoryNode(g2d, node, false);
         }
 
-        GuiStyle.renderEntryBox(g2d, guiFolder.getEntryBox());
+        EditorStyle.renderEntryBox(g2d, guiFolder.getEntryBox());
         if (guiFolder.getExitBox() != null) {
-            GuiStyle.renderExitBox(g2d, guiFolder.getExitBox());
+            EditorStyle.renderExitBox(g2d, guiFolder.getExitBox());
         }
     }
 
@@ -82,7 +81,7 @@ public class GuiMechanics {
         Point2D relPos = getRelativeMousePosition();
         Point2D absPos = getAbsoluteMousePosition();
         if (!dragging) {
-            for (GuiStoryNode node : guiFolder.getNodes()) {
+            for (EditorNode node : guiFolder.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     dragging = true;
                     draggedDelta = new Point2D.Double(absPos.getX() - node.getX(), absPos.getY() - node.getY());
@@ -91,7 +90,7 @@ public class GuiMechanics {
                 }
             }
 
-            GuiExitBox exitBox = guiFolder.getExitBox();
+            EditorFolderExit exitBox = guiFolder.getExitBox();
             if (exitBox != null) {
                 if (exitBox.isInside(absPos.getX(), absPos.getY())) {
                     dragging = true;
@@ -121,9 +120,17 @@ public class GuiMechanics {
             } else {
                 draggedBox.setPosition((int) (absPos.getX() - draggedDelta.getX()),
                         (int) (absPos.getY() - draggedDelta.getY()));
-                if (draggedBox instanceof GuiStoryNode) {
-                    GuiStyle.updateOptions(fontMetrics,
-                            (GuiStoryNode) draggedBox);
+
+                if (draggedBox instanceof InputInteractible) {
+                    for (OutputInteractible output : ((InputInteractible) draggedBox).getInputs()) {
+                        if (output instanceof EditorNode) {
+                            EditorStyle.updateOptions(fontMetrics, (EditorNode) output);
+                        }
+                    }
+                    if (draggedBox instanceof EditorNode) {
+                        EditorStyle.updateOptions(fontMetrics,
+                                (EditorNode) draggedBox);
+                    }
                 }
             }
         }
@@ -139,24 +146,24 @@ public class GuiMechanics {
     public void startConnecting() {
         Point2D absPos = getAbsoluteMousePosition();
         if (!connecting) {
-            for (GuiStoryNode node : guiFolder.getNodes()) {
+            for (EditorNode node : guiFolder.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     connecting = true;
                     connectComponent = node;
                     return;
                 }
-                for (GuiStoryNode.OptionPair pair : node.getOptionPairs()) {
-                    GuiStoryOption option = pair.getOption();
+                for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+                    EditorOption option = pair.getOption();
                     if (option.isInside(absPos.getX(), absPos.getY())) {
                         UserInputGetter.modifyOption(option);
-                        GuiStyle.updateSize(fontMetrics, option);
-                        GuiStyle.updateOptions(fontMetrics, node);
+                        EditorStyle.updateSize(fontMetrics, option);
+                        EditorStyle.updateOptions(fontMetrics, node);
                         return;
                     }
                 }
             }
 
-            GuiEntryBox entryBox = guiFolder.getEntryBox();
+            EditorFolderEntry entryBox = guiFolder.getEntryBox();
             if (entryBox.isInside(absPos.getX(), absPos.getY())) {
                 connecting = true;
                 connectComponent = entryBox;
@@ -174,25 +181,25 @@ public class GuiMechanics {
         if (connecting) {
             connecting = false;
 
-            if (connectComponent instanceof GuiStoryNode) {
+            if (connectComponent instanceof EditorNode) {
                 if (connectComponent.isInside(absPos.getX(), absPos.getY())) {
-                    GuiStoryNode node = (GuiStoryNode) connectComponent;
+                    EditorNode node = (EditorNode) connectComponent;
                     UserInputGetter.modifyNode(node);
-                    GuiStyle.updateSize(fontMetrics, node);
-                    GuiStyle.updateOptions(fontMetrics, node);
+                    EditorStyle.updateSize(fontMetrics, node);
+                    EditorStyle.updateOptions(fontMetrics, node);
                     connectComponent = null;
                     return;
                 }
             }
 
-            for (GuiStoryNode node : guiFolder.getNodes()) {
+            for (EditorNode node : guiFolder.getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     connectComponent.connectOutput(node);
                     node.connectInput(connectComponent);
 
-                    if (connectComponent instanceof GuiStoryNode) {
-                        GuiStoryNode connectNode = (GuiStoryNode) connectComponent;
-                        GuiStyle.updateOptions(fontMetrics, connectNode);
+                    if (connectComponent instanceof EditorNode) {
+                        EditorNode connectNode = (EditorNode) connectComponent;
+                        EditorStyle.updateOptions(fontMetrics, connectNode);
                     }
 
                     connectComponent = null;
@@ -200,7 +207,7 @@ public class GuiMechanics {
                 }
             }
 
-            GuiExitBox exitBox = guiFolder.getExitBox();
+            EditorFolderExit exitBox = guiFolder.getExitBox();
             if (exitBox != null) {
                 if (exitBox.isInside(absPos.getX(), absPos.getY())) {
                     connectComponent.connectOutput(exitBox);
@@ -209,18 +216,18 @@ public class GuiMechanics {
                 }
             }
 
-            GuiStoryNode newNode = addStoryNode("");
+            EditorNode newNode = addStoryNode("");
             connectComponent.connectOutput(newNode);
             newNode.connectInput(connectComponent);
 
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
             if (nodeInput != null) {
                 newNode.setText(nodeInput);
-                GuiStyle.updateSize(fontMetrics, newNode);
+                EditorStyle.updateSize(fontMetrics, newNode);
             }
 
-            if (connectComponent instanceof GuiStoryNode) {
-                GuiStyle.updateOptions(fontMetrics, (GuiStoryNode) connectComponent);
+            if (connectComponent instanceof EditorNode) {
+                EditorStyle.updateOptions(fontMetrics, (EditorNode) connectComponent);
             }
 
             connectComponent = null;
@@ -233,25 +240,25 @@ public class GuiMechanics {
         camera.setZoom(camera.getZoom() * Math.pow(1.15, -rotations));
     }
 
-    public GuiStoryNode addStoryNode(String text) {
+    public EditorNode addStoryNode(String text) {
         Point2D absPos = getAbsoluteMousePosition();
-        GuiStoryNode node = new GuiStoryNode(text, (int) absPos.getX(), (int) absPos.getY());
-        GuiStyle.updateSize(fontMetrics, node);
+        EditorNode node = new EditorNode(text, (int) absPos.getX(), (int) absPos.getY());
+        EditorStyle.updateSize(fontMetrics, node);
 
         guiFolder.getNodes().add(node);
         return node;
     }
 
-    public GuiBox deleteBox() {
+    public Box deleteBox() {
         Point2D absPos = getAbsoluteMousePosition();
-        for (GuiStoryNode node : guiFolder.getNodes()) {
+        for (EditorNode node : guiFolder.getNodes()) {
             if (node.isInside(absPos.getX(), absPos.getY())) {
                 deleteStoryNode(node);
                 return node;
             }
             for (int i = node.getOptionPairs().size() - 1; i >= 0; i--) {
                 OptionPair pair = node.getOptionPairs().get(i);
-                GuiStoryOption option = pair.getOption();
+                EditorOption option = pair.getOption();
                 if (option.isInside(absPos.getX(), absPos.getY())) {
                     node.getOptionPairs().remove(i);
                     return option;
@@ -261,7 +268,7 @@ public class GuiMechanics {
         return null;
     }
 
-    private GuiStoryNode deleteStoryNode(GuiStoryNode node) {
+    private EditorNode deleteStoryNode(EditorNode node) {
         for (int i = node.getInputs().size() - 1; i >= 0; i--) {
             OutputInteractible component = node.getInputs().get(i);
             component.disconnectOutput(node);

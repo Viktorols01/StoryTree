@@ -15,16 +15,16 @@ import javax.swing.event.MouseInputListener;
 import java.awt.Dimension;
 import java.awt.Point;
 
-// updated 2024-07-07
+// updated 2024-08-20
 // kanske ska flytta in JPanel inuti GUI? Jobbigt att använda nu för det är så många funktioner...
-public abstract class Gui extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener {
+public abstract class InterfacePanel extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener {
 
     private Input input;
 
     private int width;
     private int height;
 
-    public Gui(int width, int height) {
+    public InterfacePanel(int width, int height) {
         super(true);
         this.input = new Input();
         this.width = width;

@@ -1,8 +1,7 @@
-package gui;
+package editor;
 
-import gui.serializable.GuiStoryFolder;
 //import storyclasses.serializable.StoryTree;
-import tools.Gui;
+import tools.InterfacePanel;
 
 import java.awt.Font;
 import java.awt.Graphics;
@@ -11,30 +10,32 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-public class GuiStoryEditor extends Gui {
+import editor.serializable.EditorFolder;
 
-    private GuiMechanics guiMechanics;
+public class EditorPanel extends InterfacePanel {
+
+    private EditorController controller;
     private Font font;
 
-    public GuiStoryEditor(int width, int height) {
+    public EditorPanel(int width, int height) {
         super(width, height);
         this.font = new Font("Arial", Font.PLAIN, 50);
         setFont(font);
-        this.guiMechanics = new GuiMechanics(getInput(), width, height, this.getFontMetrics(font));
+        this.controller = new EditorController(getInput(), width, height, this.getFontMetrics(font));
     }
 
-    public GuiStoryFolder getGuiFolder() {
-        return this.guiMechanics.getGuiFolder();
+    public EditorFolder getGuiFolder() {
+        return this.controller.getGuiFolder();
     }
 
-    public void setGuiFolder(GuiStoryFolder guiFolder) {
-        this.guiMechanics.setGuiFolder(guiFolder);
+    public void setGuiFolder(EditorFolder guiFolder) {
+        this.controller.setGuiFolder(guiFolder);
     }
 
     @Override
     protected void render(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        guiMechanics.render(g2d);
+        controller.render(g2d);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class GuiStoryEditor extends Gui {
             case 3:
                 String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
                 if (nodeInput != null) {
-                    guiMechanics.addStoryNode(nodeInput);
+                    controller.addStoryNode(nodeInput);
                 }
                 break;
         }
@@ -60,10 +61,10 @@ public class GuiStoryEditor extends Gui {
     protected void onMousePressed(MouseEvent e) {
         switch (e.getButton()) {
             case 1:
-                guiMechanics.startDragging();
+                controller.startDragging();
                 break;
             case 3:
-                guiMechanics.startConnecting();
+                controller.startConnecting();
                 break;
         }
         this.repaint();
@@ -73,10 +74,10 @@ public class GuiStoryEditor extends Gui {
     protected void onMouseReleased(MouseEvent e) {
         switch (e.getButton()) {
             case 1:
-                guiMechanics.endDragging();
+                controller.endDragging();
                 break;
             case 3:
-                guiMechanics.endConnecting();
+                controller.endConnecting();
                 break;
         }
         this.repaint();
@@ -84,8 +85,8 @@ public class GuiStoryEditor extends Gui {
 
     @Override
     protected void onMouseDragged(MouseEvent e) {
-        guiMechanics.dragging();
-        guiMechanics.connecting();
+        controller.dragging();
+        controller.connecting();
         this.repaint();
     }
 
@@ -100,14 +101,15 @@ public class GuiStoryEditor extends Gui {
     @Override
     protected void onMouseWheelMoved(MouseWheelEvent e) {
         int rotations = e.getWheelRotation();
-        guiMechanics.zoom(rotations);
+        controller.zoom(rotations);
+        this.repaint();
     }
 
     @Override
     protected void onKeyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-                guiMechanics.deleteBox();
+                controller.deleteBox();
                 break;
         }
         this.repaint();
