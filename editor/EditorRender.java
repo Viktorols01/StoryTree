@@ -256,10 +256,15 @@ public class EditorRender {
         }
     }
 
-    public static void renderEditorContainer(Graphics2D g2d, EditorContainer container) {
-        if (container.isConnecting()) {
-            Interactible connectingComponent = container.getConnectingComponent();
-            Point2D absPos = container.getAbsoluteMousePosition();
+    public static void renderEditorContext(Graphics2D g2d, EditorContext context) {
+        Camera camera = context.getCamera();
+        g2d.setColor(EditorConstants.COLOR_BACKGROUND);
+        g2d.fillRect(0, 0, camera.getRelativeWidth(), camera.getRelativeHeight());
+        camera.transform(g2d);
+
+        if (context.isConnecting()) {
+            Interactible connectingComponent = context.getConnectingComponent();
+            Point2D absPos = context.getAbsoluteMousePosition();
             EditorRender.renderLine(g2d,
                     (int) (connectingComponent.getX() + connectingComponent.getW() / 2),
                     (int) (connectingComponent.getY() + connectingComponent.getH() / 2),
@@ -267,6 +272,6 @@ public class EditorRender {
                     (int) absPos.getY());
         }
 
-        EditorRender.renderFolder(g2d, container.getGuiFolder());
+        EditorRender.renderFolder(g2d, context.getEditorFolder());
     }
 }
