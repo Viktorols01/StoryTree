@@ -1,5 +1,6 @@
 package editor;
 
+import tools.Camera;
 //import storyclasses.serializable.StoryTree;
 import tools.InterfacePanel;
 
@@ -9,33 +10,38 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 
 import editor.serializable.EditorFolder;
 
 public class EditorPanel extends InterfacePanel {
 
-    private EditorContainer controller;
+    private EditorContainer container;
+    private Camera camera;
     private Font font;
 
     public EditorPanel(int width, int height) {
         super(width, height);
         this.font = new Font("Arial", Font.PLAIN, 50);
         setFont(font);
-        this.controller = new EditorContainer(getInput(), width, height, this.getFontMetrics(font));
+        this.container = new EditorContainer(getInput(), width, height, this.getFontMetrics(font));
     }
 
     public EditorFolder getGuiFolder() {
-        return this.controller.getGuiFolder();
+        return this.container.getGuiFolder();
     }
 
     public void setGuiFolder(EditorFolder guiFolder) {
-        this.controller.setGuiFolder(guiFolder);
+        this.container.setGuiFolder(guiFolder);
     }
 
     @Override
     protected void render(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        controller.render(g2d);
+        g2d.setColor(EditorConstants.COLOR_BACKGROUND);
+        g2d.fillRect(0, 0, camera.getRelativeWidth(), camera.getRelativeHeight());
+        camera.transform(g2d);
+        EditorRender.renderEditorContainer(g2d, container);
     }
 
     @Override
@@ -50,7 +56,7 @@ public class EditorPanel extends InterfacePanel {
             case 3:
                 String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
                 if (nodeInput != null) {
-                    controller.addStoryNode(nodeInput);
+                    container.addStoryNode(nodeInput);
                 }
                 break;
         }
@@ -61,10 +67,10 @@ public class EditorPanel extends InterfacePanel {
     protected void onMousePressed(MouseEvent e) {
         switch (e.getButton()) {
             case 1:
-                controller.startDragging();
+                container.startDragging();
                 break;
             case 3:
-                controller.startConnecting();
+                container.startConnecting();
                 break;
         }
         this.repaint();
@@ -74,10 +80,10 @@ public class EditorPanel extends InterfacePanel {
     protected void onMouseReleased(MouseEvent e) {
         switch (e.getButton()) {
             case 1:
-                controller.endDragging();
+                container.endDragging();
                 break;
             case 3:
-                controller.endConnecting();
+                container.endConnecting();
                 break;
         }
         this.repaint();
@@ -85,8 +91,8 @@ public class EditorPanel extends InterfacePanel {
 
     @Override
     protected void onMouseDragged(MouseEvent e) {
-        controller.dragging();
-        controller.connecting();
+        container.updateDragging();
+        container.updateConnecting();
         this.repaint();
     }
 
@@ -101,7 +107,7 @@ public class EditorPanel extends InterfacePanel {
     @Override
     protected void onMouseWheelMoved(MouseWheelEvent e) {
         int rotations = e.getWheelRotation();
-        controller.zoom(rotations);
+        zoom(rotations);
         this.repaint();
     }
 
@@ -109,7 +115,7 @@ public class EditorPanel extends InterfacePanel {
     protected void onKeyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-                controller.deleteBox();
+                container.deleteInteractible();
                 break;
         }
         this.repaint();
@@ -126,4 +132,19 @@ public class EditorPanel extends InterfacePanel {
     // public StoryTree toStoryTree() {
     //     return GuiSerializer.toStoryTree(guiMechanics.getGuiFolder());
     // }
+
+    public Point2D getRelativeMousePosition() {
+        Point2D relPos = getInput().getMousePosition(0).getLocation();
+        return relPos;
+    }
+
+    public Point2D getAbsoluteMousePosition() {
+        Point2D relPos = getRelativeMousePosition();
+        Point2D absPos = camera.inverseTransform(relPos);
+        return absPos;
+    }
+
+    public void zoom(int rotations) {
+        camera.setZoom(camera.getZoom() * Math.pow(1.15, -rotations));
+    }
 }
