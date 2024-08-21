@@ -1,5 +1,7 @@
 package editor.serializable;
 
+import editor.serializable.interfaces.Interactible;
+
 public class Box implements Interactible {
     private int x;
     private int y;

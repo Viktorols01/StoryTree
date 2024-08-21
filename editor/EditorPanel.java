@@ -14,14 +14,14 @@ import editor.serializable.EditorFolder;
 
 public class EditorPanel extends InterfacePanel {
 
-    private EditorController controller;
+    private EditorContainer controller;
     private Font font;
 
     public EditorPanel(int width, int height) {
         super(width, height);
         this.font = new Font("Arial", Font.PLAIN, 50);
         setFont(font);
-        this.controller = new EditorController(getInput(), width, height, this.getFontMetrics(font));
+        this.controller = new EditorContainer(getInput(), width, height, this.getFontMetrics(font));
     }
 
     public EditorFolder getGuiFolder() {

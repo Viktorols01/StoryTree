@@ -11,7 +11,6 @@ import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
 
-// implementera visitor pattern!!!!
 public class EditorSerializer {
     public static StoryTree toStoryTree(EditorFolder folder) {
         NodePairList addedNodes = new NodePairList();

@@ -1,13 +1,10 @@
-package editor.serializable;
+package editor.serializable.interfaces;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface InputInteractible extends Interactible {
     public abstract void connectInput(OutputInteractible connectable);
-
     public abstract void disconnectInput(OutputInteractible connectable);
-
     public abstract void disconnectInputs();
-
-    public abstract Collection<OutputInteractible> getInputs();
+    public abstract List<OutputInteractible> getInputs();
 }

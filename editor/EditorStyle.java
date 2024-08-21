@@ -13,8 +13,8 @@ import editor.serializable.EditorFolderEntry;
 import editor.serializable.EditorFolderExit;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
-import editor.serializable.InputInteractible;
-import editor.serializable.TextInteractible;
+import editor.serializable.interfaces.InputInteractible;
+import editor.serializable.interfaces.TextInteractible;
 
 public class EditorStyle {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
@@ -37,7 +37,7 @@ public class EditorStyle {
 
     public static final int BOX_PADDING = 25;
 
-    public static Color getNodeColor(EditorNode node) {
+    private static Color getNodeColor(EditorNode node) {
         int inCount = node.getInputs().size();
         int outCount = node.getOptionPairs().size();
         Color color;

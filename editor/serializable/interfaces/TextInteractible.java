@@ -1,4 +1,4 @@
-package editor.serializable;
+package editor.serializable.interfaces;
 
 public interface TextInteractible extends Interactible {
     public String getText();

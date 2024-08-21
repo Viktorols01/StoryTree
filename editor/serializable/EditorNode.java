@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import editor.UserInputGetter;
+import editor.serializable.interfaces.InputInteractible;
+import editor.serializable.interfaces.OutputInteractible;
+import editor.serializable.interfaces.TextInteractible;
 import storyclasses.serializable.StoryKey;
 
-public class EditorNode extends Box implements IOInteractible, TextInteractible {
+public class EditorNode extends Box implements InputInteractible, OutputInteractible, TextInteractible {
     private List<OutputInteractible> inputs;
     private List<OptionPair> optionPairs;
 
@@ -55,10 +58,6 @@ public class EditorNode extends Box implements IOInteractible, TextInteractible 
         return optionPairs;
     }
 
-    public List<OutputInteractible> getInputs() {
-        return inputs;
-    }
-
     public class OptionPair implements Serializable {
         private EditorOption option;
         private InputInteractible output;
@@ -80,31 +79,45 @@ public class EditorNode extends Box implements IOInteractible, TextInteractible 
 
     @Override
     public void connectOutput(InputInteractible connectable) {
-        this.optionPairs.add(new OptionPair(connectable));
+        optionPairs.add(new OptionPair(connectable));
     }
 
     @Override
     public void disconnectOutput(InputInteractible connectable) {
-        this.optionPairs.removeIf(pair -> pair.getOutput().equals(connectable));
+        optionPairs.removeIf(pair -> pair.getOutput().equals(connectable));
     }
 
     @Override
     public void disconnectOutputs() {
-        this.optionPairs.clear();
+        optionPairs.clear();
     }
 
     @Override
     public void connectInput(OutputInteractible connectable) {
-        this.inputs.add(connectable);
+        inputs.add(connectable);
     }
 
     @Override
     public void disconnectInput(OutputInteractible connectable) {
-        this.inputs.remove(connectable);
+        inputs.remove(connectable);
     }
 
     @Override
     public void disconnectInputs() {
-        this.inputs.clear();
+        inputs.clear();
+    }
+
+    @Override
+    public List<OutputInteractible> getInputs() {
+        return inputs;
+    }
+
+    @Override
+    public List<InputInteractible> getOutputs() {
+        List<InputInteractible> outputs = new ArrayList<InputInteractible>();
+        for (OptionPair pair : optionPairs) {
+            outputs.add(pair.getOutput());
+        }
+        return outputs;
     }
 }

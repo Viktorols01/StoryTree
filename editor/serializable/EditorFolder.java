@@ -1,20 +1,22 @@
 package editor.serializable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class EditorFolder extends Box implements IOInteractible {
+import editor.serializable.interfaces.InputInteractible;
+import editor.serializable.interfaces.OutputInteractible;
+
+public class EditorFolder extends Box implements InputInteractible, OutputInteractible {
 
     private EditorFolder parentFolder;
-    private List<EditorFolder> childrenFolders;
 
+    private List<EditorFolder> childrenFolders;
     private EditorFolderEntry entryBox;
     private EditorFolderExit exitBox;
+    private List<EditorNode> nodes;
 
     private List<OutputInteractible> inputs;
     private InputInteractible output;
-    private List<EditorNode> nodes;
 
     public EditorFolder(int size) {
         super(0, 0, size, size);
@@ -114,8 +116,13 @@ public class EditorFolder extends Box implements IOInteractible {
         return output;
     }
 
-    public Collection<OutputInteractible> getInputs() {
+    public List<OutputInteractible> getInputs() {
         return inputs;
+    }
+
+    @Override
+    public List<InputInteractible> getOutputs() {
+        return List.of(output);
     }
 
 }

@@ -1,5 +1,10 @@
 package editor.serializable;
 
+import java.util.List;
+
+import editor.serializable.interfaces.InputInteractible;
+import editor.serializable.interfaces.OutputInteractible;
+
 public class EditorFolderEntry extends Box implements OutputInteractible  {
 
     private InputInteractible output;
@@ -25,6 +30,11 @@ public class EditorFolderEntry extends Box implements OutputInteractible  {
 
     public InputInteractible getOutput() {
         return output;
+    }
+
+    @Override
+    public List<InputInteractible> getOutputs() {
+        return List.of(output);
     }
 
 }

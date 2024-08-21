@@ -10,13 +10,13 @@ import editor.serializable.EditorFolderEntry;
 import editor.serializable.EditorFolderExit;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
-import editor.serializable.InputInteractible;
-import editor.serializable.OutputInteractible;
 import editor.serializable.EditorNode.OptionPair;
+import editor.serializable.interfaces.InputInteractible;
+import editor.serializable.interfaces.OutputInteractible;
 import tools.Camera;
 import tools.InterfacePanel.Input;
 
-public class EditorController {
+public class EditorContainer {
 
     private Camera camera;
     private Input input;
@@ -31,7 +31,7 @@ public class EditorController {
 
     private EditorFolder guiFolder;
 
-    public EditorController(Input input, int width, int height, FontMetrics fontMetrics) {
+    public EditorContainer(Input input, int width, int height, FontMetrics fontMetrics) {
         this.camera = new Camera(width, height);
         this.input = input;
         this.fontMetrics = fontMetrics;

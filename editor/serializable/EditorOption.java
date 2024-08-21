@@ -3,6 +3,7 @@ package editor.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import editor.serializable.interfaces.TextInteractible;
 import storyclasses.serializable.StoryKey;
 
 public class EditorOption extends Box implements TextInteractible {
