@@ -33,17 +33,27 @@ public class EditorSerializer {
 
     private static void appendStoryNodesToList(OutputInteractible box, EditorFolder folder, NodePairList list) {
         if (box instanceof EditorNode) {
-            EditorNode guiNode = (EditorNode) box;
-            list.addAndSerializeGuiNode(guiNode);
+                EditorNode node = (EditorNode) box;
+                if (list.indexOf(node) == -1) {
+                    list.addAndSerializeGuiNode(node);
+                } else {
+                    return;
+                }
         }
 
         for (InputInteractible subBox : box.getOutputs()) {
-            if (subBox instanceof OutputInteractible) {
-                appendStoryNodesToList((OutputInteractible) subBox, folder, list);
+
+            if (subBox instanceof EditorFolder) {
+                EditorFolder childFolder = (EditorFolder) subBox;
+                appendStoryNodesToList(childFolder.getEntryBox(), childFolder, list);
             }
 
             if (subBox instanceof EditorFolderExit) {
                 appendStoryNodesToList(folder.getParentFolder(), folder.getParentFolder(), list);
+            }
+
+            if (subBox instanceof EditorNode) {
+                appendStoryNodesToList((EditorNode) subBox, folder, list);
             }
         }
     }
