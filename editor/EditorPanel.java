@@ -19,7 +19,7 @@ public class EditorPanel extends InterfacePanel {
 
     public EditorPanel(int width, int height) {
         super(width, height);
-        this.font = new Font("Arial", Font.PLAIN, 50);
+        this.font = new Font("Arial", Font.PLAIN, EditorConstants.FONT_SIZE);
         this.context = new EditorContext(width, height, getInput(), getFontMetrics(font));
         setFont(font);
     }
@@ -48,7 +48,7 @@ public class EditorPanel extends InterfacePanel {
     protected void onMouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case 3:
-                context.addStoryNode();
+                context.addEditorNode();
                 break;
         }
         this.repaint();
@@ -107,6 +107,15 @@ public class EditorPanel extends InterfacePanel {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DELETE:
                 context.deleteInteractible();
+                break;
+            case KeyEvent.VK_F:
+                context.addEditorFolder();
+                break;
+            case KeyEvent.VK_I:
+                context.enterEditorFolder();
+                break;
+            case KeyEvent.VK_O:
+                context.exitEditorFolder();
                 break;
         }
         this.repaint();

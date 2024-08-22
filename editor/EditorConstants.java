@@ -22,4 +22,6 @@ public class EditorConstants {
     public static final Color COLOR_KEY = new Color(205, 205, 0);
 
     public static final int ARC_DIAMETER = 25;
+    public static final int STANDARD_SIZE = 200;
+    public static final int FONT_SIZE = 50;
 }

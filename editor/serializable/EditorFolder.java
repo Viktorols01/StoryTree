@@ -3,11 +3,14 @@ package editor.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import editor.EditorConstants;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
+import editor.serializable.interfaces.TextInteractible;
 
-public class EditorFolder extends Box implements InputInteractible, OutputInteractible {
+public class EditorFolder extends Box implements InputInteractible, OutputInteractible, TextInteractible {
 
+    private String title;
     private EditorFolder parentFolder;
 
     private List<EditorFolder> childrenFolders;
@@ -18,26 +21,26 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
     private List<OutputInteractible> inputs;
     private InputInteractible output;
 
-    public EditorFolder(int size) {
-        super(0, 0, size, size);
-
+    public EditorFolder(String title) {
+        super(0, 0, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
+        this.title = title;
         this.parentFolder = null;
         this.childrenFolders = new ArrayList<EditorFolder>();
 
-        this.entryBox = new EditorFolderEntry(0, 0, size / 2, size / 2);
+        this.entryBox = new EditorFolderEntry(0, 0);
         this.exitBox = null;
 
         this.nodes = new ArrayList<EditorNode>();
     }
 
-    public EditorFolder(EditorFolder parent, int size) {
-        super(0, 0, size, size);
-
+    public EditorFolder(String title, int x, int y, EditorFolder parent) {
+        super(x, y, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
+        this.title = title;
         this.parentFolder = parent;
         this.childrenFolders = new ArrayList<EditorFolder>();
 
-        this.entryBox = new EditorFolderEntry(0, 0, size / 2, size / 2);
-        this.exitBox = new EditorFolderExit(0, size, size / 2, size / 2);
+        this.entryBox = new EditorFolderEntry(0, 0);
+        this.exitBox = new EditorFolderExit(0, EditorConstants.STANDARD_SIZE);
 
         this.nodes = new ArrayList<EditorNode>();
     }
@@ -123,6 +126,16 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
     @Override
     public List<InputInteractible> getOutputs() {
         return List.of(output);
+    }
+
+    @Override
+    public String getText() {
+        return title;
+    }
+
+    @Override
+    public void setText(String text) {
+        this.title = text;
     }
 
 }

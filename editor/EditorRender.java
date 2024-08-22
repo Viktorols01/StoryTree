@@ -83,15 +83,11 @@ public class EditorRender {
                 EditorConstants.ARC_DIAMETER);
     }
 
-    public static void renderStoryNode(Graphics2D g2d, EditorNode node, boolean isRoot) {
+    public static void renderStoryNode(Graphics2D g2d, EditorNode node) {
         FontMetrics fontMetrics = g2d.getFontMetrics();
         int lineHeight = EditorUtility.getLineHeight(node.getText(), fontMetrics);
         g2d.setColor(getNodeColor(node));
         renderTextBox(g2d, node, node.getText(), EditorConstants.COLOR_WHITE);
-        if (isRoot) {
-            renderBoxOutline(g2d, node, new Color(255, 255, 255));
-            g2d.drawString("Root", (int) node.getX(), (int) node.getY() - 2);
-        }
         if (!node.getAddedKeys().isEmpty()) {
             renderPlus(g2d, node.getX() + node.getW(), node.getY(), lineHeight / 2);
             renderKey(g2d, node.getX() + node.getW() + lineHeight / 2, node.getY(), lineHeight);
@@ -116,6 +112,12 @@ public class EditorRender {
                     option.getY() + option.getH() - lockSize / 2,
                     lockSize, EditorConstants.ARC_DIAMETER / 2, option.isForced());
         }
+    }
+
+    public static void renderFolder(Graphics2D g2d, EditorFolder folder) {
+        renderBoxOutline(g2d, folder, EditorConstants.COLOR_WHITE);
+        renderFolderDesign(g2d, folder.getX() + EditorConstants.ARC_DIAMETER / 2,
+                folder.getY() + EditorConstants.ARC_DIAMETER / 2, folder.getW() - EditorConstants.ARC_DIAMETER);
     }
 
     public static void renderOutputLine(Graphics2D g2d, EditorFolderEntry box) {
@@ -238,7 +240,26 @@ public class EditorRender {
         g2d.fillPolygon(keyPolygon);
     }
 
-    public static void renderFolder(Graphics2D g2d, EditorFolder guiFolder) {
+    private static void renderFolderDesign(Graphics2D g2d, int x, int y, int size) {
+        int[][] points = new int[6][2];
+        int[] xPoints = new int[points.length];
+        int[] yPoints = new int[points.length];
+        points[0] = new int[] { size * 0 / 4, size * 0 / 4 };
+        points[1] = new int[] { size * 1 / 4, size * 0 / 4 };
+        points[2] = new int[] { size * 2 / 4, size * 1 / 4 };
+        points[3] = new int[] { size * 4 / 4, size * 1 / 4 };
+        points[4] = new int[] { size * 4 / 4, size * 4 / 4 };
+        points[5] = new int[] { size * 0 / 4, size * 4 / 4 };
+        for (int i = 0; i < points.length; i++) {
+            int[] point = points[i];
+            xPoints[i] = x + point[0];
+            yPoints[i] = y + point[1];
+        }
+        Polygon folderPolygon = new Polygon(xPoints, yPoints, points.length);
+        g2d.fillPolygon(folderPolygon);
+    }
+
+    public static void renderFolderContent(Graphics2D g2d, EditorFolder guiFolder) {
         if (guiFolder.getEntryBox().getOutput() != null) {
             EditorRender.renderOutputLine(g2d, guiFolder.getEntryBox());
         }
@@ -247,7 +268,11 @@ public class EditorRender {
             EditorRender.renderOptionPairs(g2d, node);
         }
         for (EditorNode node : guiFolder.getNodes()) {
-            EditorRender.renderStoryNode(g2d, node, false);
+            EditorRender.renderStoryNode(g2d, node);
+        }
+
+        for (EditorFolder childrenFolder : guiFolder.getChildrenFolders()) {
+            EditorRender.renderFolder(g2d, childrenFolder);
         }
 
         EditorRender.renderEntryBox(g2d, guiFolder.getEntryBox());
@@ -272,6 +297,6 @@ public class EditorRender {
                     (int) absPos.getY());
         }
 
-        EditorRender.renderFolder(g2d, context.getEditorFolder());
+        EditorRender.renderFolderContent(g2d, context.getEditorFolder());
     }
 }

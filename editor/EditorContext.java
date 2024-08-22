@@ -14,13 +14,12 @@ import editor.serializable.interfaces.OutputInteractible;
 import tools.Camera;
 import tools.InterfacePanel.Input;
 
-
 // contains COMMANDS without parameters
 public class EditorContext {
     private Camera camera;
     private Input input;
     private FontMetrics fontMetrics;
-    
+
     private Interactible draggedBox = null;
     private boolean dragging = false;
     private Point2D draggedDelta = null;
@@ -182,7 +181,7 @@ public class EditorContext {
                 }
             }
 
-            EditorNode newNode = container.addStoryNode(getAbsoluteMousePosition(), "");
+            EditorNode newNode = container.addEditorNode(getAbsoluteMousePosition(), "");
             EditorFunctions.connect(connectingComponent, newNode);
 
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
@@ -201,11 +200,27 @@ public class EditorContext {
         }
     }
 
-    public void addStoryNode() {
+    public void addEditorNode() {
         String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
         if (nodeInput != null) {
-            container.addStoryNode(getAbsoluteMousePosition(), nodeInput);
+            container.addEditorNode(getAbsoluteMousePosition(), nodeInput);
         }
+    }
+
+    public void addEditorFolder() {
+        String titleInput = UserInputGetter.getTextFromPromt("Adding folder...", "");
+        if (titleInput != null) {
+            container.addEditorFolder(getAbsoluteMousePosition(), titleInput);
+        }
+        
+    }
+
+    public void enterEditorFolder() {
+        container.enterEditorFolder(getAbsoluteMousePosition());
+    }
+
+    public void exitEditorFolder() {
+        container.exitEditorFolder(getAbsoluteMousePosition());
     }
 
     public void deleteInteractible() {

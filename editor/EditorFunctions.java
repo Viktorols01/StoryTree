@@ -28,6 +28,10 @@ public class EditorFunctions {
         folder.getNodes().remove(interactible);
     }
 
+    public static void deleteFolderReference(EditorFolder childFolder, EditorFolder folder) {
+        folder.getChildrenFolders().remove(childFolder);
+    }
+
     public static void connect(OutputInteractible output, InputInteractible input) {
         output.connectOutput(input);
         input.connectInput(output);

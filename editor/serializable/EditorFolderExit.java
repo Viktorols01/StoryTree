@@ -3,6 +3,7 @@ package editor.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import editor.EditorConstants;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 
@@ -10,8 +11,8 @@ public class EditorFolderExit extends Box implements InputInteractible {
 
     private List<OutputInteractible> inputs;
 
-    public EditorFolderExit(int x, int y, int w, int h) {
-        super(x, y, w, h);
+    public EditorFolderExit(int x, int y) {
+        super(x, y, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
         this.inputs = new ArrayList<OutputInteractible>();
     }
 
