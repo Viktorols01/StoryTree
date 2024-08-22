@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import editor.serializable.EditorFolder;
+import editor.serializable.EditorFolderExit;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
+import editor.serializable.interfaces.InputInteractible;
+import editor.serializable.interfaces.OutputInteractible;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
@@ -17,7 +20,7 @@ public class EditorSerializer {
 
         appendStoryNodesToList(folder, addedNodes);
 
-        connectStoryNodes(addedNodes);
+        connectStoryNodes(folder, addedNodes);
 
         StoryNode[] storyArray = new StoryNode[addedNodes.serializedNodes.size()];
         addedNodes.serializedNodes.toArray(storyArray);
@@ -25,58 +28,66 @@ public class EditorSerializer {
     }
 
     private static void appendStoryNodesToList(EditorFolder folder, NodePairList list) {
-        appendStoryNodesToList(folder.getEntryBox(), list);
+        appendStoryNodesToList(folder.getEntryBox(), folder, list);
     }
 
-    private static void appendStoryNodesToList(InputInteractible box, NodePairList list) {
+    private static void appendStoryNodesToList(OutputInteractible box, EditorFolder folder, NodePairList list) {
         if (box instanceof EditorNode) {
             EditorNode guiNode = (EditorNode) box;
             list.addAndSerializeGuiNode(guiNode);
         }
 
         for (InputInteractible subBox : box.getOutputs()) {
-            appendStoryNodesToList(subBox, list);
+            if (subBox instanceof OutputInteractible) {
+                appendStoryNodesToList((OutputInteractible) subBox, folder, list);
+            }
+
+            if (subBox instanceof EditorFolderExit) {
+                appendStoryNodesToList(folder.getParentFolder(), folder.getParentFolder(), list);
+            }
         }
     }
 
-    private static void connectStoryNodes(NodePairList list) {
-        connectStoryNodes(guiFolder.getEntryBox(), list);
-    }
-
-    private static void connectStoryNodes(InputInteractible box, NodePairList list) {
-        if (box instanceof EditorNode) {
-            EditorNode guiNode = (EditorNode) box;
-            int index = list.indexOf(guiNode);
+    private static void connectStoryNodes(EditorFolder folder, NodePairList list) {
+        for (EditorNode node : list.guiNodes) {
+            int index = list.indexOf(node);
             StoryNode serializedNode = list.get(index);
             int optionIndex = 0;
-            for (InputInteractible subBox : guiNode.getOutputs()) {
-                EditorOption option = (EditorOption) subBox;
+            for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+                InputInteractible next = pair.getOutput();
+                EditorOption option = pair.getOption();
                 String optionText = option.getText();
                 StoryKey[] unlockingKeys = new StoryKey[option.getUnlockingKeys().size()];
                 option.getUnlockingKeys().toArray(unlockingKeys);
                 StoryKey[] lockingKeys = new StoryKey[option.getLockingKeys().size()];
                 option.getLockingKeys().toArray(lockingKeys);
                 boolean forced = option.isForced();
-                int nextIndex = nextStoryNodeIndex(subBox.getOutputs().get(0), list);
+                int nextIndex = nextStoryNodeIndex(next, folder, list);
+                // PROBLEM om den sista kopplingen är till en exit box!
                 serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText,
                         nextIndex, unlockingKeys,
                         lockingKeys, forced);
                 optionIndex++;
             }
         }
-
-        for (InputInteractible subBox : box.getOutputs()) {
-            connectStoryNodes(subBox, list);
-        }
     }
 
-    private static int nextStoryNodeIndex(InputInteractible box, NodePairList list) {
-        if (box instanceof EditorNode) {
-            EditorNode guiNode = (EditorNode) box;
-            return list.indexOf(guiNode);
+    private static int nextStoryNodeIndex(InputInteractible interactible, EditorFolder folder, NodePairList list) {
+        if (interactible instanceof EditorNode) {
+            EditorNode node = (EditorNode) interactible;
+            return list.indexOf(node);
         }
 
-        return nextStoryNodeIndex(box.getOutputs().get(0), list);
+        if (interactible instanceof EditorFolderExit) {
+            return nextStoryNodeIndex(folder.getOutput(), folder.getParentFolder(), list);
+        }
+
+        if (interactible instanceof EditorFolder) {
+            EditorFolder childFolder = (EditorFolder) interactible;
+            return nextStoryNodeIndex(childFolder.getEntryBox().getOutput(), childFolder, list);
+        }
+
+        return -1;
     }
 
     private static class NodePairList {

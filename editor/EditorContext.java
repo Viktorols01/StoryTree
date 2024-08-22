@@ -162,8 +162,7 @@ public class EditorContext {
 
             for (EditorNode node : getEditorFolder().getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
-                    connectingComponent.connectOutput(node);
-                    node.connectInput(connectingComponent);
+                    EditorFunctions.connect(connectingComponent, node);
 
                     if (connectingComponent instanceof EditorNode) {
                         EditorNode connectNode = (EditorNode) connectingComponent;
@@ -178,15 +177,13 @@ public class EditorContext {
             EditorFolderExit exitBox = getEditorFolder().getExitBox();
             if (exitBox != null) {
                 if (exitBox.isInside(absPos.getX(), absPos.getY())) {
-                    connectingComponent.connectOutput(exitBox);
-                    exitBox.connectInput(connectingComponent);
+                    EditorFunctions.connect(connectingComponent, exitBox);
                     return;
                 }
             }
 
             EditorNode newNode = container.addStoryNode(getAbsoluteMousePosition(), "");
-            connectingComponent.connectOutput(newNode);
-            newNode.connectInput(connectingComponent);
+            EditorFunctions.connect(connectingComponent, newNode);
 
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
             if (nodeInput != null) {
