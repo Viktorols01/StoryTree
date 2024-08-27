@@ -17,5 +17,7 @@
 
 - Infobox in the corner
 
+- Dum skit när man kopplar EditorNode...? Kanske kan vara så?
+
 NÄSTA STORA UPPDATERING:
 - Extra-text som enbart visas med nycklar?????

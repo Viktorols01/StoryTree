@@ -128,8 +128,4 @@ public class EditorPanel extends InterfacePanel {
     @Override
     protected void onKeyTyped(KeyEvent e) {
     }
-
-    // public StoryTree toStoryTree() {
-    //     return GuiSerializer.toStoryTree(guiMechanics.getGuiFolder());
-    // }
 }

@@ -62,8 +62,8 @@ public class EditorNode extends Box implements InputInteractible, OutputInteract
         private EditorOption option;
         private InputInteractible output;
 
-        private OptionPair(InputInteractible output) {
-            this.option = new EditorOption(UserInputGetter.getTextFromPromt("Adding option...", ""));
+        private OptionPair(EditorOption option, InputInteractible output) {
+            this.option = option;
             this.output = output;
         }
 
@@ -79,7 +79,8 @@ public class EditorNode extends Box implements InputInteractible, OutputInteract
 
     @Override
     public void connectOutput(InputInteractible connectable) {
-        optionPairs.add(new OptionPair(connectable));
+        String optionText = UserInputGetter.getTextFromPromt("Adding option...", "");
+        optionPairs.add(new OptionPair(new EditorOption(optionText == null ? "" : optionText), connectable));
     }
 
     @Override

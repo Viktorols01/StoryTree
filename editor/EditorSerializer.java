@@ -18,15 +18,8 @@ public class EditorSerializer {
     public static StoryTree toStoryTree(EditorFolder folder) {
         NodePairList addedNodes = new NodePairList();
 
-        System.out.println("APPENDING...");
-        // Nu är problemet att de ej läggs till...
         appendStoryNodesToList(folder.getEntryBox(), addedNodes);
 
-        for (StoryNode storyNode : addedNodes.serializedNodes) {
-            System.out.println(storyNode.getText());
-        }
-
-        System.out.println("CONNECTING...");
         connectStoryNodes(folder, addedNodes);
 
         StoryNode[] storyArray = new StoryNode[addedNodes.serializedNodes.size()];

@@ -16,7 +16,7 @@ class SerializerTest {
 
         StoryOption left = new StoryOption("Go to the left", 1);
         StoryOption right = new StoryOption("Go to the right", 2);
-        StoryOption porsche = new StoryOption("Buy a porsche", 3, new StoryKey[]{new StoryKey("pengar", 50)}, new StoryKey[0], true);
+        StoryOption porsche = new StoryOption("Buy a porsche", 3, new StoryKey[]{new StoryKey("pengar", 50)}, new StoryKey[0], false);
 
         root = new StoryNode("Welcome to the dungeon!", new StoryOption[]{left, right, porsche}, new StoryKey[]{new StoryKey("pengar", 50)}, new StoryKey[]{});
 
