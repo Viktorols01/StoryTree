@@ -20,6 +20,7 @@ public class EditorConstants {
     public static final Color COLOR_RED = new Color(255, 0, 0);
 
     public static final Color COLOR_KEY = new Color(205, 205, 0);
+    public static final Color COLOR_FOLDER = new Color(205, 205, 0);
 
     public static final int ARC_DIAMETER = 25;
     public static final int STANDARD_SIZE = 200;

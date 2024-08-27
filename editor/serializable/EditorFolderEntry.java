@@ -35,7 +35,7 @@ public class EditorFolderEntry extends Box implements OutputInteractible  {
 
     @Override
     public List<InputInteractible> getOutputs() {
-        return List.of(output);
+        return output == null ? List.of() : List.of(output);
     }
 
 }

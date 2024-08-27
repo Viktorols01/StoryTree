@@ -15,7 +15,7 @@ public class EditorContainer {
 
     public EditorContainer(FontMetrics fontMetrics) {
         this.fontMetrics = fontMetrics;
-        this.editorFolder = new EditorFolder("root");
+        this.editorFolder = new EditorFolder("Root");
     }
 
     public EditorFolder getEditorFolder() {

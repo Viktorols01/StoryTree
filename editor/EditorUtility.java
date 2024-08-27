@@ -18,13 +18,13 @@ public class EditorUtility {
         return width;
     }
 
-    public static int getLineHeight(String text, FontMetrics fontMetrics) {
+    public static int getLineHeight(FontMetrics fontMetrics) {
         int lineHeight = fontMetrics.getHeight();
         return lineHeight;
     }
 
     public static int getTextHeight(String text, FontMetrics fontMetrics) {
-        int height = (int) (getLineHeight(text, fontMetrics) * text.lines().count());
+        int height = (int) (getLineHeight(fontMetrics) * text.lines().count());
         return height;
     }
 }

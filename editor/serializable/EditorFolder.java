@@ -12,12 +12,10 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
 
     private String title;
     private EditorFolder parentFolder;
-
     private List<EditorFolder> childrenFolders;
     private EditorFolderEntry entryBox;
     private EditorFolderExit exitBox;
     private List<EditorNode> nodes;
-
     private List<OutputInteractible> inputs;
     private InputInteractible output;
 
@@ -26,11 +24,10 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
         this.title = title;
         this.parentFolder = null;
         this.childrenFolders = new ArrayList<EditorFolder>();
-
         this.entryBox = new EditorFolderEntry(0, 0);
         this.exitBox = null;
-
         this.nodes = new ArrayList<EditorNode>();
+        this.inputs = new ArrayList<OutputInteractible>();
     }
 
     public EditorFolder(String title, int x, int y, EditorFolder parent) {
@@ -38,11 +35,10 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
         this.title = title;
         this.parentFolder = parent;
         this.childrenFolders = new ArrayList<EditorFolder>();
-
         this.entryBox = new EditorFolderEntry(0, 0);
         this.exitBox = new EditorFolderExit(0, EditorConstants.STANDARD_SIZE);
-
         this.nodes = new ArrayList<EditorNode>();
+        this.inputs = new ArrayList<OutputInteractible>();
     }
 
     public List<EditorNode> getNodes() {
@@ -125,7 +121,7 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
 
     @Override
     public List<InputInteractible> getOutputs() {
-        return List.of(output);
+        return output == null ? List.of() : List.of(output);
     }
 
     @Override
