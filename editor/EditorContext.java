@@ -135,7 +135,7 @@ public class EditorContext {
                     EditorOption option = pair.getOption();
                     if (option.isInside(absPos.getX(), absPos.getY())) {
                         UserInputGetter.modifyOption(option);
-                        EditorFunctions.updateSize(fontMetrics, option);
+                        EditorFunctions.updateSize(fontMetrics, option, EditorConstants.ARC_DIAMETER_OPTION);
                         EditorFunctions.updateOptions(fontMetrics, node);
                         return;
                     }
@@ -171,7 +171,7 @@ public class EditorContext {
                 if (connectingComponent.isInside(absPos.getX(), absPos.getY())) {
                     EditorNode node = (EditorNode) connectingComponent;
                     UserInputGetter.modifyNode(node);
-                    EditorFunctions.updateSize(fontMetrics, node);
+                    EditorFunctions.updateSize(fontMetrics, node, EditorConstants.ARC_DIAMETER_NODE);
                     EditorFunctions.updateOptions(fontMetrics, node);
                     connectingComponent = null;
                     return;
@@ -204,7 +204,7 @@ public class EditorContext {
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
             if (nodeInput != null) {
                 newNode.setText(nodeInput);
-                EditorFunctions.updateSize(fontMetrics, newNode);
+                EditorFunctions.updateSize(fontMetrics, newNode, EditorConstants.ARC_DIAMETER_NODE);
             }
             if (connectingComponent instanceof EditorNode) {
                 EditorFunctions.updateOptions(fontMetrics, (EditorNode) connectingComponent);

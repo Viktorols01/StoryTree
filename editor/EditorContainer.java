@@ -28,14 +28,15 @@ public class EditorContainer {
 
     public EditorNode addEditorNode(Point2D absPos, String text) {
         EditorNode node = new EditorNode(text, (int) absPos.getX(), (int) absPos.getY());
-        EditorFunctions.updateSize(fontMetrics, node);
+        EditorFunctions.updateSize(fontMetrics, node, EditorConstants.ARC_DIAMETER_NODE);
 
         editorFolder.getNodes().add(node);
         return node;
     }
 
     public void addEditorFolder(Point2D absPos, String text) {
-        editorFolder.getChildrenFolders().add(new EditorFolder(text, (int) absPos.getX(), (int) absPos.getY(), editorFolder));
+        editorFolder.getChildrenFolders()
+                .add(new EditorFolder(text, (int) absPos.getX(), (int) absPos.getY(), editorFolder));
     }
 
     public boolean enterEditorFolder(Point2D absPos) {
@@ -52,7 +53,7 @@ public class EditorContainer {
         EditorFolder parentFolder = editorFolder.getParentFolder();
         if (parentFolder == null) {
             return false;
-        } 
+        }
 
         editorFolder = editorFolder.getParentFolder();
         return true;

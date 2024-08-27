@@ -37,10 +37,10 @@ public class EditorFunctions {
         input.connectInput(output);
     }
 
-     public static void updateSize(FontMetrics fontMetrics, TextInteractible textInteractible) {
+     public static void updateSize(FontMetrics fontMetrics, TextInteractible textInteractible, int arcDiameter) {
         int width = EditorUtility.getTextWidth(textInteractible.getText(), fontMetrics);
         int height = EditorUtility.getTextHeight(textInteractible.getText(), fontMetrics);
-        textInteractible.setSize(width + 2 * EditorConstants.ARC_DIAMETER, height + 2 * EditorConstants.ARC_DIAMETER);
+        textInteractible.setSize(width + 2 * arcDiameter, height + 2 * arcDiameter);
     }
 
     public static void updateOptions(FontMetrics fontMetrics, EditorNode node) {
@@ -51,12 +51,12 @@ public class EditorFunctions {
 
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            updateSize(fontMetrics, option);
+            updateSize(fontMetrics, option, EditorConstants.ARC_DIAMETER_OPTION);
         }
 
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            totalWidth += EditorUtility.getTextWidth(option.getText(), fontMetrics) + EditorConstants.ARC_DIAMETER * 2
+            totalWidth += EditorUtility.getTextWidth(option.getText(), fontMetrics) + EditorConstants.ARC_DIAMETER_OPTION * 2
                     + margin;
         }
         totalWidth -= margin;
@@ -67,7 +67,7 @@ public class EditorFunctions {
             EditorOption option = pair.getOption();
             int width = EditorUtility.getTextWidth(option.getText(), fontMetrics);
             option.setPosition(x, y);
-            x += width + EditorConstants.ARC_DIAMETER * 2 + margin;
+            x += width + EditorConstants.ARC_DIAMETER_OPTION * 2 + margin;
         }
     }
 
