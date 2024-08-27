@@ -1,6 +1,7 @@
 package editor;
 
 import java.awt.FontMetrics;
+import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import editor.serializable.EditorFolder;
@@ -269,8 +270,11 @@ public class EditorContext {
     }
 
     private Point2D getRelativeMousePosition() {
-        Point2D relPos = input.getMousePosition(0).getLocation();
-        return relPos;
+        Point relPos = input.getMousePosition(0);
+        if (relPos == null) {
+            return new Point2D.Double(0, 0);
+        }
+        return relPos.getLocation();
     }
 
     public Point2D getAbsoluteMousePosition() {

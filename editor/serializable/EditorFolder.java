@@ -24,7 +24,7 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
         this.title = title;
         this.parentFolder = null;
         this.childrenFolders = new ArrayList<EditorFolder>();
-        this.entryBox = new EditorFolderEntry(0, 0);
+        this.entryBox = new EditorFolderEntry(0, 0, this);
         this.exitBox = null;
         this.nodes = new ArrayList<EditorNode>();
         this.inputs = new ArrayList<OutputInteractible>();
@@ -35,8 +35,8 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
         this.title = title;
         this.parentFolder = parent;
         this.childrenFolders = new ArrayList<EditorFolder>();
-        this.entryBox = new EditorFolderEntry(0, 0);
-        this.exitBox = new EditorFolderExit(0, EditorConstants.STANDARD_SIZE);
+        this.entryBox = new EditorFolderEntry(0, 0, this);
+        this.exitBox = new EditorFolderExit(0, EditorConstants.STANDARD_SIZE, this);
         this.nodes = new ArrayList<EditorNode>();
         this.inputs = new ArrayList<OutputInteractible>();
     }

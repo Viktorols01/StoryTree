@@ -8,10 +8,12 @@ import editor.serializable.interfaces.OutputInteractible;
 
 public class EditorFolderEntry extends Box implements OutputInteractible  {
 
+    private EditorFolder parentFolder;
     private InputInteractible output;
 
-    public EditorFolderEntry(int x, int y) {
+    public EditorFolderEntry(int x, int y, EditorFolder parentFolder) {
         super(x, y, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
+        this.parentFolder = parentFolder;
     }
 
     @Override
@@ -31,6 +33,10 @@ public class EditorFolderEntry extends Box implements OutputInteractible  {
 
     public InputInteractible getOutput() {
         return output;
+    }
+
+    public EditorFolder getParentFolder() {
+        return parentFolder;
     }
 
     @Override

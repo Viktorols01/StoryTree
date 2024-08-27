@@ -9,11 +9,17 @@ import editor.serializable.interfaces.OutputInteractible;
 
 public class EditorFolderExit extends Box implements InputInteractible {
 
+    private EditorFolder parentFolder;
     private List<OutputInteractible> inputs;
 
-    public EditorFolderExit(int x, int y) {
+    public EditorFolderExit(int x, int y, EditorFolder parentFolder) {
         super(x, y, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
+        this.parentFolder = parentFolder;
         this.inputs = new ArrayList<OutputInteractible>();
+    }
+
+    public EditorFolder getParentFolder() {
+        return parentFolder;
     }
 
     @Override

@@ -18,8 +18,15 @@ public class EditorSerializer {
     public static StoryTree toStoryTree(EditorFolder folder) {
         NodePairList addedNodes = new NodePairList();
 
-        appendStoryNodesToList(folder, addedNodes);
+        System.out.println("APPENDING...");
+        // Nu är problemet att de ej läggs till...
+        appendStoryNodesToList(folder.getEntryBox(), addedNodes);
 
+        for (StoryNode storyNode : addedNodes.serializedNodes) {
+            System.out.println(storyNode.getText());
+        }
+
+        System.out.println("CONNECTING...");
         connectStoryNodes(folder, addedNodes);
 
         StoryNode[] storyArray = new StoryNode[addedNodes.serializedNodes.size()];
@@ -27,33 +34,30 @@ public class EditorSerializer {
         return new StoryTree(storyArray);
     }
 
-    private static void appendStoryNodesToList(EditorFolder folder, NodePairList list) {
-        appendStoryNodesToList(folder.getEntryBox(), folder, list);
-    }
-
-    private static void appendStoryNodesToList(OutputInteractible box, EditorFolder folder, NodePairList list) {
+    private static void appendStoryNodesToList(OutputInteractible box, NodePairList list) {
         if (box instanceof EditorNode) {
-                EditorNode node = (EditorNode) box;
-                if (list.indexOf(node) == -1) {
-                    list.addAndSerializeGuiNode(node);
-                } else {
-                    return;
-                }
+            EditorNode node = (EditorNode) box;
+            if (list.indexOf(node) == -1) {
+                list.addAndSerializeGuiNode(node);
+            } else {
+                return;
+            }
         }
 
         for (InputInteractible subBox : box.getOutputs()) {
 
             if (subBox instanceof EditorFolder) {
                 EditorFolder childFolder = (EditorFolder) subBox;
-                appendStoryNodesToList(childFolder.getEntryBox(), childFolder, list);
+                appendStoryNodesToList(childFolder.getEntryBox(), list);
             }
 
             if (subBox instanceof EditorFolderExit) {
-                appendStoryNodesToList(folder.getParentFolder(), folder.getParentFolder(), list);
+                EditorFolderExit exit = (EditorFolderExit) subBox;
+                appendStoryNodesToList(exit.getParentFolder(), list);
             }
 
             if (subBox instanceof EditorNode) {
-                appendStoryNodesToList((EditorNode) subBox, folder, list);
+                appendStoryNodesToList((EditorNode) subBox, list);
             }
         }
     }
@@ -64,7 +68,10 @@ public class EditorSerializer {
             StoryNode serializedNode = list.get(index);
             int optionIndex = 0;
             for (EditorNode.OptionPair pair : node.getOptionPairs()) {
-                InputInteractible next = pair.getOutput();
+                int nextIndex = nextStoryNodeIndex(pair.getOutput(), list);
+                if (nextIndex == -1) {
+                    continue;
+                }
                 EditorOption option = pair.getOption();
                 String optionText = option.getText();
                 StoryKey[] unlockingKeys = new StoryKey[option.getUnlockingKeys().size()];
@@ -72,8 +79,6 @@ public class EditorSerializer {
                 StoryKey[] lockingKeys = new StoryKey[option.getLockingKeys().size()];
                 option.getLockingKeys().toArray(lockingKeys);
                 boolean forced = option.isForced();
-                int nextIndex = nextStoryNodeIndex(next, folder, list);
-                // PROBLEM om den sista kopplingen är till en exit box!
                 serializedNode.getStoryOptions()[optionIndex] = new StoryOption(optionText,
                         nextIndex, unlockingKeys,
                         lockingKeys, forced);
@@ -82,22 +87,41 @@ public class EditorSerializer {
         }
     }
 
-    private static int nextStoryNodeIndex(InputInteractible interactible, EditorFolder folder, NodePairList list) {
+    private static int nextStoryNodeIndex(InputInteractible interactible, NodePairList list) {
         if (interactible instanceof EditorNode) {
             EditorNode node = (EditorNode) interactible;
             return list.indexOf(node);
         }
 
         if (interactible instanceof EditorFolderExit) {
-            return nextStoryNodeIndex(folder.getOutput(), folder.getParentFolder(), list);
+            EditorFolderExit exit = (EditorFolderExit) interactible;
+            return nextStoryNodeIndex(exit.getParentFolder().getOutput(), list);
         }
 
         if (interactible instanceof EditorFolder) {
             EditorFolder childFolder = (EditorFolder) interactible;
-            return nextStoryNodeIndex(childFolder.getEntryBox().getOutput(), childFolder, list);
+            return nextStoryNodeIndex(childFolder.getEntryBox().getOutput(), list);
         }
 
         return -1;
+    }
+
+    private static boolean hasNextStoryNode(InputInteractible interactible) {
+        if (interactible instanceof EditorNode) {
+            return true;
+        }
+
+        if (interactible instanceof EditorFolderExit) {
+            EditorFolderExit exit = (EditorFolderExit) interactible;
+            return hasNextStoryNode(exit.getParentFolder().getOutput());
+        }
+
+        if (interactible instanceof EditorFolder) {
+            EditorFolder childFolder = (EditorFolder) interactible;
+            return hasNextStoryNode(childFolder.getEntryBox().getOutput());
+        }
+
+        return false;
     }
 
     private static class NodePairList {
@@ -116,7 +140,14 @@ public class EditorSerializer {
             guiNode.getAddedKeys().toArray(addedKeys);
             StoryKey[] removedKeys = new StoryKey[guiNode.getRemovedKeys().size()];
             guiNode.getRemovedKeys().toArray(removedKeys);
-            StoryNode serializedNode = new StoryNode(guiNode.getText(), new StoryOption[guiNode.getOutputs().size()],
+
+            int outputSize = 0;
+            for (EditorNode.OptionPair pair : guiNode.getOptionPairs()) {
+                if (hasNextStoryNode(pair.getOutput())) {
+                    outputSize++;
+                }
+            }
+            StoryNode serializedNode = new StoryNode(guiNode.getText(), new StoryOption[outputSize],
                     addedKeys,
                     removedKeys);
             serializedNodes.add(serializedNode);
