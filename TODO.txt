@@ -15,3 +15,4 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 
 NÄSTA STORA UPPDATERING:
 - Extra-text som enbart visas med nycklar?????
+- Läsaren. Konsollen är för jobbig!
