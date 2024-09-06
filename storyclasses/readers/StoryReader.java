@@ -22,7 +22,6 @@ public abstract class StoryReader {
     }
 
     public void read() {
-        acquireKeys();
         displayTextToUser(this.storyState.getCurrentNode().getText());
         interact();
     }
@@ -40,6 +39,7 @@ public abstract class StoryReader {
             for (StoryOption option : availableOptions) {
                 if (option.getText().equals(selectedOption)) {
                     this.storyState.setStoryNodeIndex(option.getStoryNodeIndex());
+                    acquireKeys();
                     read();
                     return;
                 }
