@@ -51,6 +51,7 @@ public class UserInputGetter {
 
         JLabel textLabel = new JLabel("Node text");
         textLabel.setPreferredSize(new Dimension(width, smallHeight));
+        textLabel.requestFocus();
         components.add(textLabel);
 
         JTextArea textArea = new JTextArea(node.getText(), 4, 0);
@@ -129,6 +130,7 @@ public class UserInputGetter {
 
         JLabel textLabel = new JLabel("Option text");
         textLabel.setPreferredSize(new Dimension(width, smallHeight));
+        textLabel.requestFocus();
         components.add(textLabel);
 
         JTextField textField = new JTextField(option.getText());

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import editor.UserInputGetter;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 import editor.serializable.interfaces.TextInteractible;
@@ -79,8 +78,7 @@ public class EditorNode extends Box implements InputInteractible, OutputInteract
 
     @Override
     public void connectOutput(InputInteractible connectable) {
-        String optionText = UserInputGetter.getTextFromPromt("Adding option...", "");
-        optionPairs.add(new OptionPair(new EditorOption(optionText == null ? "" : optionText), connectable));
+        optionPairs.add(new OptionPair(new EditorOption(""), connectable));
     }
 
     @Override
