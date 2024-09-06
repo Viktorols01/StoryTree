@@ -24,5 +24,7 @@ public class EditorConstants {
     public static final int ARC_DIAMETER_NODE = 25;
     public static final int ARC_DIAMETER_OPTION = 15;
     public static final int STANDARD_SIZE = 200;
+    
     public static final int FONT_SIZE = 50;
+    public static final int LINE_SIZE = 5;
 }

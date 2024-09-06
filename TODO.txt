@@ -9,8 +9,6 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 
 - CTRL+Z
 
-- Borde jag använda create för att ny utritning inte ska påverkas av tidigare?
-
 - Dum skit när man kopplar EditorNode...? Kanske kan vara så?
 
 NÄSTA STORA UPPDATERING:

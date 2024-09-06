@@ -42,11 +42,15 @@ public class EditorRender {
         return color;
     }
 
-    public static void renderLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
+    public static void renderDirectedLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(new Color(255, 255, 255));
-        g2d.setStroke(new BasicStroke(5));
+        g2d.setColor(EditorConstants.COLOR_WHITE);
+        g2d.setStroke(new BasicStroke(EditorConstants.LINE_SIZE));
         g2d.drawLine(x1, y1, x2, y2);
+
+        int size = EditorConstants.LINE_SIZE * 7;
+        double angle = Math.atan2(y2 - y1, x2 - x1);
+        renderTriangle(g2d, (x1 + x2 * 3) / 4 - size / 2, (y1 + y2 * 3) / 4 - size / 2, size, angle);
     }
 
     public static void renderEntryBox(Graphics2D g2d, EditorFolderEntry box) {
@@ -88,7 +92,7 @@ public class EditorRender {
     public static void renderBoxOutline(Graphics2D g2d, Box box, Color color) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(5));
+        g2d.setStroke(new BasicStroke(EditorConstants.LINE_SIZE));
         g2d.drawRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
                 EditorConstants.ARC_DIAMETER_NODE,
                 EditorConstants.ARC_DIAMETER_NODE);
@@ -147,7 +151,7 @@ public class EditorRender {
         g2d = (Graphics2D) g2d.create();
         List<InputInteractible> inputs = output.getOutputs();
         for (InputInteractible input : inputs) {
-            EditorRender.renderLine(g2d,
+            EditorRender.renderDirectedLine(g2d,
                     (int) (output.getX() + output.getW() / 2),
                     (int) (output.getY() + output.getH() / 2),
                     (int) (input.getX() + input.getW() / 2),
@@ -160,7 +164,7 @@ public class EditorRender {
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
             InputInteractible connectable = pair.getOutput();
-            EditorRender.renderLine(g2d,
+            EditorRender.renderDirectedLine(g2d,
                     (int) (option.getX() + option.getW() / 2),
                     (int) (option.getY() + option.getH() / 2),
                     (int) (connectable.getX() + connectable.getW() / 2),
@@ -284,6 +288,25 @@ public class EditorRender {
         g2d.fillPolygon(folderPolygon);
     }
 
+    public static void renderTriangle(Graphics2D g2d, int x, int y, int size, double angle) {
+        g2d = (Graphics2D) g2d.create();
+        int[][] points = new int[3][2];
+        int[] xPoints = new int[points.length];
+        int[] yPoints = new int[points.length];
+        points[0] = new int[] { size * 0 / 2, size * 0 / 2 };
+        points[1] = new int[] { size * 2 / 2, size * 1 / 2 };
+        points[2] = new int[] { size * 0 / 2, size * 2 / 2 };
+        for (int i = 0; i < points.length; i++) {
+            int[] point = points[i];
+            xPoints[i] = x + size / 2
+                    + (int) ((point[0] - size / 2) * Math.cos(angle) - (point[1] - size / 2) * Math.sin(angle));
+            yPoints[i] = y + size / 2
+                    + (int) ((point[0] - size / 2) * Math.sin(angle) + (point[1] - size / 2) * Math.cos(angle));
+        }
+        Polygon folderPolygon = new Polygon(xPoints, yPoints, points.length);
+        g2d.fillPolygon(folderPolygon);
+    }
+
     public static void renderFolderContent(Graphics2D g2d, EditorFolder guiFolder) {
         g2d = (Graphics2D) g2d.create();
         if (guiFolder.getEntryBox().getOutput() != null) {
@@ -321,7 +344,7 @@ public class EditorRender {
         if (context.isConnecting()) {
             Interactible connectingComponent = context.getConnectingComponent();
             Point2D absPos = context.getAbsoluteMousePosition();
-            EditorRender.renderLine(transform,
+            EditorRender.renderDirectedLine(transform,
                     (int) (connectingComponent.getX() + connectingComponent.getW() / 2),
                     (int) (connectingComponent.getY() + connectingComponent.getH() / 2),
                     (int) absPos.getX(),
@@ -345,7 +368,7 @@ public class EditorRender {
         g2d.setFont(new Font("Arial", Font.PLAIN, 20));
         g2d.setColor(EditorConstants.COLOR_WHITE);
         List<String> outputs = new LinkedList<String>();
-        outputs.add(getFolderLocation(context.getEditorFolder()));
+        outputs.add(EditorUtility.getFolderLocation(context.getEditorFolder()));
         outputs.add("X, Y = " + (int) context.getAbsoluteMousePosition().getX() + ", "
                 + (int) context.getAbsoluteMousePosition().getY());
 
@@ -353,14 +376,6 @@ public class EditorRender {
         for (int i = 0; i < outputs.size(); i++) {
             String text = outputs.get(i);
             g2d.drawString(text, 5, (1 + i) * lineHeight);
-        }
-    }
-
-    private static String getFolderLocation(EditorFolder folder) {
-        if (folder.getParentFolder() == null) {
-            return folder.getText();
-        } else {
-            return getFolderLocation(folder.getParentFolder()) + ", " + folder.getText();
         }
     }
 }
