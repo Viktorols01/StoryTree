@@ -200,18 +200,17 @@ public class EditorContext {
                 }
             }
 
-            EditorNode newNode = container.addEditorNode(getAbsoluteMousePosition(), "");
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
             if (nodeInput != null) {
+                EditorNode newNode = container.addEditorNode(getAbsoluteMousePosition(), "");
                 newNode.setText(nodeInput);
                 EditorFunctions.updateSize(fontMetrics, newNode, EditorConstants.ARC_DIAMETER_NODE);
+                connectConnectingComponent(newNode);
+                if (connectingComponent instanceof EditorNode) {
+                    EditorFunctions.updateOptions(fontMetrics, (EditorNode) connectingComponent);
+                }
+                return;
             }
-            if (connectingComponent instanceof EditorNode) {
-                EditorFunctions.updateOptions(fontMetrics, (EditorNode) connectingComponent);
-            }
-            connectConnectingComponent(newNode);
-            return;
-
         }
     }
 
