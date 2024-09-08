@@ -47,44 +47,26 @@ public class EditorContext {
     }
 
     public void startDragging() {
-        Point2D absPos = getAbsoluteMousePosition();
-        Point2D relPos = getRelativeMousePosition();
         if (!dragging) {
-            for (EditorNode node : getFolder().getNodes()) {
-                if (node.isInside(absPos.getX(), absPos.getY())) {
-                    dragging = true;
-                    draggedDelta = new Point2D.Double(absPos.getX() - node.getX(),
-                            absPos.getY() - node.getY());
-                    draggedBox = node;
-                    return;
-                }
-            }
+            Point2D absPos = getAbsoluteMousePosition();
 
-            for (EditorFolder childFolder : getFolder().getChildrenFolders()) {
-                if (childFolder.isInside(absPos.getX(), absPos.getY())) {
-                    dragging = true;
-                    draggedDelta = new Point2D.Double(absPos.getX() - childFolder.getX(),
-                            absPos.getY() - childFolder.getY());
-                    draggedBox = childFolder;
-                    return;
-                }
-            }
+            Interactible hoveredComponent = getHoveredComponent();
 
-            EditorFolderExit exitBox = getFolder().getExitBox();
-            if (exitBox != null) {
-                if (exitBox.isInside(absPos.getX(), absPos.getY())) {
-                    dragging = true;
-                    draggedDelta = new Point2D.Double(absPos.getX() - exitBox.getX(), absPos.getY() - exitBox.getY());
-                    draggedBox = exitBox;
-                    return;
-                }
+            if (hoveredComponent instanceof EditorNode || hoveredComponent instanceof EditorFolder
+                    || hoveredComponent instanceof EditorFolderExit) {
+                dragging = true;
+                draggedDelta = new Point2D.Double(absPos.getX() - hoveredComponent.getX(),
+                        absPos.getY() - hoveredComponent.getY());
+                draggedBox = hoveredComponent;
+                return;
+            } else {
+                Point2D relPos = getRelativeMousePosition();
+                dragging = true;
+                draggedDelta = new Point2D.Double(
+                        -relPos.getX() / camera.getZoom() - camera.getX(),
+                        -relPos.getY() / camera.getZoom() - camera.getY());
+                draggedBox = null;
             }
-
-            dragging = true;
-            draggedDelta = new Point2D.Double(
-                    -relPos.getX() / camera.getZoom() - camera.getX(),
-                    -relPos.getY() / camera.getZoom() - camera.getY());
-            draggedBox = null;
         }
     }
 
@@ -124,14 +106,30 @@ public class EditorContext {
     }
 
     public void startConnecting() {
-        Point2D absPos = getAbsoluteMousePosition();
         if (!connecting) {
+            Point2D absPos = getAbsoluteMousePosition();
+
+            Interactible hoveredComponent = getHoveredComponent();
+
+            if (hoveredComponent instanceof EditorNode) {
+                connecting = true;
+                connectingComponent = (EditorNode) hoveredComponent;
+                return;
+            }
+
+            if (hoveredComponent instanceof EditorFolder) {
+                connecting = true;
+                connectingComponent = (EditorFolder) hoveredComponent;
+                return;
+            }
+
+            if (hoveredComponent instanceof EditorFolderEntry) {
+                connecting = true;
+                connectingComponent = (EditorFolderEntry) hoveredComponent;
+                return;
+            }
+
             for (EditorNode node : getFolder().getNodes()) {
-                if (node.isInside(absPos.getX(), absPos.getY())) {
-                    connecting = true;
-                    connectingComponent = node;
-                    return;
-                }
                 for (EditorNode.OptionPair pair : node.getOptionPairs()) {
                     EditorOption option = pair.getOption();
                     if (option.isInside(absPos.getX(), absPos.getY())) {
@@ -152,21 +150,6 @@ public class EditorContext {
                     extraNode = extraNode.getExtraNode();
                 }
             }
-
-            for (EditorFolder childrenFolder : getFolder().getChildrenFolders()) {
-                if (childrenFolder.isInside(absPos.getX(), absPos.getY())) {
-                    connecting = true;
-                    connectingComponent = childrenFolder;
-                    return;
-                }
-            }
-
-            EditorFolderEntry entryBox = getFolder().getEntryBox();
-            if (entryBox.isInside(absPos.getX(), absPos.getY())) {
-                connecting = true;
-                connectingComponent = entryBox;
-                return;
-            }
         }
     }
 
@@ -174,11 +157,12 @@ public class EditorContext {
     }
 
     public void endConnecting() {
-        Point2D absPos = getAbsoluteMousePosition();
         if (connecting) {
             connecting = false;
 
-            if (connectingComponent.isInside(absPos.getX(), absPos.getY())) {
+            Interactible hoveredComponent = getHoveredComponent();
+
+            if (hoveredComponent == connectingComponent) {
                 if (connectingComponent instanceof EditorNode) {
                     EditorNode node = (EditorNode) connectingComponent;
                     UserInputGetter.modifyNode(node);
@@ -193,26 +177,19 @@ public class EditorContext {
                 return;
             }
 
-            for (EditorNode node : getFolder().getNodes()) {
-                if (node.isInside(absPos.getX(), absPos.getY())) {
-                    connectConnectingComponent(node);
-                    return;
-                }
+            if (hoveredComponent instanceof EditorNode) {
+                connectConnectingComponent((EditorNode) hoveredComponent);
+                return;
             }
 
-            for (EditorFolder childrenFolder : getFolder().getChildrenFolders()) {
-                if (childrenFolder.isInside(absPos.getX(), absPos.getY())) {
-                    connectConnectingComponent(childrenFolder);
-                    return;
-                }
+            if (hoveredComponent instanceof EditorFolder) {
+                connectConnectingComponent((EditorFolder) hoveredComponent);
+                return;
             }
 
-            EditorFolderExit exitBox = getFolder().getExitBox();
-            if (exitBox != null) {
-                if (exitBox.isInside(absPos.getX(), absPos.getY())) {
-                    connectConnectingComponent(exitBox);
-                    return;
-                }
+            if (hoveredComponent instanceof EditorFolderExit) {
+                connectConnectingComponent((EditorFolderExit) hoveredComponent);
+                return;
             }
 
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
@@ -300,6 +277,51 @@ public class EditorContext {
         Point2D relPos = getRelativeMousePosition();
         Point2D absPos = camera.inverseTransform(relPos);
         return absPos;
+    }
+
+    public Interactible getHoveredComponent() {
+        Point2D absPos = getAbsoluteMousePosition();
+
+        for (EditorNode node : getFolder().getNodes()) {
+            if (node.isInside(absPos.getX(), absPos.getY())) {
+                return node;
+            }
+
+            EditorExtraNode extraNode = node.getExtraNode();
+            while (extraNode != null) {
+                if (extraNode.isInside(absPos.getX(), absPos.getY())) {
+                    return extraNode;
+                }
+                extraNode = extraNode.getExtraNode();
+            }
+
+            for (EditorNode.OptionPair pair : node.getOptionPairs()) {
+                EditorOption option = pair.getOption();
+                if (option.isInside(absPos.getX(), absPos.getY())) {
+                    return option;
+                }
+            }
+        }
+
+        for (EditorFolder childrenFolder : getFolder().getChildrenFolders()) {
+            if (childrenFolder.isInside(absPos.getX(), absPos.getY())) {
+                return childrenFolder;
+            }
+        }
+
+        EditorFolderExit exitBox = getFolder().getExitBox();
+        if (exitBox != null) {
+            if (exitBox.isInside(absPos.getX(), absPos.getY())) {
+                return exitBox;
+            }
+        }
+
+        EditorFolderEntry entryBox = getFolder().getEntryBox();
+        if (entryBox.isInside(absPos.getX(), absPos.getY())) {
+            return entryBox;
+        }
+
+        return null;
     }
 
     public void zoom(int rotations) {

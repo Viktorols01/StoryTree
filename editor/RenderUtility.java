@@ -63,7 +63,7 @@ public class RenderUtility {
 
     public static void renderEntryBox(Graphics2D g2d, EditorFolderEntry box) {
         g2d = (Graphics2D) g2d.create();
-        renderBoxOutline(g2d, box, Constants.COLOR_WHITE);
+        renderBubbleOutline(g2d, box, Constants.COLOR_WHITE);
         g2d.setColor(Constants.COLOR_GREEN);
         renderArrow(g2d, box.getX() + Constants.ARC_DIAMETER_NODE / 2,
                 box.getY() + Constants.ARC_DIAMETER_NODE / 2, box.getW() - Constants.ARC_DIAMETER_NODE,
@@ -72,7 +72,7 @@ public class RenderUtility {
 
     public static void renderExitBox(Graphics2D g2d, EditorFolderExit box) {
         g2d = (Graphics2D) g2d.create();
-        renderBoxOutline(g2d, box, Constants.COLOR_WHITE);
+        renderBubbleOutline(g2d, box, Constants.COLOR_WHITE);
         g2d.setColor(Constants.COLOR_RED);
         renderArrow(g2d, box.getX() + Constants.ARC_DIAMETER_NODE / 2,
                 box.getY() + Constants.ARC_DIAMETER_NODE / 2, box.getW() - Constants.ARC_DIAMETER_NODE,
@@ -97,7 +97,7 @@ public class RenderUtility {
         }
     }
 
-    public static void renderBoxOutline(Graphics2D g2d, Box box, Color color) {
+    public static void renderBubbleOutline(Graphics2D g2d, Box box, Color color) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(Constants.LINE_SIZE));
@@ -126,39 +126,41 @@ public class RenderUtility {
     public static void renderOption(Graphics2D g2d, EditorOption option) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(Constants.COLOR_BACKGROUND);
-        renderTextBubble(g2d, option, option.getText(), Constants.COLOR_OPTION,
+        renderTextBubble(g2d, option, option.getText(), Constants.COLOR_WHITE,
                 Constants.ARC_DIAMETER_OPTION);
 
-        renderBoxOutline(g2d, option,
-                option.isForced() ? Constants.COLOR_OPTION_FORCED : Constants.COLOR_OPTION);
+        renderBubbleOutline(g2d, option,
+                option.isForced() ? Constants.COLOR_OPTION_OUTLINE_FORCED : Constants.COLOR_OPTION_OUTLINE);
 
         if (!option.getUnlockingKeys().isEmpty() || !option.getLockingKeys().isEmpty()) {
             int lockSize = Utility.getLineHeight(g2d.getFontMetrics()) / 2;
+            g2d.setColor(option.isForced() ? Constants.COLOR_OPTION_OUTLINE_FORCED : Constants.COLOR_OPTION_OUTLINE);
             renderLock(g2d, option.getX() + option.getW() / 2 - lockSize / 2,
                     option.getY() + option.getH() - lockSize / 2,
-                    lockSize, Constants.ARC_DIAMETER_NODE / 2, option.isForced());
+                    lockSize, Constants.ARC_DIAMETER_NODE / 2);
         }
     }
 
     public static void renderExtraNode(Graphics2D g2d, EditorExtraNode extraNode) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(Constants.COLOR_BACKGROUND);
-        renderTextBubble(g2d, extraNode, extraNode.getText(), Constants.COLOR_OPTION,
+        renderTextBubble(g2d, extraNode, extraNode.getText(), Constants.COLOR_WHITE,
                 Constants.ARC_DIAMETER_OPTION);
 
-        renderBoxOutline(g2d, extraNode, Constants.COLOR_OPTION);
+        renderBubbleOutline(g2d, extraNode, Constants.COLOR_EXTRA_NODE_OUTLINE);
 
         if (!extraNode.getUnlockingKeys().isEmpty() || !extraNode.getLockingKeys().isEmpty()) {
             int lockSize = Utility.getLineHeight(g2d.getFontMetrics()) / 2;
+            g2d.setColor(Constants.COLOR_EXTRA_NODE_OUTLINE);
             renderLock(g2d, extraNode.getX() + extraNode.getW() / 2 - lockSize / 2,
                     extraNode.getY() + extraNode.getH() - lockSize / 2,
-                    lockSize, Constants.ARC_DIAMETER_NODE / 2, false);
+                    lockSize, Constants.ARC_DIAMETER_NODE / 2);
         }
     }
 
     public static void renderFolder(Graphics2D g2d, EditorFolder folder) {
         g2d = (Graphics2D) g2d.create();
-        renderBoxOutline(g2d, folder, Constants.COLOR_WHITE);
+        renderBubbleOutline(g2d, folder, Constants.COLOR_WHITE);
         g2d.setColor(Constants.COLOR_FOLDER);
         renderFolderDesign(g2d, folder.getX() + Constants.ARC_DIAMETER_NODE / 2,
                 folder.getY() + Constants.ARC_DIAMETER_NODE / 2,
@@ -228,9 +230,8 @@ public class RenderUtility {
         }
     }
 
-    private static void renderLock(Graphics2D g2d, int x, int y, int size, int padding, boolean forced) {
+    private static void renderLock(Graphics2D g2d, int x, int y, int size, int padding) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(forced ? Constants.COLOR_OPTION_FORCED : Constants.COLOR_OPTION);
         g2d.fillRoundRect(x, y, size, size, padding, padding);
         g2d.setColor(Constants.COLOR_BLACK);
         {
@@ -421,6 +422,38 @@ public class RenderUtility {
         outputs.add(Utility.getFolderLocation(context.getFolder()));
         outputs.add("X, Y = " + (int) context.getAbsoluteMousePosition().getX() + ", "
                 + (int) context.getAbsoluteMousePosition().getY());
+        outputs.add("");
+
+        Interactible hoveredComponent = context.getHoveredComponent();
+
+        if (hoveredComponent instanceof EditorNode) {
+            EditorNode node = (EditorNode) hoveredComponent;
+            outputs.add("Node");
+            outputs.add("Added keys:");
+            outputs.add(Utility.keyListToString(node.getAddedKeys()));
+            outputs.add("Removed keys:");
+            outputs.add(Utility.keyListToString(node.getRemovedKeys()));
+        }
+
+        if (hoveredComponent instanceof EditorOption) {
+            EditorOption option = (EditorOption) hoveredComponent;
+            outputs.add("Option");
+            outputs.add("Unlocking keys:");
+            outputs.add(Utility.keyListToString(option.getUnlockingKeys()));
+            outputs.add("Locking keys:");
+            outputs.add(Utility.keyListToString(option.getLockingKeys()));
+            outputs.add("Forced:");
+            outputs.add(option.isForced() ? "Yes" : "No");
+        }
+
+        if (hoveredComponent instanceof EditorExtraNode) {
+            EditorExtraNode extraNode = (EditorExtraNode) hoveredComponent;
+            outputs.add("Extra-node");
+            outputs.add("Unlocking keys:");
+            outputs.add(Utility.keyListToString(extraNode.getUnlockingKeys()));
+            outputs.add("Locking keys:");
+            outputs.add(Utility.keyListToString(extraNode.getLockingKeys()));
+        }
 
         int lineHeight = Utility.getLineHeight(g2d.getFontMetrics());
         for (int i = 0; i < outputs.size(); i++) {

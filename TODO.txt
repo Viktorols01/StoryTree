@@ -3,11 +3,7 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 
 - Regex för att byta ut text mot nycklar? Eller något annat...
 
-- Hover should show stuff like keys?
-
 - CTRL+Z
-
-- Make extraNodes distringuishable from options
 
 NÄSTA STORA UPPDATERING:
 - Läsaren. Konsollen är för jobbig!

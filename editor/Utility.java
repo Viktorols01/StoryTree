@@ -2,6 +2,7 @@ package editor;
 
 import java.awt.FontMetrics;
 import java.util.Iterator;
+import java.util.List;
 
 import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorFolder;
@@ -10,6 +11,7 @@ import editor.serializable.EditorOption;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 import editor.serializable.interfaces.TextInteractible;
+import storyclasses.serializable.StoryKey;
 
 public class Utility {
     public static void deleteInputReferences(OutputInteractible node) {
@@ -41,7 +43,9 @@ public class Utility {
 
     public static void updateSize(FontMetrics fontMetrics, TextInteractible textInteractible, int arcDiameter) {
         int width = getTextWidth(textInteractible.getText(), fontMetrics);
+        width = (width < arcDiameter) ? arcDiameter : width;
         int height = getTextHeight(textInteractible.getText(), fontMetrics);
+        height = (height < arcDiameter) ? arcDiameter : height;
         textInteractible.setSize(width + 2 * arcDiameter, height + 2 * arcDiameter);
     }
 
@@ -75,8 +79,7 @@ public class Utility {
         int totalWidth = 0;
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            totalWidth += getTextWidth(option.getText(), fontMetrics) + Constants.ARC_DIAMETER_OPTION * 2
-                    + Constants.MARGIN;
+            totalWidth += option.getW() + Constants.MARGIN;
         }
         totalWidth -= Constants.MARGIN;
 
@@ -84,9 +87,8 @@ public class Utility {
         int y = node.getY() + node.getH() + Constants.MARGIN;
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            int width = getTextWidth(option.getText(), fontMetrics);
             option.setPosition(x, y);
-            x += width + Constants.ARC_DIAMETER_OPTION * 2 + Constants.MARGIN;
+            x += option.getW() + Constants.MARGIN;
         }
     }
 
@@ -124,5 +126,18 @@ public class Utility {
         } else {
             return getFolderLocation(folder.getParentFolder()) + ", " + folder.getText();
         }
+    }
+
+    public static String keyListToString(List<StoryKey> list) {
+        Iterator<StoryKey> iterator = list.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (iterator.hasNext()) {
+            StoryKey key = iterator.next();
+            sb.append(key.getKey() + ": " + key.getValue());
+            if (iterator.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
 }

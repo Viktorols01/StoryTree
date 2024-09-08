@@ -10,8 +10,10 @@ public class Constants {
     public static final Color COLOR_END_NODE = new Color(155, 0, 0);
     public static final Color COLOR_UNUSED_NODE = new Color(25, 25, 25);
 
-    public static final Color COLOR_OPTION = new Color(205, 205, 205);
-    public static final Color COLOR_OPTION_FORCED = new Color(255, 105, 105);
+    public static final Color COLOR_OPTION_OUTLINE = new Color(205, 205, 205);
+    public static final Color COLOR_OPTION_OUTLINE_FORCED = new Color(255, 105, 105);
+
+    public static final Color COLOR_EXTRA_NODE_OUTLINE = new Color(255, 255, 255);
 
     public static final Color COLOR_BLACK = new Color(0, 0, 0);
     public static final Color COLOR_WHITE = new Color(255, 255, 255);
