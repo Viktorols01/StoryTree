@@ -4,6 +4,3 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 - Regex för att byta ut text mot nycklar? Eller något annat...
 
 - CTRL+Z
-
-NÄSTA STORA UPPDATERING:
-- Läsaren. Konsollen är för jobbig!

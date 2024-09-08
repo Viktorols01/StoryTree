@@ -1,6 +1,7 @@
 package main;
 
-import storyclasses.readers.ConsoleStoryReader;
+import storyclasses.readers.FrameStoryReader;
+import storyclasses.readers.StoryReader;
 import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
@@ -9,7 +10,7 @@ class ReaderProgram {
         StoryTree tree = FileHandler.loadObject("files/stories", "StoryTree files", "st");
 
         if (tree != null) {
-            ConsoleStoryReader reader = new ConsoleStoryReader(tree);
+            StoryReader reader = new FrameStoryReader(tree);
             reader.read();
         }
     }
