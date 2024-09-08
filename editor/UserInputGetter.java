@@ -40,8 +40,8 @@ public class UserInputGetter {
     }
 
     public static void modifyNode(EditorNode node) {
-        int width = 300;
-        int bigHeight = 150;
+        int width = 400;
+        int bigHeight = 200;
         int smallHeight = 20;
         int margin = 5;
 

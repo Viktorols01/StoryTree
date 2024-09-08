@@ -192,28 +192,29 @@ public class EditorContext {
                 return;
             }
 
+            EditorNode newNode = container.addNode(getAbsoluteMousePosition(), "");
+            connectConnectingComponent(newNode);
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
-            if (nodeInput != null) {
-                EditorNode newNode = container.addNode(getAbsoluteMousePosition(), "");
-                newNode.setText(nodeInput);
-                Utility.updateSize(fontMetrics, newNode, Constants.ARC_DIAMETER_NODE);
-                connectConnectingComponent(newNode);
-                if (connectingComponent instanceof EditorNode) {
-                    Utility.updateOptionsAndExtraNodes(fontMetrics, (EditorNode) connectingComponent);
-                }
-                return;
-            }
+            newNode.setText(nodeInput == null ? "..." : nodeInput);
+            Utility.updateSize(fontMetrics, newNode, Constants.ARC_DIAMETER_NODE);
         }
     }
 
     private void connectConnectingComponent(InputInteractible input) {
-        Utility.connect(connectingComponent, input);
-
         if (connectingComponent instanceof EditorNode) {
             EditorNode connectNode = (EditorNode) connectingComponent;
-            Utility.updateOptionsAndExtraNodes(fontMetrics, connectNode);
-        }
 
+            String optionInput = UserInputGetter.getTextFromPromt("Adding option...", "");
+            if (optionInput == null) {
+                Utility.connect(connectingComponent, input);
+            } else {
+                connectNode.connectOutput(input, optionInput);
+                input.connectInput(connectNode);
+                Utility.updateOptionsAndExtraNodes(fontMetrics, connectNode);
+            }
+        } else {
+            Utility.connect(connectingComponent, input);
+        }
         connectingComponent = null;
     }
 
