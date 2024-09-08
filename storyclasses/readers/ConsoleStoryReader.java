@@ -5,39 +5,44 @@ import java.util.Scanner;
 import storyclasses.serializable.StoryState;
 import storyclasses.serializable.StoryTree;
 
-public class ConsoleStoryReader extends StoryReader {
+public class ConsoleStoryReader implements StoryReader {
+
+    private StoryIterator storyIterator;
 
     private Scanner scanner;
-    private boolean showKeys;
 
     public ConsoleStoryReader(StoryTree tree) {
-        super(tree);
+        this.storyIterator = new StoryIterator(tree);
         this.scanner = new Scanner(System.in);
-        this.showKeys = false;
     }
 
     public ConsoleStoryReader(StoryState storyState) {
-        super(storyState);
-        this.showKeys = false;
-    }
-
-    public void setShowKeys(boolean showKeys) {
-        this.showKeys = showKeys;
+        this.storyIterator = new StoryIterator(storyState);
+        this.scanner = new Scanner(System.in);
     }
 
     @Override
-    protected void displayTextToUser(String text) {
-        System.out.print("\u001b[1m");
-        System.out.println(text);
-        System.out.print("\u001b[0m");
+    public void read() {
+        while (true) {
+            displayTextToUser(storyIterator.getCurrentText());
+            String[] options = storyIterator.getCurrentOptions();
 
-        if (showKeys) {
-            System.out.println("Keys: " + getStoryState().getKeys().toString());
+            if (storyIterator.hasNext()) {
+                displayOptionsToUser(options);
+                storyIterator.selectOption(getOptionFromUser(options));
+            } else {
+                break;
+            }
         }
     }
 
-    @Override
-    protected void displayOptionsToUser(String[] optionStrings) {
+    private void displayTextToUser(String text) {
+        System.out.print("\u001b[1m");
+        System.out.println(text);
+        System.out.print("\u001b[0m");
+    }
+
+    private void displayOptionsToUser(String[] optionStrings) {
         int length = optionStrings.length;
         for (int i = 0; i < length; i++) {
             String option = optionStrings[i];
@@ -51,8 +56,7 @@ public class ConsoleStoryReader extends StoryReader {
         }
     }
 
-    @Override
-    protected String getOptionFromUser(String[] optionStrings) {
+    private String getOptionFromUser(String[] optionStrings) {
         int optionIndex = -1;
         if (optionStrings.length == 1) {
             System.out.print("\u001b[33m");

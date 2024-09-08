@@ -10,7 +10,7 @@ import editor.EditorPanel;
 import editor.Serializer;
 import editor.serializable.EditorFolder;
 import storyclasses.readers.StoryReader;
-import storyclasses.readers.ConsoleStoryReader;
+import storyclasses.readers.FrameStoryReader;
 import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
@@ -30,7 +30,7 @@ public class EditorProgram {
         playButton.addActionListener((a) -> {
             StoryTree tree = Serializer.toStoryTree(gui.getGuiFolder());
             if (tree != null) {
-                StoryReader reader = new ConsoleStoryReader(tree);
+                StoryReader reader = new FrameStoryReader(tree);
                 reader.read();
             }
         });

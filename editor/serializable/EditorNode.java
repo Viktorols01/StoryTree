@@ -87,7 +87,7 @@ public class EditorNode extends Box implements InputInteractible, OutputInteract
 
     @Override
     public void connectOutput(InputInteractible connectable) {
-        optionPairs.add(new OptionPair(new EditorOption(""), connectable));
+        optionPairs.add(new OptionPair(new EditorOption("..."), connectable));
     }
 
     @Override
