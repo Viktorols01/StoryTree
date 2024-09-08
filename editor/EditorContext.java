@@ -171,7 +171,10 @@ public class EditorContext {
                 }
                 if (connectingComponent instanceof EditorFolder) {
                     EditorFolder folder = (EditorFolder) connectingComponent;
-                    folder.setText(UserInputGetter.getTextFromPromt("Renaming folder...", folder.getText()));
+                    String folderInput = UserInputGetter.getTextFromPromt("Renaming folder...", folder.getText());
+                    if (folderInput != null) {
+                        folder.setText(folderInput);
+                    }
                 }
                 connectingComponent = null;
                 return;

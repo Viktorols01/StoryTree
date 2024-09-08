@@ -46,7 +46,7 @@ public class FrameStoryReader implements StoryReader {
         List<Component> components = new LinkedList<Component>();
 
         textArea = new JTextArea();
-        textArea.setFont(new Font("Arial", Font.PLAIN, 20));
+        textArea.setFont(new Font("Arial", Font.PLAIN, 17));
         textArea.setEditable(false);
 
         JScrollPane textScrollPane = new JScrollPane(textArea);

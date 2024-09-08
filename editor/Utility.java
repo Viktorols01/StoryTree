@@ -97,6 +97,9 @@ public class Utility {
     }
 
     public static int getTextWidth(String text, FontMetrics fontMetrics) {
+        if (text == null) {
+            return 0;
+        }
         Iterator<String> iterable = text.lines().iterator();
         int width = 0;
         while (iterable.hasNext()) {
@@ -116,6 +119,9 @@ public class Utility {
     }
 
     public static int getTextHeight(String text, FontMetrics fontMetrics) {
+        if (text == null) {
+            return 0;
+        }
         int height = (int) (getLineHeight(fontMetrics) * text.lines().count());
         return height;
     }

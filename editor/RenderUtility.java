@@ -169,8 +169,10 @@ public class RenderUtility {
 
         int textWidth = Utility.getTextWidth(folder.getText(), g2d.getFontMetrics());
         int textHeight = Utility.getTextHeight(folder.getText(), g2d.getFontMetrics());
+        
         g2d.drawString(folder.getText(), folder.getX() + folder.getW() / 2 - textWidth / 2,
                 folder.getY() + folder.getH() + textHeight);
+
     }
 
     public static void renderOutputLines(Graphics2D g2d, OutputInteractible output) {
