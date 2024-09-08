@@ -3,6 +3,7 @@ package editor;
 import java.awt.FontMetrics;
 import java.awt.geom.Point2D;
 
+import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorFolder;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
@@ -26,7 +27,7 @@ public class EditorContainer {
         this.editorFolder = guiFolder;
     }
 
-    public EditorNode addEditorNode(Point2D absPos, String text) {
+    public EditorNode addNode(Point2D absPos, String text) {
         EditorNode node = new EditorNode(text, (int) absPos.getX(), (int) absPos.getY());
         Utility.updateSize(fontMetrics, node, Constants.ARC_DIAMETER_NODE);
 
@@ -34,12 +35,12 @@ public class EditorContainer {
         return node;
     }
 
-    public void addEditorFolder(Point2D absPos, String text) {
+    public void addFolder(Point2D absPos, String text) {
         editorFolder.getChildrenFolders()
                 .add(new EditorFolder(text, (int) absPos.getX(), (int) absPos.getY(), editorFolder));
     }
 
-    public boolean enterEditorFolder(Point2D absPos) {
+    public boolean enterFolder(Point2D absPos) {
         for (EditorFolder folder : editorFolder.getChildrenFolders()) {
             if (folder.isInside(absPos.getX(), absPos.getY())) {
                 editorFolder = folder;
@@ -49,7 +50,7 @@ public class EditorContainer {
         return false;
     }
 
-    public boolean exitEditorFolder(Point2D absPos) {
+    public boolean exitFolder(Point2D absPos) {
         EditorFolder parentFolder = editorFolder.getParentFolder();
         if (parentFolder == null) {
             return false;
@@ -83,6 +84,28 @@ public class EditorContainer {
                 Utility.deleteOutputReferences(folder);
                 Utility.deleteFolderReference(folder, editorFolder);
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addExtraNode(Point2D absPos, String titleInput) {
+        for (EditorNode node : editorFolder.getNodes()) {
+            if (node.isInside(absPos.getX(), absPos.getY())) {
+                EditorExtraNode newExtraNode = new EditorExtraNode(titleInput);
+                node.setExtraNode(newExtraNode);
+                Utility.updateOptionsAndExtraNodes(fontMetrics, node);
+                return true;
+            }
+            EditorExtraNode extraNode = node.getExtraNode();
+            while (extraNode != null) {
+                if (extraNode.isInside(absPos.getX(), absPos.getY()) && extraNode.getExtraNode() == null) {
+                    EditorExtraNode newExtraNode = new EditorExtraNode(titleInput);
+                    extraNode.setExtraNode(newExtraNode);
+                    Utility.updateOptionsAndExtraNodes(fontMetrics, node);
+                    return true;
+                }
+                extraNode = extraNode.getExtraNode();
             }
         }
         return false;

@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import editor.serializable.Box;
+import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorFolder;
 import editor.serializable.EditorFolderEntry;
 import editor.serializable.EditorFolderExit;
@@ -50,7 +51,7 @@ public class RenderUtility {
 
         int size = Constants.LINE_SIZE * 7;
         double angle = Math.atan2(y2 - y1, x2 - x1);
-        renderTriangle(g2d, (x1 + x2 * 3) / 4 - size / 2, (y1 + y2 * 3) / 4 - size / 2, size, angle);
+        renderTriangle(g2d, (x1 * 3 + x2 * 5) / 8 - size / 2, (y1 * 3 + y2 * 5) / 8 - size / 2, size, angle);
     }
 
     public static void renderEntryBox(Graphics2D g2d, EditorFolderEntry box) {
@@ -132,6 +133,22 @@ public class RenderUtility {
         }
     }
 
+    public static void renderExtraNode(Graphics2D g2d, EditorExtraNode extraNode) {
+        g2d = (Graphics2D) g2d.create();
+        g2d.setColor(Constants.COLOR_BACKGROUND);
+        renderTextBubble(g2d, extraNode, extraNode.getText(), Constants.COLOR_OPTION,
+                Constants.ARC_DIAMETER_OPTION);
+
+        renderBoxOutline(g2d, extraNode, Constants.COLOR_OPTION);
+
+        if (!extraNode.getUnlockingKeys().isEmpty() || !extraNode.getLockingKeys().isEmpty()) {
+            int lockSize = Utility.getLineHeight(g2d.getFontMetrics()) / 2;
+            renderLock(g2d, extraNode.getX() + extraNode.getW() / 2 - lockSize / 2,
+                    extraNode.getY() + extraNode.getH() - lockSize / 2,
+                    lockSize, Constants.ARC_DIAMETER_NODE / 2, false);
+        }
+    }
+
     public static void renderFolder(Graphics2D g2d, EditorFolder folder) {
         g2d = (Graphics2D) g2d.create();
         renderBoxOutline(g2d, folder, Constants.COLOR_WHITE);
@@ -177,6 +194,30 @@ public class RenderUtility {
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
             renderOption(g2d, option);
+        }
+    }
+
+    public static void renderExtraNodeLines(Graphics2D g2d, EditorNode node) {
+        g2d = (Graphics2D) g2d.create();
+        Interactible prev = node;
+        EditorExtraNode extraNode = node.getExtraNode();
+        while (extraNode != null) {
+            RenderUtility.renderDirectedLine(g2d,
+                    (int) (prev.getX() + prev.getW() / 2),
+                    (int) (prev.getY() + prev.getH() / 2),
+                    (int) (extraNode.getX() + extraNode.getW() / 2),
+                    (int) (extraNode.getY() + extraNode.getH() / 2));
+            prev = extraNode;
+            extraNode = extraNode.getExtraNode();
+        }
+    }
+
+    public static void renderExtraNodes(Graphics2D g2d, EditorNode node) {
+        g2d = (Graphics2D) g2d.create();
+        EditorExtraNode extraNode = node.getExtraNode();
+        while (extraNode != null) {
+            renderExtraNode(g2d, extraNode);
+            extraNode = extraNode.getExtraNode();
         }
     }
 
@@ -317,8 +358,10 @@ public class RenderUtility {
         }
         for (EditorNode node : guiFolder.getNodes()) {
             RenderUtility.renderOptionLines(g2d, node);
+            RenderUtility.renderExtraNodeLines(g2d, node);
         }
         for (EditorNode node : guiFolder.getNodes()) {
+            RenderUtility.renderExtraNodes(g2d, node);
             RenderUtility.renderStoryNode(g2d, node);
             RenderUtility.renderOptions(g2d, node);
         }
@@ -351,7 +394,7 @@ public class RenderUtility {
                     (int) absPos.getY());
         }
 
-        RenderUtility.renderFolderContent(transform, context.getEditorFolder());
+        RenderUtility.renderFolderContent(transform, context.getFolder());
 
         renderInfoPanel(g2d, context);
     }
@@ -368,7 +411,7 @@ public class RenderUtility {
         g2d.setFont(new Font("Arial", Font.PLAIN, 20));
         g2d.setColor(Constants.COLOR_WHITE);
         List<String> outputs = new LinkedList<String>();
-        outputs.add(Utility.getFolderLocation(context.getEditorFolder()));
+        outputs.add(Utility.getFolderLocation(context.getFolder()));
         outputs.add("X, Y = " + (int) context.getAbsoluteMousePosition().getX() + ", "
                 + (int) context.getAbsoluteMousePosition().getY());
 

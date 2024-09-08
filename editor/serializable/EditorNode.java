@@ -12,6 +12,7 @@ import storyclasses.serializable.StoryKey;
 public class EditorNode extends Box implements InputInteractible, OutputInteractible, TextInteractible {
     private List<OutputInteractible> inputs;
     private List<OptionPair> optionPairs;
+    private EditorExtraNode extraNode;
 
     private String text;
     private List<StoryKey> addedKeys;
@@ -55,6 +56,14 @@ public class EditorNode extends Box implements InputInteractible, OutputInteract
 
     public List<OptionPair> getOptionPairs() {
         return optionPairs;
+    }
+
+    public EditorExtraNode getExtraNode() {
+        return extraNode;
+    }
+
+    public void setExtraNode(EditorExtraNode extraNode) {
+        this.extraNode = extraNode;
     }
 
     public class OptionPair implements Serializable {

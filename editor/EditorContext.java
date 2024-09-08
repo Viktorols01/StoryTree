@@ -4,6 +4,7 @@ import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorFolder;
 import editor.serializable.EditorFolderEntry;
 import editor.serializable.EditorFolderExit;
@@ -37,7 +38,7 @@ public class EditorContext {
         this.fontMetrics = fontMetrics;
     }
 
-    public EditorFolder getEditorFolder() {
+    public EditorFolder getFolder() {
         return container.getEditorFolder();
     }
 
@@ -49,7 +50,7 @@ public class EditorContext {
         Point2D absPos = getAbsoluteMousePosition();
         Point2D relPos = getRelativeMousePosition();
         if (!dragging) {
-            for (EditorNode node : getEditorFolder().getNodes()) {
+            for (EditorNode node : getFolder().getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     dragging = true;
                     draggedDelta = new Point2D.Double(absPos.getX() - node.getX(),
@@ -59,7 +60,7 @@ public class EditorContext {
                 }
             }
 
-            for (EditorFolder childFolder : getEditorFolder().getChildrenFolders()) {
+            for (EditorFolder childFolder : getFolder().getChildrenFolders()) {
                 if (childFolder.isInside(absPos.getX(), absPos.getY())) {
                     dragging = true;
                     draggedDelta = new Point2D.Double(absPos.getX() - childFolder.getX(),
@@ -69,7 +70,7 @@ public class EditorContext {
                 }
             }
 
-            EditorFolderExit exitBox = getEditorFolder().getExitBox();
+            EditorFolderExit exitBox = getFolder().getExitBox();
             if (exitBox != null) {
                 if (exitBox.isInside(absPos.getX(), absPos.getY())) {
                     dragging = true;
@@ -103,11 +104,11 @@ public class EditorContext {
                 if (draggedBox instanceof InputInteractible) {
                     for (OutputInteractible output : ((InputInteractible) draggedBox).getInputs()) {
                         if (output instanceof EditorNode) {
-                            Utility.updateOptions(fontMetrics, (EditorNode) output);
+                            Utility.updateOptionsAndExtraNodes(fontMetrics, (EditorNode) output);
                         }
                     }
                     if (draggedBox instanceof EditorNode) {
-                        Utility.updateOptions(fontMetrics,
+                        Utility.updateOptionsAndExtraNodes(fontMetrics,
                                 (EditorNode) draggedBox);
                     }
                 }
@@ -125,7 +126,7 @@ public class EditorContext {
     public void startConnecting() {
         Point2D absPos = getAbsoluteMousePosition();
         if (!connecting) {
-            for (EditorNode node : getEditorFolder().getNodes()) {
+            for (EditorNode node : getFolder().getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     connecting = true;
                     connectingComponent = node;
@@ -136,13 +137,23 @@ public class EditorContext {
                     if (option.isInside(absPos.getX(), absPos.getY())) {
                         UserInputGetter.modifyOption(option);
                         Utility.updateSize(fontMetrics, option, Constants.ARC_DIAMETER_OPTION);
-                        Utility.updateOptions(fontMetrics, node);
+                        Utility.updateOptionsAndExtraNodes(fontMetrics, node);
                         return;
                     }
                 }
+                EditorExtraNode extraNode = node.getExtraNode();
+                while (extraNode != null) {
+                    if (extraNode.isInside(absPos.getX(), absPos.getY())) {
+                        UserInputGetter.modifyExtraNode(extraNode);
+                        Utility.updateSize(fontMetrics, extraNode, Constants.ARC_DIAMETER_OPTION);
+                        Utility.updateOptionsAndExtraNodes(fontMetrics, node);
+                        return;
+                    }
+                    extraNode = extraNode.getExtraNode();
+                }
             }
 
-            for (EditorFolder childrenFolder : getEditorFolder().getChildrenFolders()) {
+            for (EditorFolder childrenFolder : getFolder().getChildrenFolders()) {
                 if (childrenFolder.isInside(absPos.getX(), absPos.getY())) {
                     connecting = true;
                     connectingComponent = childrenFolder;
@@ -150,7 +161,7 @@ public class EditorContext {
                 }
             }
 
-            EditorFolderEntry entryBox = getEditorFolder().getEntryBox();
+            EditorFolderEntry entryBox = getFolder().getEntryBox();
             if (entryBox.isInside(absPos.getX(), absPos.getY())) {
                 connecting = true;
                 connectingComponent = entryBox;
@@ -172,7 +183,7 @@ public class EditorContext {
                     EditorNode node = (EditorNode) connectingComponent;
                     UserInputGetter.modifyNode(node);
                     Utility.updateSize(fontMetrics, node, Constants.ARC_DIAMETER_NODE);
-                    Utility.updateOptions(fontMetrics, node);
+                    Utility.updateOptionsAndExtraNodes(fontMetrics, node);
                 }
                 if (connectingComponent instanceof EditorFolder) {
                     EditorFolder folder = (EditorFolder) connectingComponent;
@@ -182,21 +193,21 @@ public class EditorContext {
                 return;
             }
 
-            for (EditorNode node : getEditorFolder().getNodes()) {
+            for (EditorNode node : getFolder().getNodes()) {
                 if (node.isInside(absPos.getX(), absPos.getY())) {
                     connectConnectingComponent(node);
                     return;
                 }
             }
 
-            for (EditorFolder childrenFolder : getEditorFolder().getChildrenFolders()) {
+            for (EditorFolder childrenFolder : getFolder().getChildrenFolders()) {
                 if (childrenFolder.isInside(absPos.getX(), absPos.getY())) {
                     connectConnectingComponent(childrenFolder);
                     return;
                 }
             }
 
-            EditorFolderExit exitBox = getEditorFolder().getExitBox();
+            EditorFolderExit exitBox = getFolder().getExitBox();
             if (exitBox != null) {
                 if (exitBox.isInside(absPos.getX(), absPos.getY())) {
                     connectConnectingComponent(exitBox);
@@ -206,12 +217,12 @@ public class EditorContext {
 
             String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
             if (nodeInput != null) {
-                EditorNode newNode = container.addEditorNode(getAbsoluteMousePosition(), "");
+                EditorNode newNode = container.addNode(getAbsoluteMousePosition(), "");
                 newNode.setText(nodeInput);
                 Utility.updateSize(fontMetrics, newNode, Constants.ARC_DIAMETER_NODE);
                 connectConnectingComponent(newNode);
                 if (connectingComponent instanceof EditorNode) {
-                    Utility.updateOptions(fontMetrics, (EditorNode) connectingComponent);
+                    Utility.updateOptionsAndExtraNodes(fontMetrics, (EditorNode) connectingComponent);
                 }
                 return;
             }
@@ -223,41 +234,46 @@ public class EditorContext {
 
         if (connectingComponent instanceof EditorNode) {
             EditorNode connectNode = (EditorNode) connectingComponent;
-            Utility.updateOptions(fontMetrics, connectNode);
+            Utility.updateOptionsAndExtraNodes(fontMetrics, connectNode);
         }
 
         connectingComponent = null;
     }
 
-    public void addEditorNode() {
+    public void addNode() {
         String nodeInput = UserInputGetter.getTextFromPromt("Adding node...", "");
         if (nodeInput != null) {
-            container.addEditorNode(getAbsoluteMousePosition(), nodeInput);
+            container.addNode(getAbsoluteMousePosition(), nodeInput);
         }
     }
 
-    public void addEditorFolder() {
+    public void addFolder() {
         String titleInput = UserInputGetter.getTextFromPromt("Adding folder...", "");
         if (titleInput != null) {
-            container.addEditorFolder(getAbsoluteMousePosition(), titleInput);
+            container.addFolder(getAbsoluteMousePosition(), titleInput);
         }
-
     }
 
-    public void enterEditorFolder() {
-        if (container.enterEditorFolder(getAbsoluteMousePosition())) {
+    public void addExtraNode() {
+        String titleInput = UserInputGetter.getTextFromPromt("Adding extra node...", "");
+        if (titleInput != null) {
+            container.addExtraNode(getAbsoluteMousePosition(), titleInput);
+        }
+    }
+
+    public void enterFolder() {
+        if (container.enterFolder(getAbsoluteMousePosition())) {
             camera.setX(container.getEditorFolder().getEntryBox().getX());
             camera.setY(container.getEditorFolder().getEntryBox().getY());
         }
     }
 
-    public void exitEditorFolder() {
-        EditorFolder previousFolder = getEditorFolder();
-        if (container.exitEditorFolder(getAbsoluteMousePosition())) {
+    public void exitFolder() {
+        EditorFolder previousFolder = getFolder();
+        if (container.exitFolder(getAbsoluteMousePosition())) {
             camera.setX(previousFolder.getX());
             camera.setY(previousFolder.getY());
         }
-
     }
 
     public void deleteInteractible() {

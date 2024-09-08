@@ -25,7 +25,7 @@ public class EditorPanel extends InterfacePanel {
     }
 
     public EditorFolder getGuiFolder() {
-        return context.getEditorFolder();
+        return context.getFolder();
     }
 
     public void setGuiFolder(EditorFolder guiFolder) {
@@ -48,7 +48,7 @@ public class EditorPanel extends InterfacePanel {
     protected void onMouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case 3:
-                context.addEditorNode();
+                context.addNode();
                 break;
         }
         this.repaint();
@@ -109,13 +109,16 @@ public class EditorPanel extends InterfacePanel {
                 context.deleteInteractible();
                 break;
             case KeyEvent.VK_F:
-                context.addEditorFolder();
+                context.addFolder();
                 break;
             case KeyEvent.VK_I:
-                context.enterEditorFolder();
+                context.enterFolder();
                 break;
             case KeyEvent.VK_O:
-                context.exitEditorFolder();
+                context.exitFolder();
+                break;
+            case KeyEvent.VK_A:
+                context.addExtraNode();
                 break;
         }
         this.repaint();

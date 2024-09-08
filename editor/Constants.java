@@ -27,4 +27,6 @@ public class Constants {
     
     public static final int FONT_SIZE = 50;
     public static final int LINE_SIZE = 5;
+
+    public static final int MARGIN = 10;
 }

@@ -9,6 +9,8 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 
 - CTRL+Z
 
+- Make extraNodes distringuishable from options
+
 NÄSTA STORA UPPDATERING:
 - Extra-text som enbart visas med nycklar????? Bubblor!
 - Läsaren. Konsollen är för jobbig!

@@ -3,12 +3,14 @@ package editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorFolder;
 import editor.serializable.EditorFolderExit;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
+import storyclasses.serializable.StoryExtraNode;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
@@ -143,6 +145,22 @@ public class Serializer {
             StoryNode serializedNode = new StoryNode(guiNode.getText(), new StoryOption[outputSize],
                     addedKeys,
                     removedKeys);
+
+            EditorExtraNode guiExtraNode = guiNode.getExtraNode();
+            if (guiNode.getExtraNode() != null) {
+                StoryExtraNode serializedExtraNode = serializeExtraNode(guiNode.getExtraNode());
+                serializedNode.setExtraNode(serializedExtraNode);
+                guiExtraNode = guiExtraNode.getExtraNode();
+
+                while (guiExtraNode != null) {
+                    StoryExtraNode newSerializedExtraNode = serializeExtraNode(guiExtraNode);
+                    serializedExtraNode.setExtraNode(newSerializedExtraNode);
+                    
+                    serializedExtraNode = newSerializedExtraNode;
+                    guiExtraNode = guiExtraNode.getExtraNode();
+                }
+            }
+
             serializedNodes.add(serializedNode);
         }
 
@@ -153,6 +171,14 @@ public class Serializer {
         StoryNode get(int index) {
             return this.serializedNodes.get(index);
         }
+    }
+
+    protected static StoryExtraNode serializeExtraNode(EditorExtraNode guiExtraNode) {
+        StoryKey[] unlockingKeys = new StoryKey[guiExtraNode.getUnlockingKeys().size()];
+        guiExtraNode.getUnlockingKeys().toArray(unlockingKeys);
+        StoryKey[] lockingKeys = new StoryKey[guiExtraNode.getLockingKeys().size()];
+        guiExtraNode.getLockingKeys().toArray(lockingKeys);
+        return new StoryExtraNode(guiExtraNode.getText(), unlockingKeys, lockingKeys);
     }
 
 }

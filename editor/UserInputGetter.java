@@ -28,6 +28,7 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
+import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
 import storyclasses.serializable.StoryKey;
@@ -191,6 +192,85 @@ public class UserInputGetter {
             toggleForcedButton.setText(option.isForced() ? "Forced" : "Not forced");
         });
         components.add(toggleForcedButton);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(width, smallHeight));
+        submitButton.addActionListener((a) -> {
+            dialog.dispose();
+        });
+        components.add(submitButton);
+
+        stackComponents(panel, components, margin);
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setVisible(true);
+    }
+
+    public static void modifyExtraNode(EditorExtraNode extraNode) {
+        int width = 300;
+        int bigHeight = 150;
+        int smallHeight = 20;
+        int margin = 5;
+
+        JDialog dialog = new JDialog((JFrame) null, "Modify extra node", true);
+
+        JPanel panel = new JPanel();
+        List<Component> components = new LinkedList<Component>();
+
+        JLabel textLabel = new JLabel("Extra text");
+        textLabel.setPreferredSize(new Dimension(width, smallHeight));
+        textLabel.requestFocus();
+        components.add(textLabel);
+
+        JTextArea textArea = new JTextArea(extraNode.getText(), 4, 0);
+        textArea.setLineWrap(true);
+        textArea.setPreferredSize(new Dimension(width, bigHeight));
+        textArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        PlainDocument keyDoc = (PlainDocument) textArea.getDocument();
+        keyDoc.addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                extraNode.setText(textArea.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                extraNode.setText(textArea.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                extraNode.setText(textArea.getText());
+            }
+
+        });
+        components.add(textArea);
+
+        JLabel unlockingKeysLabel = new JLabel("Unlocking keys");
+        unlockingKeysLabel.setPreferredSize(new Dimension(width, smallHeight));
+        components.add(unlockingKeysLabel);
+
+        JScrollPane unlockingKeysScrollPane = new JScrollPane(
+                new KeyEditPanel(extraNode.getUnlockingKeys(), width - margin * 2, smallHeight, Color.green));
+        unlockingKeysScrollPane.setPreferredSize(new Dimension(width, bigHeight));
+        unlockingKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        unlockingKeysScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        unlockingKeysScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        components.add(unlockingKeysScrollPane);
+
+        JLabel lockingKeysLabel = new JLabel("Locking keys");
+        lockingKeysLabel.setPreferredSize(new Dimension(width, smallHeight));
+        components.add(lockingKeysLabel);
+
+        JScrollPane lockingKeysScrollPane = new JScrollPane(
+                new KeyEditPanel(extraNode.getLockingKeys(), width - margin * 2, smallHeight, Color.red));
+        lockingKeysScrollPane.setPreferredSize(new Dimension(width, bigHeight));
+        lockingKeysScrollPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
+        lockingKeysScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        lockingKeysScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        components.add(lockingKeysScrollPane);
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(width, smallHeight));
