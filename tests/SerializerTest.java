@@ -1,6 +1,7 @@
 package tests;
 
 import storyclasses.readers.ConsoleStoryReader;
+import storyclasses.serializable.StoryExtraNode;
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
@@ -18,7 +19,11 @@ class SerializerTest {
         StoryOption right = new StoryOption("Go to the right", 2);
         StoryOption porsche = new StoryOption("Buy a porsche", 3, new StoryKey[]{new StoryKey("pengar", 50)}, new StoryKey[0], false);
 
-        root = new StoryNode("Welcome to the dungeon!", new StoryOption[]{left, right, porsche}, new StoryKey[]{new StoryKey("pengar", 50)}, new StoryKey[]{});
+        root = new StoryNode("Welcome to the dungeon!", new StoryOption[]{left, right, porsche}, new StoryKey[]{new StoryKey("pengar", 100)}, new StoryKey[]{});
+
+        StoryExtraNode extraNode = new StoryExtraNode("Additional text", new StoryKey[0], new StoryKey[0]);
+        extraNode.setExtraNode(new StoryExtraNode("Ännu mer text", new StoryKey[] {new StoryKey("omnipotence", 1)}, new StoryKey[0]));
+        root.setExtraNode(extraNode);
 
         StoryTree tree = new StoryTree(new StoryNode[]{root, death, life, broke});
         

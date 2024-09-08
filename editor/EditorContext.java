@@ -167,15 +167,19 @@ public class EditorContext {
         if (connecting) {
             connecting = false;
 
-            if (connectingComponent instanceof EditorNode) {
-                if (connectingComponent.isInside(absPos.getX(), absPos.getY())) {
+            if (connectingComponent.isInside(absPos.getX(), absPos.getY())) {
+                if (connectingComponent instanceof EditorNode) {
                     EditorNode node = (EditorNode) connectingComponent;
                     UserInputGetter.modifyNode(node);
                     EditorFunctions.updateSize(fontMetrics, node, EditorConstants.ARC_DIAMETER_NODE);
                     EditorFunctions.updateOptions(fontMetrics, node);
-                    connectingComponent = null;
-                    return;
                 }
+                if (connectingComponent instanceof EditorFolder) {
+                    EditorFolder folder = (EditorFolder) connectingComponent;
+                    folder.setText(UserInputGetter.getTextFromPromt("Renaming folder...", folder.getText()));
+                }
+                connectingComponent = null;
+                return;
             }
 
             for (EditorNode node : getEditorFolder().getNodes()) {

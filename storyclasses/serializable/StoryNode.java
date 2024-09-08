@@ -7,6 +7,7 @@ public final class StoryNode implements Serializable {
     private StoryKey[] addedKeys;
     private StoryKey[] removedKeys;
     private StoryOption[] storyOptions;
+    private StoryExtraNode extraNode;
 
     public StoryNode(String text, StoryOption[] storyOptions, StoryKey[] addedKeys, StoryKey[] removedKeys) {
         this.text = text;
@@ -53,4 +54,13 @@ public final class StoryNode implements Serializable {
     public void setRemovedKeys(StoryKey[] removedKeys) {
         this.removedKeys = removedKeys;
     }
+
+    public StoryExtraNode getExtraNode() {
+        return extraNode;
+    }
+
+    public void setExtraNode(StoryExtraNode extraNode) {
+        this.extraNode = extraNode;
+    }
+
 }

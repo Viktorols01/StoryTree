@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import storyclasses.serializable.StoryExtraNode;
 import storyclasses.serializable.StoryKey;
+import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryState;
 import storyclasses.serializable.StoryTree;
@@ -22,8 +24,22 @@ public abstract class StoryReader {
     }
 
     public void read() {
-        displayTextToUser(this.storyState.getCurrentNode().getText());
+        acquireKeys();
+        displayTextToUser(getFullText(storyState.getCurrentNode()));
         interact();
+    }
+
+    private String getFullText(StoryNode node) {
+        StringBuilder sb = new StringBuilder(node.getText());
+        StoryExtraNode extraNode = node.getExtraNode();
+        while (extraNode != null) {
+            if (isUnlocked(extraNode.getUnlockingKeys(), extraNode.getLockingKeys())) {
+                sb.append("\n");
+                sb.append(extraNode.getText());
+            }
+            extraNode = extraNode.getExtraNode();
+        }
+        return sb.toString();
     }
 
     public void interact() {
@@ -39,7 +55,6 @@ public abstract class StoryReader {
             for (StoryOption option : availableOptions) {
                 if (option.getText().equals(selectedOption)) {
                     this.storyState.setStoryNodeIndex(option.getStoryNodeIndex());
-                    acquireKeys();
                     read();
                     return;
                 }
@@ -80,20 +95,12 @@ public abstract class StoryReader {
 
     private List<StoryOption> getAvailableStoryOptions() {
         List<StoryOption> storyOptionList = new LinkedList<StoryOption>();
-        outer: for (StoryOption storyOption : getAllStoryOptions()) {
-            for (StoryKey unlockingKey : storyOption.getUnlockingKeys()) {
-                if (!this.storyState.getKeys().containsKey(unlockingKey.getKey())
-                        || this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
-                    continue outer;
-                }
+        for (StoryOption storyOption : getAllStoryOptions()) {
+            if (isUnlocked(storyOption.getUnlockingKeys(), storyOption.getLockingKeys())) {
+                storyOptionList.add(storyOption);
+            } else {
+                System.out.println(storyOption.getText() + " blev nekad");
             }
-            for (StoryKey lockingKey : storyOption.getLockingKeys()) {
-                if (this.storyState.getKeys().containsKey(lockingKey.getKey())
-                        && this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
-                    continue outer;
-                }
-            }
-            storyOptionList.add(storyOption);
         }
 
         List<StoryOption> forcedList = new LinkedList<StoryOption>();
@@ -107,6 +114,22 @@ public abstract class StoryReader {
         }
 
         return storyOptionList;
+    }
+
+    private boolean isUnlocked(StoryKey[] unlockingKeys, StoryKey[] lockingKeys) {
+        for (StoryKey unlockingKey : unlockingKeys) {
+            if (!this.storyState.getKeys().containsKey(unlockingKey.getKey())
+                    || this.storyState.getKeys().get(unlockingKey.getKey()) < unlockingKey.getValue()) {
+                return false;
+            }
+        }
+        for (StoryKey lockingKey : lockingKeys) {
+            if (this.storyState.getKeys().containsKey(lockingKey.getKey())
+                    && this.storyState.getKeys().get(lockingKey.getKey()) >= lockingKey.getValue()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String[] toOptionStrings(List<StoryOption> storyOptionList) {

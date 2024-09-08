@@ -8,8 +8,7 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 - Hover should show stuff like keys?
 
 - CTRL+Z
-- Ändra namn på mappar
 
 NÄSTA STORA UPPDATERING:
-- Extra-text som enbart visas med nycklar?????
+- Extra-text som enbart visas med nycklar????? Bubblor!
 - Läsaren. Konsollen är för jobbig!

@@ -17,3 +17,7 @@ StoryOption
 StoryKey
 - key: string to identify the key
 - count: what amount of keys do the class represent
+
+StoryExtraNode
+- Additional text that will be appended to base text if the prerequisites are fulfilled
+- Even though prerequisites are not fulfilled, subsequent extraNodes can be fulfilled and printed
