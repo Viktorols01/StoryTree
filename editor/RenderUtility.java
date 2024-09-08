@@ -43,6 +43,13 @@ public class RenderUtility {
         return color;
     }
 
+    public static void renderLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
+        g2d = (Graphics2D) g2d.create();
+        g2d.setColor(Constants.COLOR_WHITE);
+        g2d.setStroke(new BasicStroke(Constants.LINE_SIZE));
+        g2d.drawLine(x1, y1, x2, y2);
+    }
+
     public static void renderDirectedLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(Constants.COLOR_WHITE);
@@ -202,7 +209,7 @@ public class RenderUtility {
         Interactible prev = node;
         EditorExtraNode extraNode = node.getExtraNode();
         while (extraNode != null) {
-            RenderUtility.renderDirectedLine(g2d,
+            RenderUtility.renderLine(g2d,
                     (int) (prev.getX() + prev.getW() / 2),
                     (int) (prev.getY() + prev.getH() / 2),
                     (int) (extraNode.getX() + extraNode.getW() / 2),

@@ -1,9 +1,7 @@
-- Regex för att byta ut text mot nycklar? Eller något annat...
-
 - I can not make changes to serialized classes without losing progress. This is NOT good. 
 Is it fixable? Do I have to make a special kind of serialization? Or can I accept that the behaviour is set in stone?
 
-- Lägg till riktningar så man kan se in/ut ur mappar!
+- Regex för att byta ut text mot nycklar? Eller något annat...
 
 - Hover should show stuff like keys?
 
@@ -12,5 +10,4 @@ Is it fixable? Do I have to make a special kind of serialization? Or can I accep
 - Make extraNodes distringuishable from options
 
 NÄSTA STORA UPPDATERING:
-- Extra-text som enbart visas med nycklar????? Bubblor!
 - Läsaren. Konsollen är för jobbig!
