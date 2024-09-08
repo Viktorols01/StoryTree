@@ -35,7 +35,7 @@ public class FrameStoryReader implements StoryReader {
     }
 
     public void createVisuals() {
-        int width = 400;
+        int width = 600;
         int bigHeight = 400;
         int smallHeight = 200;
         int margin = 5;

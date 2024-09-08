@@ -103,9 +103,7 @@ public class StoryIterator {
         for (StoryOption storyOption : getAllStoryOptions()) {
             if (isUnlocked(storyOption.getUnlockingKeys(), storyOption.getLockingKeys())) {
                 storyOptionList.add(storyOption);
-            } else {
-                System.out.println(storyOption.getText() + " blev nekad");
-            }
+            } 
         }
 
         List<StoryOption> forcedList = new LinkedList<StoryOption>();
