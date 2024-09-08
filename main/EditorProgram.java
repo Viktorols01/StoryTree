@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import editor.EditorPanel;
-import editor.EditorSerializer;
+import editor.Serializer;
 import editor.serializable.EditorFolder;
 import storyclasses.readers.StoryReader;
 import storyclasses.readers.ConsoleStoryReader;
@@ -28,7 +28,7 @@ public class EditorProgram {
 
         Button playButton = new Button("Play story");
         playButton.addActionListener((a) -> {
-            StoryTree tree = EditorSerializer.toStoryTree(gui.getGuiFolder());
+            StoryTree tree = Serializer.toStoryTree(gui.getGuiFolder());
             if (tree != null) {
                 StoryReader reader = new ConsoleStoryReader(tree);
                 reader.read();
@@ -38,7 +38,7 @@ public class EditorProgram {
 
         Button savePlayableButton = new Button("Save playable story");
         savePlayableButton.addActionListener((a) -> {
-            StoryTree tree = EditorSerializer.toStoryTree(gui.getGuiFolder());
+            StoryTree tree = Serializer.toStoryTree(gui.getGuiFolder());
             if (tree != null) {
                 FileHandler.saveObject(tree, "files/stories", "Story files", "st");
             }

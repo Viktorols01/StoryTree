@@ -103,11 +103,11 @@ public class EditorContext {
                 if (draggedBox instanceof InputInteractible) {
                     for (OutputInteractible output : ((InputInteractible) draggedBox).getInputs()) {
                         if (output instanceof EditorNode) {
-                            EditorFunctions.updateOptions(fontMetrics, (EditorNode) output);
+                            Utility.updateOptions(fontMetrics, (EditorNode) output);
                         }
                     }
                     if (draggedBox instanceof EditorNode) {
-                        EditorFunctions.updateOptions(fontMetrics,
+                        Utility.updateOptions(fontMetrics,
                                 (EditorNode) draggedBox);
                     }
                 }
@@ -135,8 +135,8 @@ public class EditorContext {
                     EditorOption option = pair.getOption();
                     if (option.isInside(absPos.getX(), absPos.getY())) {
                         UserInputGetter.modifyOption(option);
-                        EditorFunctions.updateSize(fontMetrics, option, EditorConstants.ARC_DIAMETER_OPTION);
-                        EditorFunctions.updateOptions(fontMetrics, node);
+                        Utility.updateSize(fontMetrics, option, Constants.ARC_DIAMETER_OPTION);
+                        Utility.updateOptions(fontMetrics, node);
                         return;
                     }
                 }
@@ -171,8 +171,8 @@ public class EditorContext {
                 if (connectingComponent instanceof EditorNode) {
                     EditorNode node = (EditorNode) connectingComponent;
                     UserInputGetter.modifyNode(node);
-                    EditorFunctions.updateSize(fontMetrics, node, EditorConstants.ARC_DIAMETER_NODE);
-                    EditorFunctions.updateOptions(fontMetrics, node);
+                    Utility.updateSize(fontMetrics, node, Constants.ARC_DIAMETER_NODE);
+                    Utility.updateOptions(fontMetrics, node);
                 }
                 if (connectingComponent instanceof EditorFolder) {
                     EditorFolder folder = (EditorFolder) connectingComponent;
@@ -208,10 +208,10 @@ public class EditorContext {
             if (nodeInput != null) {
                 EditorNode newNode = container.addEditorNode(getAbsoluteMousePosition(), "");
                 newNode.setText(nodeInput);
-                EditorFunctions.updateSize(fontMetrics, newNode, EditorConstants.ARC_DIAMETER_NODE);
+                Utility.updateSize(fontMetrics, newNode, Constants.ARC_DIAMETER_NODE);
                 connectConnectingComponent(newNode);
                 if (connectingComponent instanceof EditorNode) {
-                    EditorFunctions.updateOptions(fontMetrics, (EditorNode) connectingComponent);
+                    Utility.updateOptions(fontMetrics, (EditorNode) connectingComponent);
                 }
                 return;
             }
@@ -219,11 +219,11 @@ public class EditorContext {
     }
 
     private void connectConnectingComponent(InputInteractible input) {
-        EditorFunctions.connect(connectingComponent, input);
+        Utility.connect(connectingComponent, input);
 
         if (connectingComponent instanceof EditorNode) {
             EditorNode connectNode = (EditorNode) connectingComponent;
-            EditorFunctions.updateOptions(fontMetrics, connectNode);
+            Utility.updateOptions(fontMetrics, connectNode);
         }
 
         connectingComponent = null;

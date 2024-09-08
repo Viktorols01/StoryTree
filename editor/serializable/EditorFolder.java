@@ -3,7 +3,7 @@ package editor.serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import editor.EditorConstants;
+import editor.Constants;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 import editor.serializable.interfaces.TextInteractible;
@@ -20,7 +20,7 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
     private InputInteractible output;
 
     public EditorFolder(String title) {
-        super(0, 0, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
+        super(0, 0, Constants.STANDARD_SIZE, Constants.STANDARD_SIZE);
         this.title = title;
         this.parentFolder = null;
         this.childrenFolders = new ArrayList<EditorFolder>();
@@ -31,12 +31,12 @@ public class EditorFolder extends Box implements InputInteractible, OutputIntera
     }
 
     public EditorFolder(String title, int x, int y, EditorFolder parent) {
-        super(x, y, EditorConstants.STANDARD_SIZE, EditorConstants.STANDARD_SIZE);
+        super(x, y, Constants.STANDARD_SIZE, Constants.STANDARD_SIZE);
         this.title = title;
         this.parentFolder = parent;
         this.childrenFolders = new ArrayList<EditorFolder>();
         this.entryBox = new EditorFolderEntry(0, 0, this);
-        this.exitBox = new EditorFolderExit(0, EditorConstants.STANDARD_SIZE, this);
+        this.exitBox = new EditorFolderExit(0, Constants.STANDARD_SIZE, this);
         this.nodes = new ArrayList<EditorNode>();
         this.inputs = new ArrayList<OutputInteractible>();
     }

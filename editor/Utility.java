@@ -1,6 +1,7 @@
 package editor;
 
 import java.awt.FontMetrics;
+import java.util.Iterator;
 
 import editor.serializable.EditorFolder;
 import editor.serializable.EditorNode;
@@ -9,7 +10,7 @@ import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 import editor.serializable.interfaces.TextInteractible;
 
-public class EditorFunctions {
+public class Utility {
     public static void deleteInputReferences(OutputInteractible node) {
         for (int i = node.getOutputs().size() - 1; i >= 0; i--) {
             InputInteractible component = node.getOutputs().get(i);
@@ -38,8 +39,8 @@ public class EditorFunctions {
     }
 
      public static void updateSize(FontMetrics fontMetrics, TextInteractible textInteractible, int arcDiameter) {
-        int width = EditorUtility.getTextWidth(textInteractible.getText(), fontMetrics);
-        int height = EditorUtility.getTextHeight(textInteractible.getText(), fontMetrics);
+        int width = getTextWidth(textInteractible.getText(), fontMetrics);
+        int height = getTextHeight(textInteractible.getText(), fontMetrics);
         textInteractible.setSize(width + 2 * arcDiameter, height + 2 * arcDiameter);
     }
 
@@ -51,12 +52,12 @@ public class EditorFunctions {
 
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            updateSize(fontMetrics, option, EditorConstants.ARC_DIAMETER_OPTION);
+            updateSize(fontMetrics, option, Constants.ARC_DIAMETER_OPTION);
         }
 
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            totalWidth += EditorUtility.getTextWidth(option.getText(), fontMetrics) + EditorConstants.ARC_DIAMETER_OPTION * 2
+            totalWidth += getTextWidth(option.getText(), fontMetrics) + Constants.ARC_DIAMETER_OPTION * 2
                     + margin;
         }
         totalWidth -= margin;
@@ -65,13 +66,45 @@ public class EditorFunctions {
         int y = node.getY() + node.getH() + margin;
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
-            int width = EditorUtility.getTextWidth(option.getText(), fontMetrics);
+            int width = getTextWidth(option.getText(), fontMetrics);
             option.setPosition(x, y);
-            x += width + EditorConstants.ARC_DIAMETER_OPTION * 2 + margin;
+            x += width + Constants.ARC_DIAMETER_OPTION * 2 + margin;
         }
     }
 
     public static void sortOptions(EditorNode node) {
         node.getOptionPairs().sort((a, b) -> a.getOutput().getX() - b.getOutput().getX());
+    }
+
+    public static int getTextWidth(String text, FontMetrics fontMetrics) {
+        Iterator<String> iterable = text.lines().iterator();
+        int width = 0;
+        while (iterable.hasNext()) {
+            String line = iterable.next();
+            int lineWidth = fontMetrics.stringWidth(line);
+            if (lineWidth > width) {
+                width = lineWidth;
+            }
+        }
+
+        return width;
+    }
+
+    public static int getLineHeight(FontMetrics fontMetrics) {
+        int lineHeight = fontMetrics.getHeight();
+        return lineHeight;
+    }
+
+    public static int getTextHeight(String text, FontMetrics fontMetrics) {
+        int height = (int) (getLineHeight(fontMetrics) * text.lines().count());
+        return height;
+    }
+
+    public static String getFolderLocation(EditorFolder folder) {
+        if (folder.getParentFolder() == null) {
+            return folder.getText();
+        } else {
+            return getFolderLocation(folder.getParentFolder()) + ", " + folder.getText();
+        }
     }
 }

@@ -19,7 +19,7 @@ public class EditorPanel extends InterfacePanel {
 
     public EditorPanel(int width, int height) {
         super(width, height);
-        this.font = new Font("Arial", Font.PLAIN, EditorConstants.FONT_SIZE);
+        this.font = new Font("Arial", Font.PLAIN, Constants.FONT_SIZE);
         this.context = new EditorContext(width, height, getInput(), getFontMetrics(font));
         setFont(font);
     }
@@ -35,7 +35,7 @@ public class EditorPanel extends InterfacePanel {
     @Override
     protected void render(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        EditorRender.renderEditorContext(g2d, context);
+        RenderUtility.renderEditorContext(g2d, context);
     }
 
     @Override

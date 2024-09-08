@@ -2,7 +2,7 @@ package editor;
 
 import java.awt.Color;
 
-public class EditorConstants {
+public class Constants {
     public static final Color COLOR_BACKGROUND = new Color(55, 55, 55);
 
     public static final Color COLOR_EXTENSION_NODE = new Color(105, 105, 105);

@@ -14,7 +14,7 @@ import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
 
-public class EditorSerializer {
+public class Serializer {
     public static StoryTree toStoryTree(EditorFolder folder) {
         NodePairList addedNodes = new NodePairList();
 

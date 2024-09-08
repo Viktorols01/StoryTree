@@ -28,7 +28,7 @@ public class EditorContainer {
 
     public EditorNode addEditorNode(Point2D absPos, String text) {
         EditorNode node = new EditorNode(text, (int) absPos.getX(), (int) absPos.getY());
-        EditorFunctions.updateSize(fontMetrics, node, EditorConstants.ARC_DIAMETER_NODE);
+        Utility.updateSize(fontMetrics, node, Constants.ARC_DIAMETER_NODE);
 
         editorFolder.getNodes().add(node);
         return node;
@@ -62,9 +62,9 @@ public class EditorContainer {
     public boolean deleteInteractible(Point2D absPos) {
         for (EditorNode node : editorFolder.getNodes()) {
             if (node.isInside(absPos.getX(), absPos.getY())) {
-                EditorFunctions.deleteInputReferences(node);
-                EditorFunctions.deleteOutputReferences(node);
-                EditorFunctions.deleteFolderReference(node, editorFolder);
+                Utility.deleteInputReferences(node);
+                Utility.deleteOutputReferences(node);
+                Utility.deleteFolderReference(node, editorFolder);
                 return true;
             }
             for (int i = node.getOptionPairs().size() - 1; i >= 0; i--) {
@@ -79,9 +79,9 @@ public class EditorContainer {
 
         for (EditorFolder folder : editorFolder.getChildrenFolders()) {
             if (folder.isInside(absPos.getX(), absPos.getY())) {
-                EditorFunctions.deleteInputReferences(folder);
-                EditorFunctions.deleteOutputReferences(folder);
-                EditorFunctions.deleteFolderReference(folder, editorFolder);
+                Utility.deleteInputReferences(folder);
+                Utility.deleteOutputReferences(folder);
+                Utility.deleteFolderReference(folder, editorFolder);
                 return true;
             }
         }

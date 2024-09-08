@@ -22,21 +22,21 @@ import editor.serializable.interfaces.Interactible;
 import editor.serializable.interfaces.OutputInteractible;
 import tools.Camera;
 
-public class EditorRender {
+public class RenderUtility {
 
     private static Color getNodeColor(EditorNode node) {
         int inCount = node.getInputs().size();
         int outCount = node.getOptionPairs().size();
         Color color;
         if (inCount == 0) {
-            color = EditorConstants.COLOR_UNUSED_NODE;
+            color = Constants.COLOR_UNUSED_NODE;
         } else {
             if (outCount == 0) {
-                color = EditorConstants.COLOR_END_NODE;
+                color = Constants.COLOR_END_NODE;
             } else if (outCount == 1) {
-                color = EditorConstants.COLOR_EXTENSION_NODE;
+                color = Constants.COLOR_EXTENSION_NODE;
             } else {
-                color = EditorConstants.COLOR_BRANCH_NODE;
+                color = Constants.COLOR_BRANCH_NODE;
             }
         }
         return color;
@@ -44,30 +44,30 @@ public class EditorRender {
 
     public static void renderDirectedLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(EditorConstants.COLOR_WHITE);
-        g2d.setStroke(new BasicStroke(EditorConstants.LINE_SIZE));
+        g2d.setColor(Constants.COLOR_WHITE);
+        g2d.setStroke(new BasicStroke(Constants.LINE_SIZE));
         g2d.drawLine(x1, y1, x2, y2);
 
-        int size = EditorConstants.LINE_SIZE * 7;
+        int size = Constants.LINE_SIZE * 7;
         double angle = Math.atan2(y2 - y1, x2 - x1);
         renderTriangle(g2d, (x1 + x2 * 3) / 4 - size / 2, (y1 + y2 * 3) / 4 - size / 2, size, angle);
     }
 
     public static void renderEntryBox(Graphics2D g2d, EditorFolderEntry box) {
         g2d = (Graphics2D) g2d.create();
-        renderBoxOutline(g2d, box, EditorConstants.COLOR_WHITE);
-        g2d.setColor(EditorConstants.COLOR_GREEN);
-        renderArrow(g2d, box.getX() + EditorConstants.ARC_DIAMETER_NODE / 2,
-                box.getY() + EditorConstants.ARC_DIAMETER_NODE / 2, box.getW() - EditorConstants.ARC_DIAMETER_NODE,
+        renderBoxOutline(g2d, box, Constants.COLOR_WHITE);
+        g2d.setColor(Constants.COLOR_GREEN);
+        renderArrow(g2d, box.getX() + Constants.ARC_DIAMETER_NODE / 2,
+                box.getY() + Constants.ARC_DIAMETER_NODE / 2, box.getW() - Constants.ARC_DIAMETER_NODE,
                 false);
     }
 
     public static void renderExitBox(Graphics2D g2d, EditorFolderExit box) {
         g2d = (Graphics2D) g2d.create();
-        renderBoxOutline(g2d, box, EditorConstants.COLOR_WHITE);
-        g2d.setColor(EditorConstants.COLOR_RED);
-        renderArrow(g2d, box.getX() + EditorConstants.ARC_DIAMETER_NODE / 2,
-                box.getY() + EditorConstants.ARC_DIAMETER_NODE / 2, box.getW() - EditorConstants.ARC_DIAMETER_NODE,
+        renderBoxOutline(g2d, box, Constants.COLOR_WHITE);
+        g2d.setColor(Constants.COLOR_RED);
+        renderArrow(g2d, box.getX() + Constants.ARC_DIAMETER_NODE / 2,
+                box.getY() + Constants.ARC_DIAMETER_NODE / 2, box.getW() - Constants.ARC_DIAMETER_NODE,
                 true);
     }
 
@@ -76,10 +76,10 @@ public class EditorRender {
         g2d = (Graphics2D) g2d.create();
         g2d.fillRoundRect((int) interactible.getX(), (int) interactible.getY(), (int) interactible.getW(),
                 (int) interactible.getH(),
-                EditorConstants.ARC_DIAMETER_NODE, EditorConstants.ARC_DIAMETER_NODE);
+                Constants.ARC_DIAMETER_NODE, Constants.ARC_DIAMETER_NODE);
 
         g2d.setColor(textColor);
-        int lineHeight = EditorUtility.getLineHeight(g2d.getFontMetrics());
+        int lineHeight = Utility.getLineHeight(g2d.getFontMetrics());
         Iterator<String> iterable = text.lines().iterator();
         int i = 0;
         while (iterable.hasNext()) {
@@ -92,18 +92,18 @@ public class EditorRender {
     public static void renderBoxOutline(Graphics2D g2d, Box box, Color color) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(EditorConstants.LINE_SIZE));
+        g2d.setStroke(new BasicStroke(Constants.LINE_SIZE));
         g2d.drawRoundRect((int) box.getX(), (int) box.getY(), (int) box.getW(), (int) box.getH(),
-                EditorConstants.ARC_DIAMETER_NODE,
-                EditorConstants.ARC_DIAMETER_NODE);
+                Constants.ARC_DIAMETER_NODE,
+                Constants.ARC_DIAMETER_NODE);
     }
 
     public static void renderStoryNode(Graphics2D g2d, EditorNode node) {
         g2d = (Graphics2D) g2d.create();
         FontMetrics fontMetrics = g2d.getFontMetrics();
-        int lineHeight = EditorUtility.getLineHeight(fontMetrics);
+        int lineHeight = Utility.getLineHeight(fontMetrics);
         g2d.setColor(getNodeColor(node));
-        renderTextBubble(g2d, node, node.getText(), EditorConstants.COLOR_WHITE, EditorConstants.ARC_DIAMETER_NODE);
+        renderTextBubble(g2d, node, node.getText(), Constants.COLOR_WHITE, Constants.ARC_DIAMETER_NODE);
         if (!node.getAddedKeys().isEmpty()) {
             renderPlus(g2d, node.getX() + node.getW(), node.getY(), lineHeight / 2);
             renderKey(g2d, node.getX() + node.getW() + lineHeight / 2, node.getY(), lineHeight);
@@ -117,32 +117,32 @@ public class EditorRender {
 
     public static void renderOption(Graphics2D g2d, EditorOption option) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(EditorConstants.COLOR_BACKGROUND);
-        renderTextBubble(g2d, option, option.getText(), EditorConstants.COLOR_OPTION,
-                EditorConstants.ARC_DIAMETER_OPTION);
+        g2d.setColor(Constants.COLOR_BACKGROUND);
+        renderTextBubble(g2d, option, option.getText(), Constants.COLOR_OPTION,
+                Constants.ARC_DIAMETER_OPTION);
 
         renderBoxOutline(g2d, option,
-                option.isForced() ? EditorConstants.COLOR_OPTION_FORCED : EditorConstants.COLOR_OPTION);
+                option.isForced() ? Constants.COLOR_OPTION_FORCED : Constants.COLOR_OPTION);
 
         if (!option.getUnlockingKeys().isEmpty() || !option.getLockingKeys().isEmpty()) {
-            int lockSize = EditorUtility.getLineHeight(g2d.getFontMetrics()) / 2;
+            int lockSize = Utility.getLineHeight(g2d.getFontMetrics()) / 2;
             renderLock(g2d, option.getX() + option.getW() / 2 - lockSize / 2,
                     option.getY() + option.getH() - lockSize / 2,
-                    lockSize, EditorConstants.ARC_DIAMETER_NODE / 2, option.isForced());
+                    lockSize, Constants.ARC_DIAMETER_NODE / 2, option.isForced());
         }
     }
 
     public static void renderFolder(Graphics2D g2d, EditorFolder folder) {
         g2d = (Graphics2D) g2d.create();
-        renderBoxOutline(g2d, folder, EditorConstants.COLOR_WHITE);
-        g2d.setColor(EditorConstants.COLOR_FOLDER);
-        renderFolderDesign(g2d, folder.getX() + EditorConstants.ARC_DIAMETER_NODE / 2,
-                folder.getY() + EditorConstants.ARC_DIAMETER_NODE / 2,
-                folder.getW() - EditorConstants.ARC_DIAMETER_NODE);
-        g2d.setColor(EditorConstants.COLOR_WHITE);
+        renderBoxOutline(g2d, folder, Constants.COLOR_WHITE);
+        g2d.setColor(Constants.COLOR_FOLDER);
+        renderFolderDesign(g2d, folder.getX() + Constants.ARC_DIAMETER_NODE / 2,
+                folder.getY() + Constants.ARC_DIAMETER_NODE / 2,
+                folder.getW() - Constants.ARC_DIAMETER_NODE);
+        g2d.setColor(Constants.COLOR_WHITE);
 
-        int textWidth = EditorUtility.getTextWidth(folder.getText(), g2d.getFontMetrics());
-        int textHeight = EditorUtility.getTextHeight(folder.getText(), g2d.getFontMetrics());
+        int textWidth = Utility.getTextWidth(folder.getText(), g2d.getFontMetrics());
+        int textHeight = Utility.getTextHeight(folder.getText(), g2d.getFontMetrics());
         g2d.drawString(folder.getText(), folder.getX() + folder.getW() / 2 - textWidth / 2,
                 folder.getY() + folder.getH() + textHeight);
     }
@@ -151,7 +151,7 @@ public class EditorRender {
         g2d = (Graphics2D) g2d.create();
         List<InputInteractible> inputs = output.getOutputs();
         for (InputInteractible input : inputs) {
-            EditorRender.renderDirectedLine(g2d,
+            RenderUtility.renderDirectedLine(g2d,
                     (int) (output.getX() + output.getW() / 2),
                     (int) (output.getY() + output.getH() / 2),
                     (int) (input.getX() + input.getW() / 2),
@@ -164,7 +164,7 @@ public class EditorRender {
         for (EditorNode.OptionPair pair : node.getOptionPairs()) {
             EditorOption option = pair.getOption();
             InputInteractible connectable = pair.getOutput();
-            EditorRender.renderDirectedLine(g2d,
+            RenderUtility.renderDirectedLine(g2d,
                     (int) (option.getX() + option.getW() / 2),
                     (int) (option.getY() + option.getH() / 2),
                     (int) (connectable.getX() + connectable.getW() / 2),
@@ -182,9 +182,9 @@ public class EditorRender {
 
     private static void renderLock(Graphics2D g2d, int x, int y, int size, int padding, boolean forced) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(forced ? EditorConstants.COLOR_OPTION_FORCED : EditorConstants.COLOR_OPTION);
+        g2d.setColor(forced ? Constants.COLOR_OPTION_FORCED : Constants.COLOR_OPTION);
         g2d.fillRoundRect(x, y, size, size, padding, padding);
-        g2d.setColor(EditorConstants.COLOR_BLACK);
+        g2d.setColor(Constants.COLOR_BLACK);
         {
             int w = size / 2;
             int h = size / 2;
@@ -224,20 +224,20 @@ public class EditorRender {
             yPoints[i] = y + point[1];
         }
         Polygon keyPolygon = new Polygon(xPoints, yPoints, points.length);
-        g2d.setColor(EditorConstants.COLOR_KEY);
+        g2d.setColor(Constants.COLOR_KEY);
         g2d.fillPolygon(keyPolygon);
     }
 
     private static void renderPlus(Graphics2D g2d, int x, int y, int size) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(EditorConstants.COLOR_GREEN);
+        g2d.setColor(Constants.COLOR_GREEN);
         g2d.fillRect(x + size / 3, y, size / 3, size);
         g2d.fillRect(x, y + size / 3, size, size / 3);
     }
 
     private static void renderMinus(Graphics2D g2d, int x, int y, int size) {
         g2d = (Graphics2D) g2d.create();
-        g2d.setColor(EditorConstants.COLOR_RED);
+        g2d.setColor(Constants.COLOR_RED);
         g2d.fillRect(x, y + size / 3, size, size / 3);
     }
 
@@ -310,26 +310,26 @@ public class EditorRender {
     public static void renderFolderContent(Graphics2D g2d, EditorFolder guiFolder) {
         g2d = (Graphics2D) g2d.create();
         if (guiFolder.getEntryBox().getOutput() != null) {
-            EditorRender.renderOutputLines(g2d, guiFolder.getEntryBox());
+            RenderUtility.renderOutputLines(g2d, guiFolder.getEntryBox());
         }
         for (EditorFolder childrenFolder : guiFolder.getChildrenFolders()) {
-            EditorRender.renderOutputLines(g2d, childrenFolder);
+            RenderUtility.renderOutputLines(g2d, childrenFolder);
         }
         for (EditorNode node : guiFolder.getNodes()) {
-            EditorRender.renderOptionLines(g2d, node);
+            RenderUtility.renderOptionLines(g2d, node);
         }
         for (EditorNode node : guiFolder.getNodes()) {
-            EditorRender.renderStoryNode(g2d, node);
-            EditorRender.renderOptions(g2d, node);
+            RenderUtility.renderStoryNode(g2d, node);
+            RenderUtility.renderOptions(g2d, node);
         }
 
         for (EditorFolder childrenFolder : guiFolder.getChildrenFolders()) {
-            EditorRender.renderFolder(g2d, childrenFolder);
+            RenderUtility.renderFolder(g2d, childrenFolder);
         }
 
-        EditorRender.renderEntryBox(g2d, guiFolder.getEntryBox());
+        RenderUtility.renderEntryBox(g2d, guiFolder.getEntryBox());
         if (guiFolder.getExitBox() != null) {
-            EditorRender.renderExitBox(g2d, guiFolder.getExitBox());
+            RenderUtility.renderExitBox(g2d, guiFolder.getExitBox());
         }
     }
 
@@ -344,14 +344,14 @@ public class EditorRender {
         if (context.isConnecting()) {
             Interactible connectingComponent = context.getConnectingComponent();
             Point2D absPos = context.getAbsoluteMousePosition();
-            EditorRender.renderDirectedLine(transform,
+            RenderUtility.renderDirectedLine(transform,
                     (int) (connectingComponent.getX() + connectingComponent.getW() / 2),
                     (int) (connectingComponent.getY() + connectingComponent.getH() / 2),
                     (int) absPos.getX(),
                     (int) absPos.getY());
         }
 
-        EditorRender.renderFolderContent(transform, context.getEditorFolder());
+        RenderUtility.renderFolderContent(transform, context.getEditorFolder());
 
         renderInfoPanel(g2d, context);
     }
@@ -359,20 +359,20 @@ public class EditorRender {
     public static void renderBackground(Graphics2D g2d, EditorContext context) {
         g2d = (Graphics2D) g2d.create();
         Camera camera = context.getCamera();
-        g2d.setColor(EditorConstants.COLOR_BACKGROUND);
+        g2d.setColor(Constants.COLOR_BACKGROUND);
         g2d.fillRect(0, 0, camera.getRelativeWidth(), camera.getRelativeHeight());
     }
 
     public static void renderInfoPanel(Graphics2D g2d, EditorContext context) {
         g2d = (Graphics2D) g2d.create();
         g2d.setFont(new Font("Arial", Font.PLAIN, 20));
-        g2d.setColor(EditorConstants.COLOR_WHITE);
+        g2d.setColor(Constants.COLOR_WHITE);
         List<String> outputs = new LinkedList<String>();
-        outputs.add(EditorUtility.getFolderLocation(context.getEditorFolder()));
+        outputs.add(Utility.getFolderLocation(context.getEditorFolder()));
         outputs.add("X, Y = " + (int) context.getAbsoluteMousePosition().getX() + ", "
                 + (int) context.getAbsoluteMousePosition().getY());
 
-        int lineHeight = EditorUtility.getLineHeight(g2d.getFontMetrics());
+        int lineHeight = Utility.getLineHeight(g2d.getFontMetrics());
         for (int i = 0; i < outputs.size(); i++) {
             String text = outputs.get(i);
             g2d.drawString(text, 5, (1 + i) * lineHeight);
