@@ -56,7 +56,6 @@ public class UserInputGetter {
         components.add(textLabel);
 
         JTextArea textArea = new JTextArea(node.getText(), 4, 0);
-        textArea.setLineWrap(true);
         textArea.setPreferredSize(new Dimension(width, bigHeight));
         textArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
         PlainDocument keyDoc = (PlainDocument) textArea.getDocument();
@@ -224,7 +223,6 @@ public class UserInputGetter {
         components.add(textLabel);
 
         JTextArea textArea = new JTextArea(extraNode.getText(), 4, 0);
-        textArea.setLineWrap(true);
         textArea.setPreferredSize(new Dimension(width, bigHeight));
         textArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0, 0, 0)));
         PlainDocument keyDoc = (PlainDocument) textArea.getDocument();
