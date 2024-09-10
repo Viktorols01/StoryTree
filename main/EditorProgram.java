@@ -21,7 +21,7 @@ public class EditorProgram {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        EditorPanel gui = new EditorPanel(800, 800);
+        EditorPanel gui = new EditorPanel(1600, 1200);
         panel.add(gui, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();

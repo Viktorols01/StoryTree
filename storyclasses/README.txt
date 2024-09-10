@@ -4,14 +4,14 @@ StoryTree
 StoryNode
 - text: text within the storynode
 - storyOptions: contains pointers to all reachable nodes
-- adddedKeys: visiting the node adds the given keys
+- addedKeys: visiting the node adds the given keys
 - removedKeys: visiting the node removes the given keys
 
 StoryOption
 - text: text to describe the option; an empty field means the story will simply proceed without choosing
 - storyNodeIndex: which node the option leads to
-- unlockingKeys: required keys to unlock the option
-- lockingKeys: required keys that lock the option
+- unlockingKeys: keys to unlock the option, you need all of them to unlock
+- lockingKeys: keys that lock the option, you get locked out by owning one
 - forced: if the option is unlocked, it is automatically chosen
 
 StoryKey
