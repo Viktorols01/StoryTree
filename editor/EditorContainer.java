@@ -8,6 +8,7 @@ import editor.serializable.EditorFolder;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
 import editor.serializable.EditorNode.OptionPair;
+import editor.serializable.interfaces.Interactible;
 
 public class EditorContainer {
 
@@ -75,6 +76,22 @@ public class EditorContainer {
                     node.getOptionPairs().remove(i);
                     return true;
                 }
+            }
+            Interactible prev = node;
+            EditorExtraNode extraNode = node.getExtraNode();
+            while (extraNode != null) {
+                if (extraNode.isInside(absPos.getX(), absPos.getY())) {
+                    if (prev instanceof EditorNode) {
+                        ((EditorNode) prev).setExtraNode(null);
+                        return true;
+                    } 
+                    if (prev instanceof EditorExtraNode) {
+                        ((EditorExtraNode) prev).setExtraNode(null);
+                        return true;
+                    } 
+                }
+                prev = extraNode;
+                extraNode = extraNode.getExtraNode();
             }
         }
 
