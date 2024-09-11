@@ -51,10 +51,10 @@ public class StoryIterator {
 
     private void visitNode(int i) {
         if (storyState == null) {
-            setStoryState(new StoryState(i));
+            storyState = new StoryState(i);
         } else {
             StoryState clone = storyState == null ? null : storyState.clone();
-            setStoryState(new StoryState(i, storyState.getKeys(), clone));
+            storyState = new StoryState(i, storyState.getKeys(), clone);
         }
         acquireKeysFromNode(storyState, tree.getNode(i));
         getInfo();
@@ -160,8 +160,9 @@ public class StoryIterator {
         return this.storyState;
     }
 
-    public void setStoryState(StoryState state) {
+    public void loadStoryState(StoryState state) {
         this.storyState = state;
+        getInfo();
     }
 
     public boolean canGoBack() {
@@ -169,7 +170,6 @@ public class StoryIterator {
     }
 
     public void goBack() {
-        setStoryState(storyState.getPrevious());
-        getInfo();
+        loadStoryState(storyState.getPrevious());
     }
 }
