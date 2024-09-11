@@ -85,6 +85,17 @@ public class FrameStoryReader implements StoryReader {
             });
             questionPanel.add(button);
         }
+
+        if (storyIterator.canGoBack()) {
+            JButton button = new JButton("Go back");
+            button.addActionListener((a) -> {
+                storyIterator.goBack();
+                updateVisuals();
+            });
+            questionPanel.add(button);
+
+        }
+
         questionPanel.revalidate();
         questionPanel.repaint();
     }

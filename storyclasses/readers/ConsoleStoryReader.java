@@ -16,8 +16,8 @@ public class ConsoleStoryReader implements StoryReader {
         this.scanner = new Scanner(System.in);
     }
 
-    public ConsoleStoryReader(StoryState storyState) {
-        this.storyIterator = new StoryIterator(storyState);
+    public ConsoleStoryReader(StoryTree tree, StoryState storyState) {
+        this.storyIterator = new StoryIterator(tree, storyState);
         this.scanner = new Scanner(System.in);
     }
 

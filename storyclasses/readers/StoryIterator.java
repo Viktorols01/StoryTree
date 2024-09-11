@@ -13,19 +13,20 @@ import storyclasses.serializable.StoryTree;
 
 public class StoryIterator {
 
+    private StoryTree tree;
     private StoryState storyState;
 
     private String currentText;
     private List<StoryOption> availableOptionsList;
 
     public StoryIterator(StoryTree tree) {
-        this.storyState = new StoryState(tree);
-        visitNode();
+        this.tree = tree;
+        visitNode(0);
     }
 
-    public StoryIterator(StoryState state) {
-        this.storyState = state;
-        visitNode();
+    public StoryIterator(StoryTree tree, StoryState state) {
+        this.tree = tree;
+        visitNode(state.getIndex());
     }
 
     public String getCurrentText() {
@@ -43,15 +44,24 @@ public class StoryIterator {
     public void selectOption(String selectedOption) {
         for (StoryOption option : availableOptionsList) {
             if (option.getText().equals(selectedOption)) {
-                this.storyState.setStoryNodeIndex(option.getStoryNodeIndex());
-                visitNode();
+                visitNode(option.getStoryNodeIndex());
             }
         }
     }
 
-    private void visitNode() {
-        acquireKeys();
-        this.currentText = getFullText(storyState.getCurrentNode());
+    private void visitNode(int i) {
+        if (storyState == null) {
+            setStoryState(new StoryState(i));
+        } else {
+            StoryState clone = storyState == null ? null : storyState.clone();
+            setStoryState(new StoryState(i, storyState.getKeys(), clone));
+        }
+        acquireKeysFromNode(storyState, tree.getNode(i));
+        getInfo();
+    }
+
+    private void getInfo() {
+        this.currentText = getFullText(tree.getNode(storyState.getIndex()));
         this.availableOptionsList = getAvailableStoryOptions();
     }
 
@@ -68,34 +78,34 @@ public class StoryIterator {
         return sb.toString();
     }
 
-    private void acquireKeys() {
-        for (StoryKey addedKey : storyState.getCurrentNode().getAddedKeys()) {
-            addKey(addedKey);
+    private static void acquireKeysFromNode(StoryState state, StoryNode node) {
+        for (StoryKey addedKey : node.getAddedKeys()) {
+            addKey(state, addedKey);
         }
-        for (StoryKey removedKey : storyState.getCurrentNode().getRemovedKeys()) {
-            removeKey(removedKey);
+        for (StoryKey removedKey : node.getRemovedKeys()) {
+            removeKey(state, removedKey);
         }
     }
 
-    private void addKey(StoryKey addedKey) {
-        if (storyState.getKeys().containsKey(addedKey.getKey())) {
-            int currentValue = storyState.getKeys().get(addedKey.getKey());
-            storyState.getKeys().put(addedKey.getKey(), currentValue + addedKey.getValue());
+    private static void addKey(StoryState state, StoryKey addedKey) {
+        if (state.getKeys().containsKey(addedKey.getKey())) {
+            int currentValue = state.getKeys().get(addedKey.getKey());
+            state.getKeys().put(addedKey.getKey(), currentValue + addedKey.getValue());
         } else {
-            storyState.getKeys().put(addedKey.getKey(), addedKey.getValue());
+            state.getKeys().put(addedKey.getKey(), addedKey.getValue());
         }
     }
 
-    private void removeKey(StoryKey removedKey) {
-        if (storyState.getKeys().containsKey(removedKey.getKey())) {
-            int currentValue = storyState.getKeys().get(removedKey.getKey());
-            storyState.getKeys().put(removedKey.getKey(),
+    private static void removeKey(StoryState state, StoryKey removedKey) {
+        if (state.getKeys().containsKey(removedKey.getKey())) {
+            int currentValue = state.getKeys().get(removedKey.getKey());
+            state.getKeys().put(removedKey.getKey(),
                     (currentValue - removedKey.getValue() < 0) ? 0 : currentValue - removedKey.getValue());
         }
     }
 
     private StoryOption[] getAllStoryOptions() {
-        return storyState.getCurrentNode().getStoryOptions();
+        return tree.getNode(storyState.getIndex()).getStoryOptions();
     }
 
     private List<StoryOption> getAvailableStoryOptions() {
@@ -103,7 +113,7 @@ public class StoryIterator {
         for (StoryOption storyOption : getAllStoryOptions()) {
             if (isUnlocked(storyOption.getUnlockingKeys(), storyOption.getLockingKeys())) {
                 storyOptionList.add(storyOption);
-            } 
+            }
         }
 
         List<StoryOption> forcedList = new LinkedList<StoryOption>();
@@ -148,5 +158,18 @@ public class StoryIterator {
 
     public StoryState getStoryState() {
         return this.storyState;
+    }
+
+    public void setStoryState(StoryState state) {
+        this.storyState = state;
+    }
+
+    public boolean canGoBack() {
+        return storyState.hasPrevious();
+    }
+
+    public void goBack() {
+        setStoryState(storyState.getPrevious());
+        getInfo();
     }
 }
