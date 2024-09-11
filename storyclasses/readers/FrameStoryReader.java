@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ public class FrameStoryReader implements StoryReader {
     private boolean savingEnabled;
     private boolean loadingEnabled;
     private boolean backtrackingEnabled;
+    private boolean showKeys;
 
     public FrameStoryReader(StoryTree tree) {
         this.storyIterator = new StoryIterator(tree);
@@ -95,6 +97,18 @@ public class FrameStoryReader implements StoryReader {
                     backtrackingEnabled = true;
                 }
             }
+            if (code.equals("omniscient")) {
+                if (!showKeys) {
+                    JOptionPane.showMessageDialog(frame, "Key printing enabled! Use cheat code: 'hidekeys' to disable.");
+                    showKeys = true;
+                }
+            }
+            if (code.equals("hidekeys")) {
+                if (showKeys) {
+                    JOptionPane.showMessageDialog(frame, "Key printing disabled.");
+                    showKeys = false;
+                }
+            }
             updateVisuals();
         });
         optionsMenu.add(cheatsItem);
@@ -135,10 +149,16 @@ public class FrameStoryReader implements StoryReader {
     }
 
     public void updateVisuals() {
-        String text = storyIterator.getCurrentText();
+        StringBuilder sb = new StringBuilder(storyIterator.getCurrentText());
+        if (showKeys) {
+            sb.append("\n");
+            sb.append("\n");
+            sb.append("Keys:");
+            sb.append(mapToString(storyIterator.getStoryState().getKeys()));
+        }
         String[] options = storyIterator.getCurrentOptions();
 
-        textArea.setText(text);
+        textArea.setText(sb.toString());
 
         questionPanel.removeAll();
         for (String option : options) {
@@ -202,6 +222,14 @@ public class FrameStoryReader implements StoryReader {
     public void read() {
         createVisuals();
         updateVisuals();
+    }
+
+    private static String mapToString(HashMap<String, Integer> map) {
+        StringBuilder sb = new StringBuilder();
+        map.forEach((s, i) -> {
+            sb.append("\n" + "\t" + s + ": " + i);
+        });
+        return sb.toString();
     }
 
 }
