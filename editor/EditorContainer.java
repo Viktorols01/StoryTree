@@ -82,13 +82,13 @@ public class EditorContainer {
             while (extraNode != null) {
                 if (extraNode.isInside(absPos.getX(), absPos.getY())) {
                     if (prev instanceof EditorNode) {
-                        ((EditorNode) prev).setExtraNode(null);
-                        return true;
-                    } 
+                        ((EditorNode) prev).setExtraNode(extraNode.getExtraNode());
+                    }
                     if (prev instanceof EditorExtraNode) {
-                        ((EditorExtraNode) prev).setExtraNode(null);
-                        return true;
-                    } 
+                        ((EditorExtraNode) prev).setExtraNode(extraNode.getExtraNode());
+                    }
+                    Utility.updateOptionsAndExtraNodes(fontMetrics, node);
+                    return true;
                 }
                 prev = extraNode;
                 extraNode = extraNode.getExtraNode();
@@ -109,16 +109,20 @@ public class EditorContainer {
     public boolean addExtraNode(Point2D absPos, String titleInput) {
         for (EditorNode node : editorFolder.getNodes()) {
             if (node.isInside(absPos.getX(), absPos.getY())) {
+                EditorExtraNode existingExtraNode = node.getExtraNode();
                 EditorExtraNode newExtraNode = new EditorExtraNode(titleInput);
                 node.setExtraNode(newExtraNode);
+                newExtraNode.setExtraNode(existingExtraNode);
                 Utility.updateOptionsAndExtraNodes(fontMetrics, node);
                 return true;
             }
             EditorExtraNode extraNode = node.getExtraNode();
             while (extraNode != null) {
-                if (extraNode.isInside(absPos.getX(), absPos.getY()) && extraNode.getExtraNode() == null) {
+                if (extraNode.isInside(absPos.getX(), absPos.getY())) {
+                    EditorExtraNode existingExtraNode = extraNode.getExtraNode();
                     EditorExtraNode newExtraNode = new EditorExtraNode(titleInput);
                     extraNode.setExtraNode(newExtraNode);
+                    newExtraNode.setExtraNode(existingExtraNode);
                     Utility.updateOptionsAndExtraNodes(fontMetrics, node);
                     return true;
                 }
