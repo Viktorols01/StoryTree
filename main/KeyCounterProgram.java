@@ -1,6 +1,7 @@
 package main;
 
 import java.util.HashSet;
+import java.util.ArrayList;
 
 import storyclasses.serializable.StoryKey;
 import storyclasses.serializable.StoryNode;
@@ -22,8 +23,15 @@ public class KeyCounterProgram {
                     set.add(key.getKey());
                 }
             }
-            
+
+            ArrayList<String> list = new ArrayList<String>();
             set.forEach((s) -> {
+                list.add(s);
+            });
+            list.sort((s, s2) -> {
+                return s.compareTo(s2);
+            });
+            list.forEach((s) -> {
                 System.out.println(s);
             });
         }
