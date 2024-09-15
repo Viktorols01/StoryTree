@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import storyclasses.serializable.StoryExtraNode;
 import storyclasses.serializable.StoryNode;
 import storyclasses.serializable.StoryOption;
 import storyclasses.serializable.StoryTree;
@@ -19,6 +20,13 @@ public class PrinterProgram {
 
             for (StoryNode node : tree.getNodes()) {
                 sb.append("\n" + node.getText());
+                sb.append("\n" + "Extra-nodes:");
+                StoryExtraNode extraNode = node.getExtraNode();
+                while (extraNode != null) {
+                    sb.append("\n\t" + extraNode.getText());
+                    extraNode = extraNode.getExtraNode();
+                }
+                sb.append("\n" + "Options:");
                 for (StoryOption option : node.getStoryOptions()) {
                     sb.append("\n\t" + option.getText());
                 }
