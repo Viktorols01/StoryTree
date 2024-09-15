@@ -14,7 +14,7 @@ import tools.FileHandler;
 public class PrinterProgram {
     public static void main(String[] args) {
         StoryTree tree = FileHandler.loadObject("files/stories", "StoryTree files", "st");
-
+        
         if (tree != null) {
             StringBuilder sb = new StringBuilder();
 
