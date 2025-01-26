@@ -105,7 +105,7 @@ public class UserInputGetter {
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(width, smallHeight));
-        submitButton.addActionListener((a) -> {
+        submitButton.addActionListener((_) -> {
             dialog.dispose();
         });
         components.add(submitButton);
@@ -155,7 +155,7 @@ public class UserInputGetter {
             }
 
         });
-        textField.addActionListener((a) -> {
+        textField.addActionListener((_) -> {
             dialog.dispose();
         });
         components.add(textField);
@@ -186,7 +186,7 @@ public class UserInputGetter {
 
         JButton toggleForcedButton = new JButton(option.isForced() ? "Forced" : "Not forced");
         toggleForcedButton.setPreferredSize(new Dimension(width, smallHeight));
-        toggleForcedButton.addActionListener((a) -> {
+        toggleForcedButton.addActionListener((_) -> {
             option.setForced(!option.isForced());
             toggleForcedButton.setText(option.isForced() ? "Forced" : "Not forced");
         });
@@ -194,7 +194,7 @@ public class UserInputGetter {
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(width, smallHeight));
-        submitButton.addActionListener((a) -> {
+        submitButton.addActionListener((_) -> {
             dialog.dispose();
         });
         components.add(submitButton);
@@ -272,7 +272,7 @@ public class UserInputGetter {
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(width, smallHeight));
-        submitButton.addActionListener((a) -> {
+        submitButton.addActionListener((_) -> {
             dialog.dispose();
         });
         components.add(submitButton);
@@ -316,7 +316,7 @@ public class UserInputGetter {
             addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.X_AXIS));
             addPanel.setPreferredSize(new Dimension(lineWidth, lineHeight));
             JButton addButton = new JButton("+");
-            addButton.addActionListener((a) -> {
+            addButton.addActionListener((_) -> {
                 this.keys.add(new StoryKey("key", 1));
                 this.generate();
             });
@@ -376,7 +376,7 @@ public class UserInputGetter {
 
                 JButton removeButton = new JButton("-");
                 removeButton.setPreferredSize(new Dimension(buttonSize, lineHeight));
-                removeButton.addActionListener((a) -> {
+                removeButton.addActionListener((_) -> {
                     this.keys.remove(key);
                     this.generate();
                 });

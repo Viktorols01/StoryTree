@@ -20,13 +20,13 @@ public class PrinterProgram {
 
             for (StoryNode node : tree.getNodes()) {
                 sb.append("\n" + node.getText());
-                sb.append("\n" + "Extra-nodes:");
+                //sb.append("\n" + "Extra-nodes:");
                 StoryExtraNode extraNode = node.getExtraNode();
                 while (extraNode != null) {
                     sb.append("\n\t" + extraNode.getText());
                     extraNode = extraNode.getExtraNode();
                 }
-                sb.append("\n" + "Options:");
+                //sb.append("\n" + "Options:");
                 for (StoryOption option : node.getStoryOptions()) {
                     sb.append("\n\t" + option.getText());
                 }
