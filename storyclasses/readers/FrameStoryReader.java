@@ -58,7 +58,7 @@ public class FrameStoryReader implements StoryReader {
         JMenu optionsMenu = new JMenu("Options");
 
         JMenuItem saveItem = new JMenuItem("Save");
-        saveItem.addActionListener((a) -> {
+        saveItem.addActionListener((_) -> {
             if (!savingEnabled) {
                 JOptionPane.showMessageDialog(frame, "Saving is not allowed.");
             } else {
@@ -68,7 +68,7 @@ public class FrameStoryReader implements StoryReader {
         optionsMenu.add(saveItem);
 
         JMenuItem loadItem = new JMenuItem("Load");
-        loadItem.addActionListener((a) -> {
+        loadItem.addActionListener((_) -> {
             if (!loadingEnabled) {
                 JOptionPane.showMessageDialog(frame, "Loading is not allowed.");
             } else {
@@ -79,7 +79,7 @@ public class FrameStoryReader implements StoryReader {
         optionsMenu.add(loadItem);
 
         JMenuItem cheatsItem = new JMenuItem("Cheat codes");
-        cheatsItem.addActionListener((a) -> {
+        cheatsItem.addActionListener((_) -> {
             String code = JOptionPane.showInputDialog("Enter cheat code:");
             if (code.equals("savescum")) {
                 if (!savingEnabled) {
@@ -163,7 +163,7 @@ public class FrameStoryReader implements StoryReader {
         questionPanel.removeAll();
         for (String option : options) {
             JButton button = new JButton(option);
-            button.addActionListener((a) -> {
+            button.addActionListener((_) -> {
                 storyIterator.selectOption(button.getText());
                 updateVisuals();
             });
@@ -173,7 +173,7 @@ public class FrameStoryReader implements StoryReader {
         backtrackingPanel.removeAll();
         if (storyIterator.canGoBack() && backtrackingEnabled) {
             JButton button = new JButton("<--");
-            button.addActionListener((a) -> {
+            button.addActionListener((_) -> {
                 storyIterator.goBack();
                 updateVisuals();
             });
