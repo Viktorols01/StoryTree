@@ -1,4 +1,4 @@
-package storyclasses.readers;
+package reader.swing;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -22,7 +22,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 
-import storyclasses.serializable.StoryTree;
+import reader.serializable.StoryTree;
 import tools.FileHandler;
 
 // ADD SCROLLING

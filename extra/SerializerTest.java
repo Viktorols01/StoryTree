@@ -1,11 +1,11 @@
-package tests;
+package extra;
 
-import storyclasses.readers.ConsoleStoryReader;
-import storyclasses.serializable.StoryExtraNode;
-import storyclasses.serializable.StoryKey;
-import storyclasses.serializable.StoryNode;
-import storyclasses.serializable.StoryOption;
-import storyclasses.serializable.StoryTree;
+import reader.serializable.StoryExtraNode;
+import reader.serializable.StoryKey;
+import reader.serializable.StoryNode;
+import reader.serializable.StoryOption;
+import reader.serializable.StoryTree;
+import reader.swing.ConsoleStoryReader;
 import tools.FileHandler;
 
 class SerializerTest {

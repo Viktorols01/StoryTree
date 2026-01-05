@@ -10,11 +10,11 @@ import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
-import storyclasses.serializable.StoryExtraNode;
-import storyclasses.serializable.StoryKey;
-import storyclasses.serializable.StoryNode;
-import storyclasses.serializable.StoryOption;
-import storyclasses.serializable.StoryTree;
+import reader.serializable.StoryExtraNode;
+import reader.serializable.StoryKey;
+import reader.serializable.StoryNode;
+import reader.serializable.StoryOption;
+import reader.serializable.StoryTree;
 
 public class Serializer {
     public static StoryTree toStoryTree(EditorFolder folder) {

@@ -1,6 +1,11 @@
 - I can not make changes to serialized classes without losing progress. This is NOT good. 
-Is it fixable? Do I have to make a special kind of serialization? Or can I accept that the behaviour is set in stone?
+  Is it fixable? Do I have to make a special kind of serialization? Or can I accept that the behaviour is set in stone?
+  Maybe I should just use JSON...
+  I'll rewrite to use JSON in the next iteration for the web
 
 - Regex för att byta ut text mot nycklar? Eller något annat...
 
-- CTRL+Z
+- CTRL+Z. Should use the memento design pattern
+
+- Composition over inheritance. This is something I should have had in mind when I wrote this.
+  The next version will have it.

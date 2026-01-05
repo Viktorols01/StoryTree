@@ -1,4 +1,4 @@
-package editor;
+package editor.swing;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +31,7 @@ import javax.swing.text.PlainDocument;
 import editor.serializable.EditorExtraNode;
 import editor.serializable.EditorNode;
 import editor.serializable.EditorOption;
-import storyclasses.serializable.StoryKey;
+import reader.serializable.StoryKey;
 
 public class UserInputGetter {
 

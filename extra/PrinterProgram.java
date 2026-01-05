@@ -1,14 +1,16 @@
-package main;
+package extra;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
+
+import reader.serializable.StoryExtraNode;
+import reader.serializable.StoryNode;
+import reader.serializable.StoryOption;
+import reader.serializable.StoryTree;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import storyclasses.serializable.StoryExtraNode;
-import storyclasses.serializable.StoryNode;
-import storyclasses.serializable.StoryOption;
-import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
 public class PrinterProgram {

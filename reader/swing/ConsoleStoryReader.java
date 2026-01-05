@@ -1,9 +1,9 @@
-package storyclasses.readers;
+package reader.swing;
 
 import java.util.Scanner;
 
-import storyclasses.serializable.StoryState;
-import storyclasses.serializable.StoryTree;
+import reader.serializable.StoryState;
+import reader.serializable.StoryTree;
 
 public class ConsoleStoryReader implements StoryReader {
 

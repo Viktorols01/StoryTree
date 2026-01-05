@@ -1,4 +1,4 @@
-package editor;
+package editor.swing;
 
 //import storyclasses.serializable.StoryTree;
 import tools.InterfacePanel;
@@ -10,6 +10,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+import editor.Constants;
+import editor.EditorContext;
+import editor.RenderUtility;
 import editor.serializable.EditorFolder;
 
 public class EditorPanel extends InterfacePanel {

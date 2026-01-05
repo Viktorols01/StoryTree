@@ -1,8 +1,8 @@
 package main;
 
-import storyclasses.readers.FrameStoryReader;
-import storyclasses.readers.StoryReader;
-import storyclasses.serializable.StoryTree;
+import reader.serializable.StoryTree;
+import reader.swing.FrameStoryReader;
+import reader.swing.StoryReader;
 import tools.FileHandler;
 
 class ReaderProgram {

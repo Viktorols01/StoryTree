@@ -1,15 +1,15 @@
-package storyclasses.readers;
+package reader.swing;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import storyclasses.serializable.StoryExtraNode;
-import storyclasses.serializable.StoryKey;
-import storyclasses.serializable.StoryNode;
-import storyclasses.serializable.StoryOption;
-import storyclasses.serializable.StoryState;
-import storyclasses.serializable.StoryTree;
+import reader.serializable.StoryExtraNode;
+import reader.serializable.StoryKey;
+import reader.serializable.StoryNode;
+import reader.serializable.StoryOption;
+import reader.serializable.StoryState;
+import reader.serializable.StoryTree;
 
 public class StoryIterator {
 

@@ -11,7 +11,7 @@ import editor.serializable.EditorOption;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 import editor.serializable.interfaces.TextInteractible;
-import storyclasses.serializable.StoryKey;
+import reader.serializable.StoryKey;
 
 public class Utility {
     public static void deleteInputReferences(OutputInteractible node) {

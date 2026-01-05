@@ -1,11 +1,10 @@
 package editor.serializable;
 
-import storyclasses.serializable.StoryKey;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import editor.serializable.interfaces.TextInteractible;
+import reader.serializable.StoryKey;
 
 public class EditorExtraNode extends Box implements TextInteractible {
     private String text;

@@ -1,11 +1,13 @@
-package main;
+package extra;
 
 import java.util.HashSet;
+
+import reader.serializable.StoryKey;
+import reader.serializable.StoryNode;
+import reader.serializable.StoryTree;
+
 import java.util.ArrayList;
 
-import storyclasses.serializable.StoryKey;
-import storyclasses.serializable.StoryNode;
-import storyclasses.serializable.StoryTree;
 import tools.FileHandler;
 
 public class KeyCounterProgram {

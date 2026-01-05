@@ -13,6 +13,7 @@ import editor.serializable.EditorOption;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.Interactible;
 import editor.serializable.interfaces.OutputInteractible;
+import editor.swing.UserInputGetter;
 import tools.Camera;
 import tools.InterfacePanel.Input;
 

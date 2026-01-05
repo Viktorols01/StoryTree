@@ -1,4 +1,4 @@
-package storyclasses.serializable;
+package reader.serializable;
 
 import java.io.Serializable;
 

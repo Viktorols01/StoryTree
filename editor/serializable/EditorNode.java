@@ -7,7 +7,7 @@ import java.util.List;
 import editor.serializable.interfaces.InputInteractible;
 import editor.serializable.interfaces.OutputInteractible;
 import editor.serializable.interfaces.TextInteractible;
-import storyclasses.serializable.StoryKey;
+import reader.serializable.StoryKey;
 
 public class EditorNode extends Box implements InputInteractible, OutputInteractible, TextInteractible {
     private List<OutputInteractible> inputs;

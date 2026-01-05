@@ -6,12 +6,12 @@ import java.awt.Button;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import editor.EditorPanel;
 import editor.Serializer;
 import editor.serializable.EditorFolder;
-import storyclasses.readers.StoryReader;
-import storyclasses.readers.FrameStoryReader;
-import storyclasses.serializable.StoryTree;
+import editor.swing.EditorPanel;
+import reader.serializable.StoryTree;
+import reader.swing.FrameStoryReader;
+import reader.swing.StoryReader;
 import tools.FileHandler;
 
 public class EditorProgram {
@@ -21,7 +21,7 @@ public class EditorProgram {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        EditorPanel gui = new EditorPanel(1600, 1200);
+        EditorPanel gui = new EditorPanel(800, 600);
         panel.add(gui, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
