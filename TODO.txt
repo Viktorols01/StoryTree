@@ -9,3 +9,5 @@
 
 - Composition over inheritance. This is something I should have had in mind when I wrote this.
   The next version will have it.
+
+- Use maven x|

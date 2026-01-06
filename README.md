@@ -3,9 +3,18 @@
 Create interactive text-based stories and play them.
 Comes with an editor and a file reader.
 
-## How to build
+## How to create JAR file
+Unfortunately I wrote this project in 2024 back when I didn't use Maven and instead ran the code using vscode.
+Here's a bash script that can be used on UNIX systems:
 ```bash
-idk I just used vscode+windows before, will figure out and write script soon
+./build.sh
+```
+Which creates two JAR files in the dist directory. To run:
+```bash
+java -jar dist/editor.jar
+```
+```bash
+java -jar dist/reader.jar
 ```
 
 ## How to use
